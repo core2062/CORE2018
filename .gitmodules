@@ -1,0 +1,4 @@
+[submodule "CORERobotLib"]
+	path = CORERobotLib
+	url = https://github.com/core2062/CORERobotLib.git
+	branch = kinematics

@@ -7,8 +7,8 @@ LiftSubsystem::LiftSubsystem() : m_leftLiftMotor(0), m_rightLiftMotor(0) {
 	m_isLifting = false;
 }
 void LiftSubsystem::robotInit() {
-	//m_leftLiftMotor.Set(ControlMode::PercentOutput, 0);
-	//m_rightLiftMotor.Set(ControlMode::PercentOutput, 0);
+	m_leftLiftMotor.Set(ControlMode::PercentOutput, 0);
+	m_rightLiftMotor.Set(ControlMode::PercentOutput, 0);
 	//m_liftJoystick.GetAxis(frc::Joystick::AxisType::kYAxis);
 	//m_button2.GetAxisChannel(frc::Joystick::AxisType::kYAxis);
 }
@@ -34,8 +34,8 @@ bool LiftSubsystem::isLiftDown() {
 void LiftSubsystem::startLift() {
 
 	if (m_isLifting == false) {
-		//m_leftLiftMotor.Set(ControlMode::PercentOutput, 0);
-		//m_rightLiftMotor.Set(ControlMode::PercentOutput, 0);
+		m_leftLiftMotor.Set(ControlMode::PercentOutput, 0);
+		m_rightLiftMotor.Set(ControlMode::PercentOutput, 0);
 		m_isLifting = true;
 	}
 }

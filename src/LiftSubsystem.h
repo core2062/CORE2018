@@ -17,6 +17,7 @@ public:
 	void stopLift();
 	TalonSRX m_leftLiftMotor;
 	TalonSRX m_rightLiftMotor;
+	DoubleSolenoid m_
 	//COREJoystick *m_liftJoystick;
 private:
 	bool m_isLifting;

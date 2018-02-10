@@ -54,12 +54,36 @@ public:
 			// Default Auto goes here
 		}
 	}
+	void DisabledInit() {
 
-	void TeleopInit() {}
+	}
+	void TeleopInit() {
 
-	void TeleopPeriodic() {}
+	}
+	void TestInit() {
 
-	void TestPeriodic() {}
+	}
+	void RobotPeriodic() {
+
+	}
+
+	void DisabledPeriodic() {
+
+	}
+
+
+	void TeleopPeriodic() {
+
+
+	}
+
+	void TestPeriodic() {
+
+	}
+
+	void StartCompetition() {
+
+	}
 
 private:
 	frc::LiveWindow& m_lw = *LiveWindow::GetInstance();

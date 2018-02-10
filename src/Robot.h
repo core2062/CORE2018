@@ -1,9 +1,7 @@
 #pragma once
 
 #include "CORERobotLib.h"
-#include <IterativeRobot.h>
-//#include <Joystick.h>
-#include <ctre/Phoenix.h>
+#include "ctre/Phoenix.h"
 #include "IntakeSubsystem.h"
 #include "ScorerSubsystem.h"
 #include "ClimberSubsystem.h"
@@ -13,8 +11,8 @@
 #ifndef SRC_ROBOT_H_
 #define SRC_ROBOT_H_
 
+class Robot : public CORERobot {
 
-
-
-
+public:
+	Robot();
 #endif /* SRC_ROBOT_H_ */

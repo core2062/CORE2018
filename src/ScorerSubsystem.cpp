@@ -1,4 +1,5 @@
 #include <ScorerSubsystem.h>
+
 #include "Robot.cpp"
 
 ScorerSubsystem::ScorerSubsystem() : m_frontLeftSolenoid(0, 1), m_frontRightSolenoid(0, 1), m_backRightSolenoid(0, 1), m_backLeftSolenoid(0, 1) {

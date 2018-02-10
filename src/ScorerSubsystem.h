@@ -17,7 +17,7 @@ public:
 	//COREJoystick *m_scorerJoystick;
 
 private:
-	frc::DoubleSolenoid m_frontLeftSolenoid, m_frontRightSolenoid, m_backRightSolenoid, m_backLeftSolenoid;
+	DoubleSolenoid m_frontLeftSolenoid, m_frontRightSolenoid, m_backRightSolenoid, m_backLeftSolenoid;
 	bool m_intakeIsClosed = false;
 };
 

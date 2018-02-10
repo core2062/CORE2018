@@ -25,5 +25,3 @@ private:
 	double m_liftBottomLimit; //TODO Change to COREConstants
 
 };
-
-

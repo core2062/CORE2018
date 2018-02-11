@@ -1,4 +1,4 @@
-#include <ClimberSubsystem.h>
+/*#include <ClimberSubsystem.h>
 
 ClimberSubsystem::ClimberSubsystem() : m_climbMotor(0) {
 	m_isClimbing = false;
@@ -18,18 +18,18 @@ bool ClimberSubsystem::isClimbing () {
 	return m_isClimbing;
 }
 void ClimberSubsystem::startClimbing () {
-	if (m_isClimbing == false /*&& m_stick.GetRawButtonPressed(0) == true*/) {
+	if (m_isClimbing == false && m_stick.GetRawButtonPressed(0) == true) {
 		m_climbMotor.Set(ControlMode::PercentOutput, 0.2);
 		m_isClimbing = true;
 	}
 
 }
 void ClimberSubsystem::stopClimbing () {
-	if (m_isClimbing == true /*&& m_stick.GetRawButtonPressed(0) == false*/) {
+	if (m_isClimbing == true && m_stick.GetRawButtonPressed(0) == false) {
 		m_climbMotor.Set(ControlMode::PercentOutput, 0);
 		m_isClimbing = false;
 	}
 
 }
-
+*/
 

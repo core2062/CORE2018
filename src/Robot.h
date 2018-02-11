@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 
 #include "CORERobotLib.h"
 #include "ctre/Phoenix.h"
@@ -6,22 +6,17 @@
 #include "ScorerSubsystem.h"
 #include "ClimberSubsystem.h"
 #include "LiftSubsystem.h"
-#include "CORERobot.h"
+#include "CORERobotLib.h"
+#include "DriveSubsystem.h"
 
-#define RIGHT_FRONT_STEER_MOTOR_PORT 1
-#define LEFT_FRONT_STEER_MOTOR_PORT 2
-#define RIGHT_BACK_STEER_MOTOR_PORT 3
-#define LEFT_BACK_STEER_MOTOR_PORT 4
-#define RIGHT_FRONT_DRIVE_MOTOR_PORT 5
-#define RIGHT_BACK_DRIVE_MOTOR_PORT  6
-#define LEFT_FRONT_DRIVE_MOTOR_PORT 7
-#define LEFT_BACK_DRIVE_MOTOR_PORT 8
-
-//DriveSubsystem  driveSubsysetm;
-ClimberSubsystem climberSubsystem;
-LiftSubsystem liftSubsystem;
-IntakeSubsystem intakeSystem;
-ScorerSubsystem scorerSubsystem;
+#define FRONT_RIGHT_STEER_PORT 2
+#define BACK_RIGHT_STEER_PORT 1
+#define FRONT_LEFT_STEER_PORT 3
+#define BACK_LEFT_STEER_PORT 4
+#define FRONT_RIGHT_DRIVE_PORT 5
+#define FRONT_LEFT_DRIVE_PORT  6
+#define BACK_RIGHT_DRIVE_PORT 7
+#define BACK_LEFT_DRIVE_PORT 8
 
 
 class Robot : public CORERobot {
@@ -41,4 +36,11 @@ public:
 	COREJoystick m_operatorJoystick;
 	COREJoystick m_driverJoystick;
 
+	DriveSubsystem  driveSubsysetm;
+	ClimberSubsystem climberSubsystem;
+	LiftSubsystem liftSubsystem;
+	IntakeSubsystem intakeSystem;
+	//ScorerSubsystem scorerSubsystem;
+
 };
+*/

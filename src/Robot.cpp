@@ -5,20 +5,32 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include <iostream>
-#include <string>
+#pragma once
 
-#include <LiveWindow/LiveWindow.h>
-#include <SmartDashboard/SendableChooser.h>
-#include <SmartDashboard/SmartDashboard.h>
-#include <TimedRobot.h>
+#include "CORERobotLib.h"
+#include "ctre/Phoenix.h"
+#include "IntakeSubsystem.h"
+#include "ScorerSubsystem.h"
+#include "ClimberSubsystem.h"
+#include "LiftSubsystem.h"
+#include "CORERobotLib.h"
+#include "DriveSubsystem.h"
 
-class Robot : public frc::TimedRobot {
+#define FRONT_RIGHT_STEER_PORT 11
+#define FRONT_LEFT_STEER_PORT 12
+#define BACK_RIGHT_STEER_PORT 13
+#define BACK_LEFT_STEER_PORT 14
+#define FRONT_RIGHT_DRIVE_PORT 15
+#define FRONT_LEFT_DRIVE_PORT 16
+#define BACK_RIGHT_DRIVE_PORT 17
+#define BACK_LEFT_DRIVE_PORT 18
+
+class Robot : public CORERobot {
 public:
-	void RobotInit() {
-		m_chooser.AddDefault(kAutoNameDefault, kAutoNameDefault);
-		m_chooser.AddObject(kAutoNameCustom, kAutoNameCustom);
-		frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+	DriveSubsystem driveSubsystem;
+
+	void RobotInit() override {
+
 	}
 
 	/*
@@ -35,62 +47,44 @@ public:
 	 * well.
 	 */
 	void AutonomousInit() override {
-		m_autoSelected = m_chooser.GetSelected();
-		// m_autoSelected = SmartDashboard::GetString("Auto Selector",
-		//		 kAutoNameDefault);
-		std::cout << "Auto selected: " << m_autoSelected << std::endl;
-
-		if (m_autoSelected == kAutoNameCustom) {
-			// Custom Auto goes here
-		} else {
-			// Default Auto goes here
-		}
-	}
-
-	void AutonomousPeriodic() {
-		if (m_autoSelected == kAutoNameCustom) {
-			// Custom Auto goes here
-		} else {
-			// Default Auto goes here
-		}
-	}
-	void DisabledInit() {
-
-	}
-	void TeleopInit() {
-
-	}
-	void TestInit() {
-
-	}
-	void RobotPeriodic() {
 
 	}
 
-	void DisabledPeriodic() {
+	void AutonomousPeriodic() override{
+
+	}
+	void DisabledInit() override {
+
+	}
+	void TeleopInit() override{
+
+	}
+	void TestInit() override{
 
 	}
 
-
-	void TeleopPeriodic() {
-
+	void RobotPeriodic() override{
 
 	}
 
-	void TestPeriodic() {
+	void DisabledPeriodic() override{
 
 	}
 
-	void StartCompetition() {
+	void TeleopPeriodic() override{
+
+	}
+
+	void TestPeriodic() override{
+
+	}
+
+	void StartCompetition() override{
 
 	}
 
 private:
-	frc::LiveWindow& m_lw = *LiveWindow::GetInstance();
-	frc::SendableChooser<std::string> m_chooser;
-	const std::string kAutoNameDefault = "Default";
-	const std::string kAutoNameCustom = "My Auto";
-	std::string m_autoSelected;
+
 };
 
 START_ROBOT_CLASS(Robot)

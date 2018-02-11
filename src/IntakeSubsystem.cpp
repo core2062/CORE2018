@@ -1,4 +1,4 @@
-#include <IntakeSubsystem.h>
+/*#include <IntakeSubsystem.h>
 IntakeSubsystem::IntakeSubsystem() : m_leftIntakeMotor(0), m_rightIntakeMotor(0) {
 	m_isIntaking = false;
 }
@@ -23,17 +23,17 @@ bool IntakeSubsystem :: isIntaking(){
 	return m_isIntaking;
 }
 void IntakeSubsystem::startIntake(){
-	if (/*m_button.GetRawButtonPressed(1) == true &&*/ m_isIntaking == false){
+	if (m_button.GetRawButtonPressed(1) == true && m_isIntaking == false){
 		m_leftIntakeMotor.Set(ControlMode::PercentOutput, 0.2);
 		m_rightIntakeMotor.Set(ControlMode::PercentOutput, 0.2);
 		m_isIntaking = true;
 	}
 }
 void IntakeSubsystem::stopIntake(){
-	if (/*m_button.GetRawButtonPressed(1) == false &&*/ m_isIntaking == true){
+	if (m_button.GetRawButtonPressed(1) == false && m_isIntaking == true){
 		m_leftIntakeMotor.Set(ControlMode::PercentOutput, 0);
 		m_rightIntakeMotor.Set(ControlMode::PercentOutput, 0);
 		m_isIntaking = false;
 	}
 }
-
+*/

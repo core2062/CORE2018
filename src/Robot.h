@@ -1,6 +1,5 @@
-/*#pragma once
+#pragma once
 
-#include "CORERobotLib.h"
 #include "ctre/Phoenix.h"
 #include "IntakeSubsystem.h"
 #include "ScorerSubsystem.h"
@@ -9,15 +8,17 @@
 #include "CORERobotLib.h"
 #include "DriveSubsystem.h"
 
-#define FRONT_RIGHT_STEER_PORT 2
-#define BACK_RIGHT_STEER_PORT 1
-#define FRONT_LEFT_STEER_PORT 3
-#define BACK_LEFT_STEER_PORT 4
-#define FRONT_RIGHT_DRIVE_PORT 5
-#define FRONT_LEFT_DRIVE_PORT  6
-#define BACK_RIGHT_DRIVE_PORT 7
-#define BACK_LEFT_DRIVE_PORT 8
+#define FRONT_RIGHT_STEER_PORT 11
+#define FRONT_LEFT_STEER_PORT 12
+#define BACK_RIGHT_STEER_PORT 13
+#define BACK_LEFT_STEER_PORT 14
+#define FRONT_RIGHT_DRIVE_PORT 15
+#define FRONT_LEFT_DRIVE_PORT 16
+#define BACK_RIGHT_DRIVE_PORT 17
+#define BACK_LEFT_DRIVE_PORT 18
 
+using namespace CORE;
+using namespace std;
 
 class Robot : public CORERobot {
 public:
@@ -33,14 +34,15 @@ public:
 	void AutonomousPeriodic();
 	void TeleopPeriodic();
 	void TestPeriodic();
-	COREJoystick m_operatorJoystick;
+	//COREJoystick m_operatorJoystick;
 	COREJoystick m_driverJoystick;
 
-	DriveSubsystem  driveSubsysetm;
+	DriveSubsystem driveSubsystem;
 	ClimberSubsystem climberSubsystem;
 	LiftSubsystem liftSubsystem;
 	IntakeSubsystem intakeSystem;
 	//ScorerSubsystem scorerSubsystem;
 
 };
-*/
+
+extern Robot *robot;

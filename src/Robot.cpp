@@ -4,34 +4,15 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
+#include "Robot.h"
 
-#pragma once
+Robot::Robot() :
+	driveSubsystem() {
+}
 
-#include "CORERobotLib.h"
-#include "ctre/Phoenix.h"
-#include "IntakeSubsystem.h"
-#include "ScorerSubsystem.h"
-#include "ClimberSubsystem.h"
-#include "LiftSubsystem.h"
-#include "CORERobotLib.h"
-#include "DriveSubsystem.h"
+void Robot::RobotInit() {
 
-#define FRONT_RIGHT_STEER_PORT 11
-#define FRONT_LEFT_STEER_PORT 12
-#define BACK_RIGHT_STEER_PORT 13
-#define BACK_LEFT_STEER_PORT 14
-#define FRONT_RIGHT_DRIVE_PORT 15
-#define FRONT_LEFT_DRIVE_PORT 16
-#define BACK_RIGHT_DRIVE_PORT 17
-#define BACK_LEFT_DRIVE_PORT 18
-
-class Robot : public CORERobot {
-public:
-	DriveSubsystem driveSubsystem;
-
-	void RobotInit() override {
-
-	}
+}
 
 	/*
 	 * This autonomous (along with the chooser code above) shows how to
@@ -46,45 +27,46 @@ public:
 	 * SendableChooser make sure to add them to the chooser code above as
 	 * well.
 	 */
-	void AutonomousInit() override {
+void Robot::AutonomousInit() {
 
-	}
+}
 
-	void AutonomousPeriodic() override{
+void Robot::AutonomousPeriodic(){
 
-	}
-	void DisabledInit() override {
+}
 
-	}
-	void TeleopInit() override{
+void Robot::DisabledInit() {
 
-	}
-	void TestInit() override{
+}
 
-	}
+void Robot::TeleopInit(){
 
-	void RobotPeriodic() override{
+}
+void Robot::TestInit(){
 
-	}
+}
 
-	void DisabledPeriodic() override{
+void Robot::RobotPeriodic(){
 
-	}
+}
 
-	void TeleopPeriodic() override{
+void Robot::DisabledPeriodic(){
 
-	}
+}
 
-	void TestPeriodic() override{
+void Robot::TeleopPeriodic() {
 
-	}
+}
 
-	void StartCompetition() override{
+void Robot::TestPeriodic(){
 
-	}
+}
 
-private:
+void Robot::StartCompetition() {
 
-};
+}
 
-START_ROBOT_CLASS(Robot)
+
+START_ROBOT_CLASS(Robot);
+
+

@@ -1,4 +1,6 @@
-#include <DriveSubsystem.h>
+
+
+#include "DriveSubsystem.h"
 #include <cmath>
 
 DriveSubsystem::DriveSubsystem() :
@@ -16,7 +18,6 @@ DriveSubsystem::DriveSubsystem() :
 	m_rightBackDriveMotor(FRONT_LEFT_DRIVE_PORT),
 	m_leftFrontDriveMotor(BACK_RIGHT_DRIVE_PORT),
 	m_leftBackDriveMotor(BACK_LEFT_DRIVE_PORT),
-	m_driverJoystick(0),
 	m_drivePID_P(0),
 	m_drivePID_I(0),
 	m_drivePID_D(0),
@@ -26,8 +27,8 @@ DriveSubsystem::DriveSubsystem() :
 }
 
 void DriveSubsystem::robotInit() {
-	DriveSubsystem::m_driverJoystick.getAxis(CORE::COREJoystick::LEFT_STICK_Y);
-	DriveSubsystem::m_driverJoystick.getAxis(CORE::COREJoystick::RIGHT_STICK_X);
+	Robot::m_driverJoystick.getAxis(CORE::COREJoystick::LEFT_STICK_Y);
+	Robot::m_driverJoystick.getAxis(CORE::COREJoystick::RIGHT_STICK_X);
 	initTalons();
 
 }
@@ -53,9 +54,9 @@ void DriveSubsystem::setMotors() {
 	m_leftBackModule.setAnglePID(m_drivePID_P, m_drivePID_I, m_drivePID_D);
 
 	//Gets the joystick values for each of the functions
-	double y = DriveSubsystem::m_driverJoystick.getAxis(COREJoystick::LEFT_STICK_Y);
-	double x = DriveSubsystem::m_driverJoystick.getAxis(COREJoystick::LEFT_STICK_X);
-	double z = DriveSubsystem::m_driverJoystick.getAxis(COREJoystick::RIGHT_STICK_X);
+	double y = Robot::m_driverJoystick.getAxis(COREJoystick::LEFT_STICK_Y);
+	double x = Robot::m_driverJoystick.getAxis(COREJoystick::LEFT_STICK_X);
+	double z = Robot::m_driverJoystick.getAxis(COREJoystick::RIGHT_STICK_X);
 
 	double forward = y * cos(DriveSubsystem::getGyroYaw() - m_angleOffset.Get()) + x *
 			sin(DriveSubsystem::getGyroYaw() - m_angleOffset.Get());

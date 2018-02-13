@@ -1,6 +1,7 @@
+
 #pragma once
 
-#include "Robot.cpp"
+#include "Robot.h"
 #include "ctre/Phoenix.h"
 #include "CORERobotLib.h"
 #include "AHRS.h"
@@ -9,7 +10,6 @@
 class DriveSubsystem : public CORESubsystem {
 public:
 	DriveSubsystem();
-	COREJoystick m_driverJoystick;
 	CORESwerve m_swerveDrive;
 	AHRS *m_gyro = nullptr;
 	void robotInit() override;
@@ -44,5 +44,3 @@ private:
 	CORESwerve::SwerveModule m_leftBackModule;
 
 };
-
-

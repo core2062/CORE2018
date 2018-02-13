@@ -22,7 +22,7 @@ using namespace std;
 
 class Robot : public CORERobot {
 public:
-	Robot();
+	Robot();/*
 	void StartCompetition();
 	void RobotInit();
 	void DisabledInit();
@@ -33,8 +33,11 @@ public:
 	void DisabledPeriodic();
 	void AutonomousPeriodic();
 	void TeleopPeriodic();
-	void TestPeriodic();
+	void TestPeriodic();*/
 	//COREJoystick m_operatorJoystick;
+	void robotInit() override;
+	void teleopInit() override;
+	void teleop() override;
 	COREJoystick m_driverJoystick;
 
 	DriveSubsystem driveSubsystem;

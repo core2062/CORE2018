@@ -6,14 +6,15 @@
 /*----------------------------------------------------------------------------*/
 #include "Robot.h"
 
-Robot::Robot() :
-	driveSubsystem() {
+Robot::Robot() /*:
+	driveSubsystem() */:
+	m_driverJoystick(0){
 }
-
+/*
 void Robot::RobotInit() {
 
 }
-
+*/
 	/*
 	 * This autonomous (along with the chooser code above) shows how to
 	 * select between different autonomous modes using the dashboard. The
@@ -27,6 +28,7 @@ void Robot::RobotInit() {
 	 * SendableChooser make sure to add them to the chooser code above as
 	 * well.
 	 */
+/*
 void Robot::AutonomousInit() {
 
 }
@@ -65,7 +67,7 @@ void Robot::TestPeriodic(){
 void Robot::StartCompetition() {
 
 }
-
+*/
 
 START_ROBOT_CLASS(Robot);
 

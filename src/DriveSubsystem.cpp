@@ -1,5 +1,6 @@
 
 
+#include "Robot.h"
 #include "DriveSubsystem.h"
 #include <cmath>
 
@@ -10,14 +11,14 @@ DriveSubsystem::DriveSubsystem() :
 	m_leftBackModule(&m_leftBackDriveMotor, &m_leftBackSteerMotor),
 	m_swerveDrive(m_wheelbase, m_trackwidth, m_leftFrontModule, m_leftBackModule, m_rightBackModule,
 			m_rightFrontModule),
-	m_rightFrontSteerMotor(FRONT_RIGHT_STEER_PORT),
+	/*m_rightFrontSteerMotor(FRONT_RIGHT_STEER_PORT),
 	m_leftFrontSteerMotor(FRONT_LEFT_STEER_PORT),
 	m_rightBackSteerMotor(BACK_RIGHT_STEER_PORT),
 	m_leftBackSteerMotor(BACK_LEFT_STEER_PORT),
 	m_rightFrontDriveMotor(FRONT_RIGHT_DRIVE_PORT),
 	m_rightBackDriveMotor(FRONT_LEFT_DRIVE_PORT),
 	m_leftFrontDriveMotor(BACK_RIGHT_DRIVE_PORT),
-	m_leftBackDriveMotor(BACK_LEFT_DRIVE_PORT),
+	m_leftBackDriveMotor(BACK_LEFT_DRIVE_PORT),*/
 	m_drivePID_P(0),
 	m_drivePID_I(0),
 	m_drivePID_D(0),
@@ -27,8 +28,8 @@ DriveSubsystem::DriveSubsystem() :
 }
 
 void DriveSubsystem::robotInit() {
-	Robot::m_driverJoystick.getAxis(CORE::COREJoystick::LEFT_STICK_Y);
-	Robot::m_driverJoystick.getAxis(CORE::COREJoystick::RIGHT_STICK_X);
+	CORE2018::m_driverJoystick.getAxis(CORE::COREJoystick::LEFT_STICK_Y);
+	CORE2018::m_driverJoystick.getAxis(CORE::COREJoystick::RIGHT_STICK_X);
 	initTalons();
 
 }
@@ -54,9 +55,9 @@ void DriveSubsystem::setMotors() {
 	m_leftBackModule.setAnglePID(m_drivePID_P, m_drivePID_I, m_drivePID_D);
 
 	//Gets the joystick values for each of the functions
-	double y = Robot::m_driverJoystick.getAxis(COREJoystick::LEFT_STICK_Y);
-	double x = Robot::m_driverJoystick.getAxis(COREJoystick::LEFT_STICK_X);
-	double z = Robot::m_driverJoystick.getAxis(COREJoystick::RIGHT_STICK_X);
+	double y = CORE2018::m_driverJoystick.getAxis(COREJoystick::LEFT_STICK_Y);
+	double x = CORE2018::m_driverJoystick.getAxis(COREJoystick::LEFT_STICK_X);
+	double z = CORE2018::m_driverJoystick.getAxis(COREJoystick::RIGHT_STICK_X);
 
 	double forward = y * cos(DriveSubsystem::getGyroYaw() - m_angleOffset.Get()) + x *
 			sin(DriveSubsystem::getGyroYaw() - m_angleOffset.Get());

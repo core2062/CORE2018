@@ -10,7 +10,7 @@
 class DriveSubsystem : public CORESubsystem {
 public:
 	DriveSubsystem();
-	CORESwerve m_swerveDrive;
+	//CORESwerve m_swerveDrive;
 	AHRS *m_gyro = nullptr;
 	void robotInit() override;
 	void teleopInit() override;
@@ -38,9 +38,9 @@ public:
 private:
 	double m_wheelbase = 20.8;
 	double m_trackwidth = 25.881;
-	CORESwerve::SwerveModule m_rightFrontModule;
+	/*CORESwerve::SwerveModule m_rightFrontModule;
 	CORESwerve::SwerveModule m_leftFrontModule;
 	CORESwerve::SwerveModule m_rightBackModule;
-	CORESwerve::SwerveModule m_leftBackModule;
+	CORESwerve::SwerveModule m_leftBackModule;*/
 
 };

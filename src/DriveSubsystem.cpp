@@ -5,31 +5,20 @@
 #include <cmath>
 
 DriveSubsystem::DriveSubsystem() :
-	m_rightFrontModule(&m_rightFrontDriveMotor, &m_rightFrontSteerMotor),
+	/*m_rightFrontModule(&m_rightFrontDriveMotor, &m_rightFrontSteerMotor),
 	m_rightBackModule(&m_rightBackDriveMotor, &m_rightBackSteerMotor),
 	m_leftFrontModule(&m_leftFrontDriveMotor, &m_leftFrontSteerMotor),
 	m_leftBackModule(&m_leftBackDriveMotor, &m_leftBackSteerMotor),
-	m_swerveDrive(m_wheelbase, m_trackwidth, m_leftFrontModule, m_leftBackModule, m_rightBackModule,
-			m_rightFrontModule),
-	/*m_rightFrontSteerMotor(FRONT_RIGHT_STEER_PORT),
-	m_leftFrontSteerMotor(FRONT_LEFT_STEER_PORT),
-	m_rightBackSteerMotor(BACK_RIGHT_STEER_PORT),
-	m_leftBackSteerMotor(BACK_LEFT_STEER_PORT),
-	m_rightFrontDriveMotor(FRONT_RIGHT_DRIVE_PORT),
-	m_rightBackDriveMotor(FRONT_LEFT_DRIVE_PORT),
-	m_leftFrontDriveMotor(BACK_RIGHT_DRIVE_PORT),
-	m_leftBackDriveMotor(BACK_LEFT_DRIVE_PORT),*/
+	m_swerveDrive(m_wheelbase, m_trackwidth, m_leftFrontModule, m_leftBackModule, m_rightBackModule, m_rightFrontModule),*/
 	m_drivePID_P(0),
 	m_drivePID_I(0),
 	m_drivePID_D(0),
-	m_angleOffset("Swerve Steer Angle Offset", 0){
-	//m_driverJoystick(0), {
-
-}
+	m_angleOffset("Swerve Steer Angle Offset", 0)
+{}
 
 void DriveSubsystem::robotInit() {
-	CORE2018::m_driverJoystick.getAxis(CORE::COREJoystick::LEFT_STICK_Y);
-	CORE2018::m_driverJoystick.getAxis(CORE::COREJoystick::RIGHT_STICK_X);
+	robot->m_driverJoystick.getAxis(CORE::COREJoystick::LEFT_STICK_Y);
+	robot->m_driverJoystick.getAxis(CORE::COREJoystick::RIGHT_STICK_X);
 	initTalons();
 
 }
@@ -45,7 +34,7 @@ void DriveSubsystem::teleop() {
 }
 
 void DriveSubsystem::setMotors() {
-	SmartDashboard::PutNumber("Drive P Value", m_drivePID_P);
+	/*SmartDashboard::PutNumber("Drive P Value", m_drivePID_P);
 	SmartDashboard::PutNumber("Drive I Value", m_drivePID_I);
 	SmartDashboard::PutNumber("Drive D Value", m_drivePID_D);
 	//Sets PID for the modules
@@ -55,9 +44,9 @@ void DriveSubsystem::setMotors() {
 	m_leftBackModule.setAnglePID(m_drivePID_P, m_drivePID_I, m_drivePID_D);
 
 	//Gets the joystick values for each of the functions
-	double y = CORE2018::m_driverJoystick.getAxis(COREJoystick::LEFT_STICK_Y);
-	double x = CORE2018::m_driverJoystick.getAxis(COREJoystick::LEFT_STICK_X);
-	double z = CORE2018::m_driverJoystick.getAxis(COREJoystick::RIGHT_STICK_X);
+	double y = robot->m_driverJoystick.getAxis(COREJoystick::LEFT_STICK_Y);
+	double x = robot->m_driverJoystick.getAxis(COREJoystick::LEFT_STICK_X);
+	double z = robot->m_driverJoystick.getAxis(COREJoystick::RIGHT_STICK_X);
 
 	double forward = y * cos(DriveSubsystem::getGyroYaw() - m_angleOffset.Get()) + x *
 			sin(DriveSubsystem::getGyroYaw() - m_angleOffset.Get());
@@ -72,7 +61,7 @@ void DriveSubsystem::setMotors() {
 	SmartDashboard::PutNumber("Right Front Angle", m_rightFrontSteerMotor->GetSensorCollection().GetQuadraturePosition());
 	SmartDashboard::PutNumber("Left Front Angle", m_leftFrontSteerMotor->GetSensorCollection().GetQuadraturePosition());
 	SmartDashboard::PutNumber("Right Back Angle", m_rightBackSteerMotor->GetSensorCollection().GetQuadraturePosition());
-	SmartDashboard::PutNumber("Left Back Angle", m_leftBackSteerMotor->GetSensorCollection().GetQuadraturePosition());
+	SmartDashboard::PutNumber("Left Back Angle", m_leftBackSteerMotor->GetSensorCollection().GetQuadraturePosition());*/
 }
 
 void DriveSubsystem::resetEncoders() {

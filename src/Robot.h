@@ -1,10 +1,10 @@
 #pragma once
 
 #include "ctre/Phoenix.h"
-#include "IntakeSubsystem.h"
-#include "ScorerSubsystem.h"
-#include "ClimberSubsystem.h"
-#include "LiftSubsystem.h"
+//#include "IntakeSubsystem.h"
+//#include "ScorerSubsystem.h"
+//#include "ClimberSubsystem.h"
+//#include "LiftSubsystem.h"
 #include "CORERobotLib.h"
 #include "DriveSubsystem.h"
 
@@ -42,11 +42,11 @@ public:
 	COREJoystick m_operatorJoystick;
 
 	DriveSubsystem driveSubsystem;
-	ClimberSubsystem climberSubsystem;
-	LiftSubsystem liftSubsystem;
-	IntakeSubsystem intakeSystem;
+	//ClimberSubsystem climberSubsystem;
+	//LiftSubsystem liftSubsystem;
+	//IntakeSubsystem intakeSystem;
 	//ScorerSubsystem scorerSubsystem;
 
 };
 
-extern Robot *robot;
+extern Robot * robot;

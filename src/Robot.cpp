@@ -6,10 +6,15 @@
 /*----------------------------------------------------------------------------*/
 #include "Robot.h"
 
-Robot::Robot() /*:
-	driveSubsystem() */:
-	m_driverJoystick(0){
+Robot*robot = nullptr;
+
+Robot::Robot() :
+	/*driveSubsystem() */
+	m_driverJoystick(0),
+	m_operatorJoystick(1) {
+
 }
+
 /*
 void Robot::RobotInit() {
 

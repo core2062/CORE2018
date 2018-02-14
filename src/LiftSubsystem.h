@@ -2,6 +2,7 @@
 
 #include "ctre/Phoenix.h"
 #include "CORERobotLib.h"
+#include "Robot.h"
 
 class LiftSubsystem {
 public:

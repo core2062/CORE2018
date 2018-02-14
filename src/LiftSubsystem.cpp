@@ -1,4 +1,5 @@
-/*#include <LiftSubsystem.h>
+#include <LiftSubsystem.h>
+
 
 LiftSubsystem::LiftSubsystem() : m_leftLiftMotor(0), m_rightLiftMotor(0) {
 	m_liftPosition = 0;
@@ -11,11 +12,15 @@ void LiftSubsystem::robotInit() {
 	m_rightLiftMotor->Set(ControlMode::PercentOutput, 0);
 	//m_liftJoystick.GetAxis(frc::Joystick::AxisType::kYAxis);
 	//m_button2.GetAxisChannel(frc::Joystick::AxisType::kYAxis);
+	robot->m_operatorJoystick.registerAxis(CORE::COREJoystick::JoystickAxis::LEFT_STICK_Y);
+
 }
 void LiftSubsystem::autonInit() {
 
 }
 void LiftSubsystem::auton() {
+
+
 
 }
 void LiftSubsystem::teleopInit() {
@@ -33,17 +38,15 @@ bool LiftSubsystem::isLiftDown() {
 }
 void LiftSubsystem::startLift() {
 
-	if (m_isLifting == false) {
-		m_leftLiftMotor->Set(ControlMode::PercentOutput, 0);
-		m_rightLiftMotor->Set(ControlMode::PercentOutput, 0);
+	if (m_isLifting == false && robot->m_operatorJoystick.getAxis(CORE::COREJoystick::JoystickAxis::LEFT_STICK_Y) >= 0.2) {
+		m_leftLiftMotor->Set(ControlMode::PercentOutput, robot->m_operatorJoystick.getAxis(CORE::COREJoystick::JoystickAxis::LEFT_STICK_Y));
+		m_rightLiftMotor->Set(ControlMode::PercentOutput, robot->m_operatorJoystick.getAxis(CORE::COREJoystick::JoystickAxis::LEFT_STICK_Y));
 		m_isLifting = true;
+		if (m_liftPosition == m_liftTopLimit || m_liftPosition == m_liftBottomLimit) {
+			m_leftLiftMotor->Set(ControlMode::PercentOutput, 0);
+			m_rightLiftMotor->Set(ControlMode::PercentOutput, 0);
+		}
 	}
+
 }
-/*
-void LiftSubsystem::stopLift() {
-	if (m_liftJoystick.GetRawAxis(0) == false && m_isLifting == true){
-	    m_rightLiftMotor.Set(ControlMode::PercentOutput, 0);
-		m_isLifting = false;
-	}
-}
-*/
+

@@ -39,6 +39,7 @@ public:
 	void teleopInit() override;
 	void teleop() override;
 	COREJoystick m_driverJoystick;
+	COREJoystick m_operatorJoystick;
 
 	DriveSubsystem driveSubsystem;
 	ClimberSubsystem climberSubsystem;

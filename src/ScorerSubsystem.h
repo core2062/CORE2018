@@ -1,4 +1,4 @@
-/*#pragma once
+#pragma once
 #include "ctre/Phoenix.h"
 #include "wpilib.h"
 #include "CORERobotLib.h"
@@ -29,4 +29,3 @@ private:
 
 };
 
-*/

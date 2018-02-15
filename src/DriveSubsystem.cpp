@@ -1,24 +1,35 @@
 
-
+#include "ctre/Phoenix.h"
 #include "Robot.h"
 #include "DriveSubsystem.h"
 #include <cmath>
+#include "COREHardware/COREJoystick.h"
+#include "wpilib.h"
 
 DriveSubsystem::DriveSubsystem() :
-	/*m_rightFrontModule(&m_rightFrontDriveMotor, &m_rightFrontSteerMotor),
-	m_rightBackModule(&m_rightBackDriveMotor, &m_rightBackSteerMotor),
-	m_leftFrontModule(&m_leftFrontDriveMotor, &m_leftFrontSteerMotor),
-	m_leftBackModule(&m_leftBackDriveMotor, &m_leftBackSteerMotor),
-	m_swerveDrive(m_wheelbase, m_trackwidth, m_leftFrontModule, m_leftBackModule, m_rightBackModule, m_rightFrontModule),*/
+	m_rightFrontSteerMotor(new TalonSRX(FRONT_RIGHT_STEER_PORT)),
+	m_leftFrontSteerMotor(new TalonSRX(FRONT_LEFT_STEER_PORT)),
+	m_rightBackSteerMotor(new TalonSRX(BACK_RIGHT_STEER_PORT)),
+	m_leftBackSteerMotor(new TalonSRX(BACK_LEFT_STEER_PORT)),
+	m_rightFrontDriveMotor(new TalonSRX(FRONT_RIGHT_DRIVE_PORT)),
+	m_leftFrontDriveMotor(new TalonSRX(FRONT_LEFT_DRIVE_PORT)),
+	m_rightBackDriveMotor(new TalonSRX(BACK_RIGHT_DRIVE_PORT)),
+	m_leftBackDriveMotor(new TalonSRX(BACK_LEFT_DRIVE_PORT)),
+	m_rightFrontModule(m_rightFrontDriveMotor, m_rightFrontSteerMotor),
+	m_rightBackModule(m_rightBackDriveMotor, m_rightBackSteerMotor),
+	m_leftFrontModule(m_leftFrontDriveMotor, m_leftFrontSteerMotor),
+	m_leftBackModule(m_leftBackDriveMotor, m_leftBackSteerMotor),
+	m_swerveDrive(m_wheelbase, m_trackwidth, &m_leftFrontModule, &m_leftBackModule, &m_rightBackModule, &m_rightFrontModule),
 	m_drivePID_P(0),
 	m_drivePID_I(0),
 	m_drivePID_D(0),
-	m_angleOffset("Swerve Steer Angle Offset", 0)
-{}
+	m_angleOffset("Swerve Steer Angle Offset", 0) {
+
+}
 
 void DriveSubsystem::robotInit() {
-	robot->m_driverJoystick.getAxis(CORE::COREJoystick::LEFT_STICK_Y);
-	robot->m_driverJoystick.getAxis(CORE::COREJoystick::RIGHT_STICK_X);
+	Robot->m_driverJoystick.getAxis(CORE::COREJoystick::LEFT_STICK_Y);
+	Robot->m_driverJoystick.getAxis(CORE::COREJoystick::RIGHT_STICK_X);
 	initTalons();
 
 }

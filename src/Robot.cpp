@@ -5,24 +5,28 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 #include "Robot.h"
+#include "wpilib.h"
 
-Robot*robot = nullptr;
+CORE2018 * Robot = nullptr;
 
-Robot::Robot() :
+CORE2018::CORE2018() :
 	driveSubsystem(),
 	m_driverJoystick(0),
 	m_operatorJoystick(1) {
+	Robot = this;
 }
 
-void Robot::robotInit() {
+void CORE2018::robotInit() {
 
 }
-void Robot::teleopInit() {
+void CORE2018::teleopInit() {
 
 }
-void Robot::teleop() {
+void CORE2018::teleop() {
 
 }
+
+START_ROBOT_CLASS(CORE2018);
 /*
  * This autonomous (along with the chooser code above) shows how to
  * select between different autonomous modes using the dashboard. The
@@ -77,5 +81,5 @@ void Robot::teleop() {
  }
  */
 
-START_ROBOT_CLASS (Robot);
+
 

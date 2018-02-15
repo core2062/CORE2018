@@ -7,6 +7,7 @@
 //#include "LiftSubsystem.h"
 #include "CORERobotLib.h"
 #include "DriveSubsystem.h"
+#include "COREHardware/COREJoystick.h"
 
 #define FRONT_RIGHT_STEER_PORT 11
 #define FRONT_LEFT_STEER_PORT 12
@@ -20,9 +21,9 @@
 using namespace CORE;
 using namespace std;
 
-class Robot : public CORERobot {
+class CORE2018 : public CORERobot {
 public:
-	Robot();/*
+	CORE2018();/*
 	void StartCompetition();
 	void RobotInit();
 	void DisabledInit();
@@ -49,4 +50,4 @@ public:
 
 };
 
-extern Robot * robot;
+extern CORE2018 * Robot;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <wpilib.h>
 #include "ctre/Phoenix.h"
 //#include "IntakeSubsystem.h"
 //#include "ScorerSubsystem.h"
@@ -8,7 +9,6 @@
 #include "CORERobotLib.h"
 #include "DriveSubsystem.h"
 #include "COREHardware/COREJoystick.h"
-#include "wpilib.h"
 
 #define FRONT_RIGHT_STEER_PORT 11
 #define FRONT_LEFT_STEER_PORT 12
@@ -22,28 +22,26 @@
 using namespace CORE;
 using namespace std;
 
-class CORE2018 : public TimedRobot {
+class CORE2018: public frc::TimedRobot {
 public:
 	CORE2018();
-	void StartCompetition() override;
 	void RobotInit() override;
 	void DisabledInit() override;
-//	void AutonomousInit();
-//	void TeleopInit();
-//	void TestInit();
-//	void RobotPeriodic();
-//	void DisabledPeriodic();
-//	void AutonomousPeriodic();
-//	void TeleopPeriodic();
-//	void TestPeriodic();
-	//COREJoystick m_operatorJoystick;
+	void TeleopPeriodic() override;
+	//  void AutonomousInit();
+	//  void TeleopInit();
+	//  void TestInit();
+	//  void RobotPeriodic();
+	//  void DisabledPeriodic();
+	//  void AutonomousPeriodic();
+	//  void TeleopPeriodic();
+	//  void TestPeriodic();
 	//void robotInit() override;
 	//void teleopInit() override;
 	//void teleop() override;
 	~CORE2018();
-	//COREJoystick m_driverJoystick;
-	//COREJoystick m_operatorJoystick;
-
+	COREJoystick m_driverJoystick;
+	COREJoystick m_operatorJoystick;
 	DriveSubsystem driveSubsystem;
 	//ClimberSubsystem climberSubsystem;
 	//LiftSubsystem liftSubsystem;

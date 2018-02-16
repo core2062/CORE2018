@@ -28,8 +28,8 @@ DriveSubsystem::DriveSubsystem() :
 }
 
 void DriveSubsystem::robotInit() {
-	Robot->m_driverJoystick.getAxis(CORE::COREJoystick::LEFT_STICK_Y);
-	Robot->m_driverJoystick.getAxis(CORE::COREJoystick::RIGHT_STICK_X);
+	//Robot->m_driverJoystick.getAxis(CORE::COREJoystick::LEFT_STICK_Y);
+	//Robot->m_driverJoystick.getAxis(CORE::COREJoystick::RIGHT_STICK_X);
 	initTalons();
 
 }
@@ -116,7 +116,7 @@ void DriveSubsystem::initTalons() {
 	m_rightBackSteerMotor->Set(ControlMode::PercentOutput, 0);
 
 
-}
+}/*
 
 void DriveSubsystem::resetYaw() {
 	m_gyro->ZeroYaw();
@@ -126,7 +126,7 @@ double DriveSubsystem::getGyroYaw() {
 	SmartDashboard::PutNumber("Gyro Yaw", 0);
 	return m_gyro->GetYaw();
 }
-
+*/
 double DriveSubsystem::getMotorSpeed(TalonSRX desiredMotor, int pididx) {
 	return desiredMotor.GetSelectedSensorVelocity(pididx);
 }

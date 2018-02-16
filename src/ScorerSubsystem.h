@@ -13,11 +13,8 @@ public:
 	void teleopInit();
 	void teleop();
 	void rotateCube();
-	void liftArm();
 	void intakeCube();
 	void outakeCube();
-
-	//COREJoystick *m_scorerJoystick;
 
 private:
 	DoubleSolenoid m_frontLeftSolenoid, m_frontRightSolenoid, m_backRightSolenoid, m_backLeftSolenoid;

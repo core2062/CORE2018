@@ -21,6 +21,8 @@ public:
 	//DoubleSolenoid m_
 	//COREJoystick *m_liftJoystick;
 private:
+	bool m_isLiftDown;
+	bool m_isLiftAtTop;
 	bool m_isLifting;
 	int m_liftPosition;
 	COREConstant<double> m_liftTopLimit;

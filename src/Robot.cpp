@@ -6,54 +6,53 @@
 /*----------------------------------------------------------------------------*/
 
 #include <Robot.h>
+#include "ctre/Phoenix.h"
 CORE2018 * Robot = nullptr;
 
 CORE2018::CORE2018() :
-driveSubsystem(),
-
-m_driverJoystick(0),
-
-m_operatorJoystick(1)
-
-{
+	driveSubsystem(),
+	m_driverJoystick(0),
+	m_operatorJoystick(1) {
 	Robot = this;
 }
 CORE2018::~CORE2018() {
 	Robot = nullptr;
 
 }
+
 void CORE2018::RobotInit() {
+	driveSubsystem.robotInit();
 }
 
 void CORE2018::DisabledInit() {
 }
 
 void CORE2018::TeleopPeriodic() {
+	driveSubsystem.teleop();
 }
-//void CORE2018::robotInit() {
-//}
-//void CORE2018::teleopInit() {
-//}
-//void CORE2018::teleop() {
-//}
-// void Robot::AutonomousInit() {
 
-// }
-// void Robot::AutonomousPeriodic(){
-// }
-// void Robot::TeleopInit(){
-// }
-// void Robot::TestInit() {
-// }
-// void Robot::RobotPeriodic(){
-// }
-// void Robot::DisabledPeriodic(){
-// }
+ void CORE2018::AutonomousInit() {
 
-// void Robot::TeleopPeriodic() {
-// }
-// void Robot::TestPeriodic(){
-// }
-// void Robot::StartCompetition() {
-// }
+ }
+ void CORE2018::AutonomousPeriodic(){
+ }
+ void CORE2018::TeleopInit(){
+	 driveSubsystem.teleopInit();
+ }
+ void CORE2018::TestInit() {
+	 driveSubsystem.teleopInit();
+
+ }
+ void CORE2018::RobotPeriodic(){
+ }
+ void CORE2018::DisabledPeriodic(){
+	SmartDashboard::PutNumber("Disabled Right Front Angle", driveSubsystem.m_rightFrontSteerMotor->GetSensorCollection().GetQuadraturePosition());
+	SmartDashboard::PutNumber("Disabled Left Front Angle", driveSubsystem.m_leftFrontSteerMotor->GetSensorCollection().GetQuadraturePosition());
+	SmartDashboard::PutNumber("Disabled Right Back Angle", driveSubsystem.m_rightBackSteerMotor->GetSensorCollection().GetQuadraturePosition());
+	SmartDashboard::PutNumber("Disabled Left Back Angle", driveSubsystem.m_leftBackSteerMotor->GetSensorCollection().GetQuadraturePosition());
+ }
+
+ void CORE2018::TestPeriodic(){
+ }
+
 START_ROBOT_CLASS(CORE2018)

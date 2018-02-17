@@ -11,7 +11,7 @@ class DriveSubsystem : public CORESubsystem {
 public:
 	DriveSubsystem();
 	CORESwerve m_swerveDrive;
-	//AHRS *m_gyro = nullptr;
+	AHRS *m_gyro;
 	void robotInit() override;
 	void teleopInit() override;
 	void teleop() override;
@@ -20,8 +20,8 @@ public:
 	void resetEncoders();
 	void initTalons();
 	double getMotorSpeed(TalonSRX desiredMotor, int pididx);
-	//double getGyroYaw();
-	//void resetYaw();
+	double getGyroYaw();
+	void resetYaw();
 	COREConstant <double> m_angleOffset;
 	double m_drivePID_P, m_drivePID_I, m_drivePID_D;
 	TalonSRX *m_rightFrontSteerMotor, *m_rightBackSteerMotor, *m_leftFrontSteerMotor, *m_leftBackSteerMotor,

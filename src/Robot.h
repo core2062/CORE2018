@@ -28,17 +28,14 @@ public:
 	void RobotInit() override;
 	void DisabledInit() override;
 	void TeleopPeriodic() override;
-	//  void AutonomousInit();
-	//  void TeleopInit();
-	//  void TestInit();
-	//  void RobotPeriodic();
-	//  void DisabledPeriodic();
-	//  void AutonomousPeriodic();
-	//  void TeleopPeriodic();
-	//  void TestPeriodic();
-	//void robotInit() override;
-	//void teleopInit() override;
-	//void teleop() override;
+	void AutonomousInit() override;
+	void TeleopInit() override;
+	void TestInit() override;
+	void RobotPeriodic() override;
+	void DisabledPeriodic() override;
+	void AutonomousPeriodic() override;
+	void TestPeriodic() override;
+
 	~CORE2018();
 	COREJoystick m_driverJoystick;
 	COREJoystick m_operatorJoystick;

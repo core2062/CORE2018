@@ -4,7 +4,8 @@
 #include "DriveSubsystem.h"
 #include <cmath>
 #include "COREHardware/COREJoystick.h"
-#include "wpilib.h"
+#include "AHRS.h"
+#include <wpilib.h>
 
 DriveSubsystem::DriveSubsystem() :
 	m_rightFrontSteerMotor(new TalonSRX(FRONT_RIGHT_STEER_PORT)),
@@ -20,32 +21,41 @@ DriveSubsystem::DriveSubsystem() :
 	m_leftFrontModule(m_leftFrontDriveMotor, m_leftFrontSteerMotor),
 	m_leftBackModule(m_leftBackDriveMotor, m_leftBackSteerMotor),
 	m_swerveDrive(m_wheelbase, m_trackwidth, &m_leftFrontModule, &m_leftBackModule, &m_rightBackModule, &m_rightFrontModule),
-	m_drivePID_P(0),
+	m_drivePID_P(0.001),
 	m_drivePID_I(0),
 	m_drivePID_D(0),
-	m_angleOffset("Swerve Steer Angle Offset", 0) {
+	m_angleOffset("Swerve Steer Angle Offset", 0),
+	m_gyro(new AHRS(SerialPort::Port::kUSB, AHRS::SerialDataType::kProcessedData, 200)) {
 
 }
 
 void DriveSubsystem::robotInit() {
-	//Robot->m_driverJoystick.getAxis(CORE::COREJoystick::LEFT_STICK_Y);
-	//Robot->m_driverJoystick.getAxis(CORE::COREJoystick::RIGHT_STICK_X);
+	Robot->m_driverJoystick.getAxis(CORE::COREJoystick::LEFT_STICK_Y);
+	Robot->m_driverJoystick.getAxis(CORE::COREJoystick::RIGHT_STICK_X);
+
+	//m_gyro = new AHRS(SerialPort::kUSB, AHRS::SerialDataType::kProcessedData, 200);
+	//m_gyro
+	/*try {
+		SmartDashboard::PutBoolean("NavX initialized", true);
+	} catch (std::exception & ex){
+		SmartDashboard::PutBoolean("NavX initialized", false);
+	}*/
 	initTalons();
+
 
 }
 
 void DriveSubsystem::teleopInit() {
-
+	SmartDashboard::PutBoolean("Reached teleop", true);
 }
 
 void DriveSubsystem::teleop() {
-	initTalons();
 	setMotors();
 
 }
 
 void DriveSubsystem::setMotors() {
-	/*SmartDashboard::PutNumber("Drive P Value", m_drivePID_P);
+	SmartDashboard::PutNumber("Drive P Value", m_drivePID_P);
 	SmartDashboard::PutNumber("Drive I Value", m_drivePID_I);
 	SmartDashboard::PutNumber("Drive D Value", m_drivePID_D);
 	//Sets PID for the modules
@@ -54,10 +64,10 @@ void DriveSubsystem::setMotors() {
 	m_leftFrontModule.setAnglePID(m_drivePID_P, m_drivePID_I, m_drivePID_D);
 	m_leftBackModule.setAnglePID(m_drivePID_P, m_drivePID_I, m_drivePID_D);
 
-	//Gets the joystick values for each of the functions
-	double y = robot->m_driverJoystick.getAxis(COREJoystick::LEFT_STICK_Y);
-	double x = robot->m_driverJoystick.getAxis(COREJoystick::LEFT_STICK_X);
-	double z = robot->m_driverJoystick.getAxis(COREJoystick::RIGHT_STICK_X);
+//	Gets the joystick values for each of the functions
+	double y = Robot->m_driverJoystick.getAxis(COREJoystick::LEFT_STICK_Y);
+	double x = Robot->m_driverJoystick.getAxis(COREJoystick::LEFT_STICK_X);
+	double z = Robot->m_driverJoystick.getAxis(COREJoystick::RIGHT_STICK_X);
 
 	double forward = y * cos(DriveSubsystem::getGyroYaw() - m_angleOffset.Get()) + x *
 			sin(DriveSubsystem::getGyroYaw() - m_angleOffset.Get());
@@ -65,6 +75,8 @@ void DriveSubsystem::setMotors() {
 			x * cos(DriveSubsystem::getGyroYaw() - m_angleOffset.Get());
 	m_swerveDrive.calculate(forward, strafeRight, z);
 	m_swerveDrive.update();
+
+
 	SmartDashboard::PutNumber("Right Front Speed", m_rightFrontDriveMotor->GetSensorCollection().GetQuadratureVelocity());
 	SmartDashboard::PutNumber("Left Front Speed", m_leftFrontDriveMotor->GetSensorCollection().GetQuadratureVelocity());
 	SmartDashboard::PutNumber("Right Back Speed", m_rightBackDriveMotor->GetSensorCollection().GetQuadratureVelocity());
@@ -72,7 +84,8 @@ void DriveSubsystem::setMotors() {
 	SmartDashboard::PutNumber("Right Front Angle", m_rightFrontSteerMotor->GetSensorCollection().GetQuadraturePosition());
 	SmartDashboard::PutNumber("Left Front Angle", m_leftFrontSteerMotor->GetSensorCollection().GetQuadraturePosition());
 	SmartDashboard::PutNumber("Right Back Angle", m_rightBackSteerMotor->GetSensorCollection().GetQuadraturePosition());
-	SmartDashboard::PutNumber("Left Back Angle", m_leftBackSteerMotor->GetSensorCollection().GetQuadraturePosition());*/
+	SmartDashboard::PutNumber("Left Back Angle", m_leftBackSteerMotor->GetSensorCollection().GetQuadraturePosition());
+	DriveSubsystem::m_leftBackSteerMotor->GetSensorCollection().GetQuadraturePosition();
 }
 
 void DriveSubsystem::resetEncoders() {
@@ -88,23 +101,23 @@ void DriveSubsystem::resetEncoders() {
 
 void DriveSubsystem::initTalons() {
 
-	m_rightFrontSteerMotor->ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::Analog, 0, 150);
-	m_leftFrontSteerMotor->ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::Analog, 0, 150);
-	m_rightBackSteerMotor->ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::Analog, 0, 150);
-	m_leftBackSteerMotor->ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::Analog, 0, 150);
-	m_rightFrontDriveMotor->ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::CTRE_MagEncoder_Absolute, 0, 150);
-	m_leftFrontDriveMotor->ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::CTRE_MagEncoder_Absolute, 0, 150);
-	m_rightBackDriveMotor->ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::CTRE_MagEncoder_Absolute, 0, 150);
-	m_leftBackDriveMotor->ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::CTRE_MagEncoder_Absolute, 0, 150);
+	m_rightFrontSteerMotor->ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::CTRE_MagEncoder_Absolute, 0, 0);
+	m_leftFrontSteerMotor->ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::CTRE_MagEncoder_Absolute, 0, 0);
+	m_rightBackSteerMotor->ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::CTRE_MagEncoder_Absolute, 0, 0);
+	m_leftBackSteerMotor->ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::CTRE_MagEncoder_Absolute, 0, 0);
+	m_rightFrontDriveMotor->ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::Analog, 0, 0);
+	m_leftFrontDriveMotor->ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::Analog, 0, 0);
+	m_rightBackDriveMotor->ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::Analog, 0, 0);
+	m_leftBackDriveMotor->ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::Analog, 0, 0);
 
-	m_rightFrontSteerMotor->SetStatusFramePeriod(Status_1_General, 10, 150);
-	m_rightFrontDriveMotor->SetStatusFramePeriod(Status_1_General, 10, 150);
-	m_leftFrontSteerMotor->SetStatusFramePeriod(Status_1_General, 10, 150);
-	m_leftBackSteerMotor->SetStatusFramePeriod(Status_1_General, 10, 150);
-	m_rightBackSteerMotor->SetStatusFramePeriod(Status_1_General, 10, 150);
-	m_rightBackDriveMotor->SetStatusFramePeriod(Status_1_General, 10, 150);
-	m_leftBackDriveMotor->SetStatusFramePeriod(Status_1_General, 10, 150);
-	m_leftFrontDriveMotor->SetStatusFramePeriod(Status_1_General, 10, 150);
+	m_rightFrontSteerMotor->SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 10, 0);
+	m_rightFrontDriveMotor->SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 10, 0);
+	m_leftFrontSteerMotor->SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 10, 0);
+	m_leftBackSteerMotor->SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 10, 0);
+	m_rightBackSteerMotor->SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 10, 0);
+	m_rightBackDriveMotor->SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 10, 0);
+	m_leftBackDriveMotor->SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 10, 0);
+	m_leftFrontDriveMotor->SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 10, 0);
 
 	m_leftFrontDriveMotor->Set(ControlMode::PercentOutput, 0);
 	m_rightFrontDriveMotor->Set(ControlMode::PercentOutput, 0);
@@ -116,17 +129,17 @@ void DriveSubsystem::initTalons() {
 	m_rightBackSteerMotor->Set(ControlMode::PercentOutput, 0);
 
 
-}/*
+}
 
 void DriveSubsystem::resetYaw() {
 	m_gyro->ZeroYaw();
 }
 
 double DriveSubsystem::getGyroYaw() {
-	SmartDashboard::PutNumber("Gyro Yaw", 0);
+	SmartDashboard::PutNumber("Gyro Yaw", m_gyro->GetYaw());
 	return m_gyro->GetYaw();
 }
-*/
+
 double DriveSubsystem::getMotorSpeed(TalonSRX desiredMotor, int pididx) {
 	return desiredMotor.GetSelectedSensorVelocity(pididx);
 }

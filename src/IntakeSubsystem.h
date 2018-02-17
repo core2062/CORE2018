@@ -14,12 +14,11 @@ public:
 	void teleopInit();
 	void teleop();
 	bool isIntaking();
-	void startIntake();
+	void setIntake(double);
+	void openIntake();
+	void closeIntake();
 	TalonSRX m_leftIntakeMotor, m_rightIntakeMotor;
 private:
-	bool m_isIntaking;
-
-
+	DoubleSolenoid m_leftIntakeSolenoid, m_rightIntakeSolenoid;
+	double m_intakeMotorPercentage;
 };
-
-

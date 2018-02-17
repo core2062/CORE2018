@@ -1,17 +1,12 @@
 #include <ScorerSubsystem.h>
-
+#include "ctre/Phoenix.h"
 #include "Robot.cpp"
 
+// TODO fill these motors in with actual ports that we are going to be using
 ScorerSubsystem::ScorerSubsystem() :
-	m_frontLeftSolenoid(0, 1),
-	m_frontRightSolenoid(0, 1),
-	m_backRightSolenoid(0, 1),
-	m_backLeftSolenoid(0, 1),
-	m_cubeRotatorMotor(1), //TODO fill these motors in with actual ports that we are going to be using
-	m_leftArmMotor(2),
-	m_rightArmMotor(3) {
-	m_liftArmPosition = 0;
-
+		m_frontLeftSolenoid(0, 1), m_frontRightSolenoid(0, 1), m_backRightSolenoid(0, 1), m_backLeftSolenoid(0, 1),
+		m_cubeRotatorMotor(1), m_leftArmMotor(2), m_rightArmMotor(3) {
+	m_rightYJoystick = 0;
 }
 
 void ScorerSubsystem::robotInit() {
@@ -21,49 +16,42 @@ void ScorerSubsystem::robotInit() {
 }
 
 void ScorerSubsystem::autonInit() {
-
 }
 
 void ScorerSubsystem::auton() {
-
 }
 
 void ScorerSubsystem::teleopInit() {
-
 }
 
 void ScorerSubsystem::teleop() {
-
+	m_rightYJoystick = Robot->m_operatorJoystick.getAxis(CORE::COREJoystick::JoystickAxis::RIGHT_STICK_Y);
+	if (m_rightYJoystick >= 0.1 || m_rightYJoystick <= -0.1) {
+		rotateSetCube(m_rightYJoystick);
+	}
+	if (Robot->m_operatorJoystick.getButton(CORE::COREJoystick::JoystickButton::RIGHT_TRIGGER)) {
+		intakeCube();
+	}
+	if (Robot->m_operatorJoystick.getButton(CORE::COREJoystick::JoystickButton::LEFT_TRIGGER)) {
+		outakeCube();
+	}
 }
 
-void ScorerSubsystem::rotateCube() {
-	if (m_isArmGoingUp == false && Robot->m_operatorJoystick.getAxis(CORE::COREJoystick::JoystickAxis::RIGHT_STICK_Y) >= 0.1) {
-
-		m_leftArmMotor.Set(ControlMode::PercentOutput, Robot->m_operatorJoystick.getAxis(CORE::COREJoystick::JoystickAxis::RIGHT_STICK_Y));
-		m_rightArmMotor.Set(ControlMode::PercentOutput, Robot->m_operatorJoystick.getAxis(CORE::COREJoystick::JoystickAxis::RIGHT_STICK_Y));
-		m_isArmGoingUp = true;
-	}
-
+void ScorerSubsystem::rotateSetCube(double armMotorPercent) {
+	m_leftArmMotor.Set(ControlMode::PercentOutput, armMotorPercent);
+	m_rightArmMotor.Set(ControlMode::PercentOutput, armMotorPercent);
 }
 
 void ScorerSubsystem::intakeCube() {
-	if (m_intakeIsClosed == false && Robot->m_operatorJoystick.getButton(CORE::COREJoystick::JoystickButton::RIGHT_TRIGGER) == true){
-		m_frontLeftSolenoid.Set(DoubleSolenoid::kForward);
-		m_frontRightSolenoid.Set(DoubleSolenoid::kForward);
-		m_backLeftSolenoid.Set(DoubleSolenoid::kForward);
-		m_backRightSolenoid.Set(DoubleSolenoid::kForward);
-		m_intakeIsClosed = true;
-	}
+	m_frontLeftSolenoid.Set(DoubleSolenoid::kForward);
+	m_frontRightSolenoid.Set(DoubleSolenoid::kForward);
+	m_backLeftSolenoid.Set(DoubleSolenoid::kForward);
+	m_backRightSolenoid.Set(DoubleSolenoid::kForward);
 }
 
 void ScorerSubsystem::outakeCube() {
-	if (m_intakeIsClosed == true && Robot->m_operatorJoystick.getButton(CORE::COREJoystick::JoystickButton::LEFT_TRIGGER) == true) {
-		m_frontLeftSolenoid.Set(DoubleSolenoid::kReverse);
-		m_frontRightSolenoid.Set(DoubleSolenoid::kReverse);
-		m_backLeftSolenoid.Set(DoubleSolenoid::kReverse);
-		m_backRightSolenoid.Set(DoubleSolenoid::kReverse);
-		m_intakeIsClosed = false;
-	}
+	m_frontLeftSolenoid.Set(DoubleSolenoid::kReverse);
+	m_frontRightSolenoid.Set(DoubleSolenoid::kReverse);
+	m_backLeftSolenoid.Set(DoubleSolenoid::kReverse);
+	m_backRightSolenoid.Set(DoubleSolenoid::kReverse);
 }
-
-

@@ -12,21 +12,13 @@ public:
 	void auton();
 	void teleopInit();
 	void teleop();
-	bool isLifting();
-	bool isLiftDown();
-	void startLift();
-	void stopLift();
+	void isLifting();
+	void setLift(double);
 	TalonSRX *m_leftLiftMotor;
 	TalonSRX *m_rightLiftMotor;
-	//DoubleSolenoid m_
-	//COREJoystick *m_liftJoystick;
 private:
-	bool m_isLiftDown;
-	bool m_isLiftAtTop;
-	bool m_isLifting;
 	int m_liftPosition;
+	int m_leftYJoystickPosition;
 	COREConstant<double> m_liftTopLimit;
 	COREConstant<double> m_liftBottomLimit;
-
 };
-

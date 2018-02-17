@@ -19,21 +19,12 @@ public:
 	void setMotors();
 	void resetEncoders();
 	void initTalons();
-	double getMotorSpeed(TalonSRX desiredMotor, int pididx);
+	void test() override;
+    void testInit();
 	double getGyroYaw();
 	void resetYaw();
 	COREConstant <double> m_angleOffset;
 	double m_drivePID_P, m_drivePID_I, m_drivePID_D;
-	TalonSRX *m_rightFrontSteerMotor, *m_rightBackSteerMotor, *m_leftFrontSteerMotor, *m_leftBackSteerMotor,
-		*m_rightFrontDriveMotor, *m_rightBackDriveMotor, *m_leftFrontDriveMotor, *m_leftBackDriveMotor;
-	TalonSRX *rightFrontDriveMotor();
-	TalonSRX *leftFrontDriveMotor();
-	TalonSRX *rightBackDriveMotor();
-	TalonSRX *leftBackDriveMotor();
-	TalonSRX *rightFrontSteerMotor();
-	TalonSRX *leftFrontSteerMotor();
-	TalonSRX *rightBackSteerMotor();
-	TalonSRX *leftBackSteerMotor();
 
 private:
 	double m_wheelbase = 20.8;
@@ -42,5 +33,6 @@ private:
 	CORESwerve::SwerveModule m_leftFrontModule;
 	CORESwerve::SwerveModule m_rightBackModule;
 	CORESwerve::SwerveModule m_leftBackModule;
-
+	TalonSRX *m_rightFrontSteerMotor, *m_rightBackSteerMotor, *m_leftFrontSteerMotor, *m_leftBackSteerMotor,
+			*m_rightFrontDriveMotor, *m_rightBackDriveMotor, *m_leftFrontDriveMotor, *m_leftBackDriveMotor;
 };

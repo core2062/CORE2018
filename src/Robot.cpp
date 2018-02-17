@@ -40,19 +40,20 @@ void CORE2018::TeleopPeriodic() {
 	 driveSubsystem.teleopInit();
  }
  void CORE2018::TestInit() {
-	 driveSubsystem.teleopInit();
+	 driveSubsystem.testInit();
 
  }
  void CORE2018::RobotPeriodic(){
  }
  void CORE2018::DisabledPeriodic(){
-	SmartDashboard::PutNumber("Disabled Right Front Angle", driveSubsystem.m_rightFrontSteerMotor->GetSensorCollection().GetQuadraturePosition());
-	SmartDashboard::PutNumber("Disabled Left Front Angle", driveSubsystem.m_leftFrontSteerMotor->GetSensorCollection().GetQuadraturePosition());
-	SmartDashboard::PutNumber("Disabled Right Back Angle", driveSubsystem.m_rightBackSteerMotor->GetSensorCollection().GetQuadraturePosition());
-	SmartDashboard::PutNumber("Disabled Left Back Angle", driveSubsystem.m_leftBackSteerMotor->GetSensorCollection().GetQuadraturePosition());
+//	SmartDashboard::PutNumber("Disabled Right Front Angle", driveSubsystem.m_rightFrontSteerMotor->GetSensorCollection().GetQuadraturePosition());
+//	SmartDashboard::PutNumber("Disabled Left Front Angle", driveSubsystem.m_leftFrontSteerMotor->GetSensorCollection().GetQuadraturePosition());
+//	SmartDashboard::PutNumber("Disabled Right Back Angle", driveSubsystem.m_rightBackSteerMotor->GetSensorCollection().GetQuadraturePosition());
+//	SmartDashboard::PutNumber("Disabled Left Back Angle", driveSubsystem.m_leftBackSteerMotor->GetSensorCollection().GetQuadraturePosition());
  }
 
  void CORE2018::TestPeriodic(){
+     driveSubsystem.test();
  }
 
 START_ROBOT_CLASS(CORE2018)

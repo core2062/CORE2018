@@ -77,7 +77,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="src/ScorerSubsystem.cpp|src/LiftSubsystem.cpp|src/IntakeSubsystem.cpp|src/ClimberSubsystem.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="gradle|googletest|Debug|cpp|CORERobotLib|cmake-build-debug|build|src/ScorerSubsystem.cpp|src/LiftSubsystem.cpp|src/IntakeSubsystem.cpp|src/ClimberSubsystem.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -154,7 +154,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="Debug|src/ScorerSubsystem.cpp|src/LiftSubsystem.cpp|src/IntakeSubsystem.cpp|src/ClimberSubsystem.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="gradle|googletest|cpp|CORERobotLib|cmake-build-debug|build|Debug|src/ScorerSubsystem.cpp|src/LiftSubsystem.cpp|src/IntakeSubsystem.cpp|src/ClimberSubsystem.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

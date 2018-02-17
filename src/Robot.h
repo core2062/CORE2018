@@ -25,18 +25,18 @@ using namespace std;
 class CORE2018: public frc::TimedRobot {
 public:
 	CORE2018();
+	~CORE2018();
 	void RobotInit() override;
-	void DisabledInit() override;
-	void TeleopPeriodic() override;
-	void AutonomousInit() override;
-	void TeleopInit() override;
-	void TestInit() override;
 	void RobotPeriodic() override;
+	void DisabledInit() override;
 	void DisabledPeriodic() override;
+	void AutonomousInit() override;
 	void AutonomousPeriodic() override;
+	void TeleopInit() override;
+	void TeleopPeriodic() override;
+	void TestInit() override;
 	void TestPeriodic() override;
 
-	~CORE2018();
 	COREJoystick m_driverJoystick;
 	COREJoystick m_operatorJoystick;
 	DriveSubsystem driveSubsystem;
@@ -47,4 +47,4 @@ public:
 
 };
 
-extern CORE2018 * Robot;
+//extern CORE2018 * Robot;

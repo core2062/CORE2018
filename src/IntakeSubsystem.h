@@ -15,10 +15,7 @@ public:
 	void teleop();
 	bool isIntaking();
 	void startIntake();
-	void stopIntake();
-	//COREJoystick *m_intakeJoystick;
-	TalonSRX m_leftIntakeMotor;
-	TalonSRX m_rightIntakeMotor;
+	TalonSRX m_leftIntakeMotor, m_rightIntakeMotor;
 private:
 	bool m_isIntaking;
 

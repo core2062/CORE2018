@@ -2,17 +2,22 @@
 
 #include "Robot.cpp"
 
-ScorerSubsystem::ScorerSubsystem() : m_frontLeftSolenoid(0, 1), m_frontRightSolenoid(0, 1), m_backRightSolenoid(0, 1), m_backLeftSolenoid(0, 1) {
+ScorerSubsystem::ScorerSubsystem() :
+	m_frontLeftSolenoid(0, 1),
+	m_frontRightSolenoid(0, 1),
+	m_backRightSolenoid(0, 1),
+	m_backLeftSolenoid(0, 1),
+	m_cubeRotatorMotor(1), //TODO fill these motors in with actual ports that we are going to be using
+	m_leftArmMotor(2),
+	m_rightArmMotor(3) {
 	m_liftArmPosition = 0;
+
 }
 
 void ScorerSubsystem::robotInit() {
-
-	robot->m_operatorJoystick.registerButton(CORE::COREJoystick::JoystickButton::DPAD_N);
-	robot->m_operatorJoystick.registerButton(CORE::COREJoystick::JoystickButton::DPAD_S);
-	robot->m_operatorJoystick.registerButton(CORE::COREJoystick::JoystickButton::DPAD_W);
-	robot->m_operatorJoystick.registerButton(CORE::COREJoystick::JoystickButton::DPAD_E);
-	robot->m_operatorJoystick.registerAxis(CORE::COREJoystick::JoystickAxis::RIGHT_STICK_Y);
+	Robot->m_operatorJoystick.registerButton(CORE::COREJoystick::JoystickButton::RIGHT_TRIGGER);
+	Robot->m_operatorJoystick.registerButton(CORE::COREJoystick::JoystickButton::LEFT_TRIGGER);
+	Robot->m_operatorJoystick.registerAxis(CORE::COREJoystick::JoystickAxis::RIGHT_STICK_Y);
 }
 
 void ScorerSubsystem::autonInit() {
@@ -32,36 +37,17 @@ void ScorerSubsystem::teleop() {
 }
 
 void ScorerSubsystem::rotateCube() {
-	if (m_isCubeTurningClockwise == true && robot->m_operatorJoystick.getButton(CORE::COREJoystick::JoystickButton::DPAD_N) == true) {
-		 m_cubeRotatorMotor.Set(ControlMode::PercentOutput,0.2);
+	if (m_isArmGoingUp == false && Robot->m_operatorJoystick.getAxis(CORE::COREJoystick::JoystickAxis::RIGHT_STICK_Y) >= 0.1) {
 
-
-
-	}
-
-	else if (m_isCubeTurningClockwise == false && robot->m_operatorJoystick.getButton(CORE::COREJoystick::JoystickButton::DPAD_S) == true) {
-		m_cubeRotatorMotor.Set(ControlMode::PercentOutput,-0.2);
-
-
-	}
-	else if((m_isCubeTurningClockwise == false && robot->m_operatorJoystick.getButton(CORE::COREJoystick::JoystickButton::DPAD_S) == false) ||
-			(m_isCubeTurningClockwise == true && robot->m_operatorJoystick.getButton(CORE::COREJoystick::JoystickButton::DPAD_N) == true)) {
-
-
-	}
-}
-
-void ScorerSubsystem::liftArm() {
-	if (m_isArmGoingUp == false && robot->m_operatorJoystick.getAxis(CORE::COREJoystick::JoystickAxis::RIGHT_STICK_Y) >= 0.1) {
-
-		m_leftArmMotor.Set(ControlMode::PercentOutput,robot->m_operatorJoystick.getAxis(CORE::COREJoystick::JoystickAxis::RIGHT_STICK_Y));
-		m_rightArmMotor.Set(ControlMode::PercentOutput,robot->m_operatorJoystick.getAxis(CORE::COREJoystick::JoystickAxis::RIGHT_STICK_Y));
+		m_leftArmMotor.Set(ControlMode::PercentOutput, Robot->m_operatorJoystick.getAxis(CORE::COREJoystick::JoystickAxis::RIGHT_STICK_Y));
+		m_rightArmMotor.Set(ControlMode::PercentOutput, Robot->m_operatorJoystick.getAxis(CORE::COREJoystick::JoystickAxis::RIGHT_STICK_Y));
 		m_isArmGoingUp = true;
 	}
+
 }
 
 void ScorerSubsystem::intakeCube() {
-	if (m_intakeIsClosed == false && robot->m_operatorJoystick.getButton(CORE::COREJoystick::JoystickButton::DPAD_W) == true){
+	if (m_intakeIsClosed == false && Robot->m_operatorJoystick.getButton(CORE::COREJoystick::JoystickButton::RIGHT_TRIGGER) == true){
 		m_frontLeftSolenoid.Set(DoubleSolenoid::kForward);
 		m_frontRightSolenoid.Set(DoubleSolenoid::kForward);
 		m_backLeftSolenoid.Set(DoubleSolenoid::kForward);
@@ -71,7 +57,7 @@ void ScorerSubsystem::intakeCube() {
 }
 
 void ScorerSubsystem::outakeCube() {
-	if (m_intakeIsClosed == true && robot->m_operatorJoystick.getButton(CORE::COREJoystick::JoystickButton::DPAD_E) == true) {
+	if (m_intakeIsClosed == true && Robot->m_operatorJoystick.getButton(CORE::COREJoystick::JoystickButton::LEFT_TRIGGER) == true) {
 		m_frontLeftSolenoid.Set(DoubleSolenoid::kReverse);
 		m_frontRightSolenoid.Set(DoubleSolenoid::kReverse);
 		m_backLeftSolenoid.Set(DoubleSolenoid::kReverse);

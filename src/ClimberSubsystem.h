@@ -13,7 +13,6 @@ public:
 	bool isClimbing();
 	void startClimbing();
 	void stopClimbing();
-	//COREJoystick *m_climberJoystick;
 private:
 	bool m_isClimbing;
 	TalonSRX m_climbMotor;

@@ -1,38 +1,38 @@
-#include <ScorerSubsystem.h>
+#include "ScorerSubsystem.h"
 #include "ctre/Phoenix.h"
-#include "Robot.cpp"
+
 
 // TODO fill these motors in with actual ports that we are going to be using
-ScorerSubsystem::ScorerSubsystem() :
-		m_frontLeftSolenoid(0, 1), m_frontRightSolenoid(0, 1), m_backRightSolenoid(0, 1), m_backLeftSolenoid(0, 1),
-		m_cubeRotatorMotor(1), m_leftArmMotor(2), m_rightArmMotor(3) {
+ScorerSubsystem::ScorerSubsystem(COREJoystick * operatorJoystick) :
+		m_frontLeftSolenoid(0, 1),
+		m_frontRightSolenoid(0, 1),
+		m_backRightSolenoid(0, 1),
+		m_backLeftSolenoid(0, 1),
+		m_leftArmMotor(2),
+		m_rightArmMotor(3),
+		m_cubeRotatorMotor(1) {
 	m_rightYJoystick = 0;
+	m_operatorJoystick = operatorJoystick;
 }
 
 void ScorerSubsystem::robotInit() {
-	Robot->m_operatorJoystick.registerButton(CORE::COREJoystick::JoystickButton::RIGHT_TRIGGER);
-	Robot->m_operatorJoystick.registerButton(CORE::COREJoystick::JoystickButton::LEFT_TRIGGER);
-	Robot->m_operatorJoystick.registerAxis(CORE::COREJoystick::JoystickAxis::RIGHT_STICK_Y);
-}
-
-void ScorerSubsystem::autonInit() {
-}
-
-void ScorerSubsystem::auton() {
+	m_operatorJoystick->registerButton(CORE::COREJoystick::JoystickButton::RIGHT_TRIGGER);
+	m_operatorJoystick->registerButton(CORE::COREJoystick::JoystickButton::LEFT_TRIGGER);
+	m_operatorJoystick->registerAxis(CORE::COREJoystick::JoystickAxis::RIGHT_STICK_Y);
 }
 
 void ScorerSubsystem::teleopInit() {
 }
 
 void ScorerSubsystem::teleop() {
-	m_rightYJoystick = Robot->m_operatorJoystick.getAxis(CORE::COREJoystick::JoystickAxis::RIGHT_STICK_Y);
+	m_rightYJoystick = m_operatorJoystick->getAxis(CORE::COREJoystick::JoystickAxis::RIGHT_STICK_Y);
 	if (m_rightYJoystick >= 0.1 || m_rightYJoystick <= -0.1) {
 		rotateSetCube(m_rightYJoystick);
 	}
-	if (Robot->m_operatorJoystick.getButton(CORE::COREJoystick::JoystickButton::RIGHT_TRIGGER)) {
+	if (m_operatorJoystick->getButton(CORE::COREJoystick::JoystickButton::RIGHT_TRIGGER)) {
 		intakeCube();
 	}
-	if (Robot->m_operatorJoystick.getButton(CORE::COREJoystick::JoystickButton::LEFT_TRIGGER)) {
+	if (m_operatorJoystick->getButton(CORE::COREJoystick::JoystickButton::LEFT_TRIGGER)) {
 		outakeCube();
 	}
 }

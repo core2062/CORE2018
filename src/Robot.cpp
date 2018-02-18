@@ -7,18 +7,19 @@
 
 #include <Robot.h>
 #include "ctre/Phoenix.h"
-//CORE2018 * Robot = nullptr;
 
 CORE2018::CORE2018() :
 		m_driverJoystick(0),
-		m_operatorJoystick(1),
-		driveSubsystem(&m_driverJoystick) {
+		m_operatorJoystick(1)
+		/*driveSubsystem(&m_driverJoystick)*/ {
 }
 
-CORE2018::~CORE2018() {}
+CORE2018::~CORE2018() {
+
+}
 
 void CORE2018::RobotInit() {
-	driveSubsystem.robotInit();
+	//driveSubsystem.robotInit();
 }
 
 void CORE2018::RobotPeriodic() {
@@ -28,17 +29,19 @@ void CORE2018::DisabledInit() {
 }
 
 void CORE2018::DisabledPeriodic() {
-	driveSubsystem.m_swerveDrive.haltMotors();
+	//driveSubsystem.m_swerveDrive.haltMotors();
 }
 
 void CORE2018::TeleopInit() {
-	//std::cout<<"Reached teleop init"<<std::endl;
-	driveSubsystem.teleopInit();
+	std::cout<<"Reached teleop init"<<std::endl;
+	//driveSubsystem.teleopInit();
 }
 
 void CORE2018::TeleopPeriodic() {
-	driveSubsystem.teleop();
-	//std::cout<<"Reached teleop"<<std::endl;
+	//driveSubsystem.teleop();
+	SmartDashboard::PutNumber("Joystick Value", m_driverJoystick.GetAxis(frc::Joystick::kThrottleAxis));
+	SmartDashboard::PutNumber("Joystick Axis Value", m_operatorJoystick.GetAxis(frc::Joystick::kTwistAxis));
+	std::cout<<"Reached teleop"<<std::endl;
 }
 
 void CORE2018::AutonomousInit() {
@@ -49,11 +52,11 @@ void CORE2018::AutonomousPeriodic() {
 
 void CORE2018::TestInit() {
 	std::cout<<"Reached test init";
-	driveSubsystem.testInit();
+	//driveSubsystem.testInit();
 }
 
 void CORE2018::TestPeriodic() {
-	driveSubsystem.test();
+	//driveSubsystem.test();
 }
 
 START_ROBOT_CLASS(CORE2018)

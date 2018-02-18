@@ -4,6 +4,7 @@
 #include "ctre/Phoenix.h"
 #include "CORERobotLib.h"
 #include "AHRS.h"
+#include "COREHardware/COREJoystick.h"
 
 class DriveSubsystem : public CORESubsystem {
 private:
@@ -12,9 +13,8 @@ private:
 	double m_trackwidth = 25.881;
 
 public:
-	DriveSubsystem(CORE::COREJoystick * driverJoystick);
+	DriveSubsystem(COREJoystick * driverJoystick);
 	CORESwerve m_swerveDrive;
-	AHRS *m_gyro;
 	void robotInit();
 	void teleopInit();
 	void teleop();
@@ -25,5 +25,6 @@ public:
 	double getGyroYaw();
 	void resetYaw();
 	double m_drivePID_P, m_drivePID_I, m_drivePID_D;
+	AHRS *m_gyro;
 
 };

@@ -1,30 +1,31 @@
 #include <IntakeSubsystem.h>
-
-// TODO fill this in with actual motor ports
-IntakeSubsystem::IntakeSubsystem() :
-		m_leftIntakeMotor(0), m_rightIntakeMotor(0) {
+#include <CORERobotLib.h>
+#include <ctre/Phoenix.h>
+// TODO fill this in with actual motor ports and solenoid stuff
+IntakeSubsystem::IntakeSubsystem(COREJoystick * operatorJoystick) :
+		m_leftIntakeMotor(0),
+		m_rightIntakeMotor(0),
+		m_leftIntakeSolenoid(0, 1, 2),
+		m_rightIntakeSolenoid(0, 1, 2) {
 	m_intakeMotorPercentage = 0;
+	m_operatorJoystick = operatorJoystick;
 }
 
 void IntakeSubsystem::robotInit() {
 	m_leftIntakeMotor.Set(ControlMode::PercentOutput, 0);
-	Robot->m_operatorJoystick.registerButton(CORE::COREJoystick::JoystickButton::LEFT_BUTTON);
+	m_operatorJoystick->registerButton(CORE::COREJoystick::JoystickButton::LEFT_BUTTON);
 }
+void IntakeSubsystem::teleopInit() {
 
-void IntakeSubsystem::autonInit() {
 }
-
-void IntakeSubsystem::auton() {
-}
-
 void IntakeSubsystem::teleop() {
-	if (Robot->m_operatorJoystick.getRisingEdge(CORE::COREJoystick::JoystickButton::RIGHT_BUTTON)) {
+	if (m_operatorJoystick->getRisingEdge(CORE::COREJoystick::JoystickButton::RIGHT_BUTTON)) {
 		openIntake();
 	}
-	if (Robot->m_operatorJoystick.getRisingEdge(CORE::COREJoystick::JoystickButton::B_BUTTON)) {
+	if (m_operatorJoystick->getRisingEdge(CORE::COREJoystick::JoystickButton::B_BUTTON)) {
 		closeIntake();
 	}
-	if (Robot->m_operatorJoystick.getButton(CORE::COREJoystick::JoystickButton::LEFT_BUTTON)) {
+	if (m_operatorJoystick->getButton(CORE::COREJoystick::JoystickButton::LEFT_BUTTON)) {
 		setIntake(0.2);
 	} else {
 		setIntake(0);

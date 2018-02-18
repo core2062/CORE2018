@@ -37,9 +37,9 @@ public:
 	void TestInit() override;
 	void TestPeriodic() override;
 
-	COREJoystick m_driverJoystick;
-	COREJoystick m_operatorJoystick;
-	DriveSubsystem driveSubsystem;
+	frc::Joystick m_driverJoystick;
+	frc::Joystick m_operatorJoystick;
+	//DriveSubsystem driveSubsystem;
 	//ClimberSubsystem climberSubsystem;
 	//LiftSubsystem liftSubsystem;
 	//IntakeSubsystem intakeSystem;
@@ -47,4 +47,3 @@ public:
 
 };
 
-//extern CORE2018 * Robot;

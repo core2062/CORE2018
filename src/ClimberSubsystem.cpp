@@ -1,12 +1,13 @@
 #include <ClimberSubsystem.h>
 
 // TODO fill the motor in with an actual motor instead of 0
-ClimberSubsystem::ClimberSubsystem() :
+ClimberSubsystem::ClimberSubsystem(COREJoystick * operatorJoystick) :
 		m_climbMotor(0) {
+	m_operatorJoystick = operatorJoystick;
 }
 
 void ClimberSubsystem::robotInit() {
-	Robot->m_operatorJoystick.registerButton(CORE::COREJoystick::JoystickButton::START_BUTTON);
+	m_operatorJoystick->registerButton(CORE::COREJoystick::JoystickButton::START_BUTTON);
 }
 
 void ClimberSubsystem::teleopInit() {
@@ -14,7 +15,7 @@ void ClimberSubsystem::teleopInit() {
 }
 
 void ClimberSubsystem::teleop() {
-	if (Robot->m_operatorJoystick.getButton(CORE::COREJoystick::JoystickButton::START_BUTTON)) {
+	if (m_operatorJoystick->getButton(CORE::COREJoystick::JoystickButton::START_BUTTON)) {
 		startClimbing();
 	} else {
 		stopClimbing();

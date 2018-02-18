@@ -7,10 +7,8 @@
 class IntakeSubsystem {
 
 public:
-	IntakeSubsystem();
+	IntakeSubsystem(COREJoystick * operatorJoystick);
 	void robotInit();
-	void autonInit();
-	void auton();
 	void teleopInit();
 	void teleop();
 	bool isIntaking();
@@ -19,6 +17,7 @@ public:
 	void closeIntake();
 	TalonSRX m_leftIntakeMotor, m_rightIntakeMotor;
 private:
+	COREJoystick * m_operatorJoystick;
 	DoubleSolenoid m_leftIntakeSolenoid, m_rightIntakeSolenoid;
 	double m_intakeMotorPercentage;
 };

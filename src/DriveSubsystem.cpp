@@ -23,14 +23,6 @@ void DriveSubsystem::robotInit() {
     m_driverJoystick->registerAxis(CORE::COREJoystick::LEFT_STICK_Y);
     m_driverJoystick->registerAxis(CORE::COREJoystick::RIGHT_STICK_X);
     SmartDashboard::PutBoolean("Zero Modules", false);
-
-	//m_gyro = new AHRS(SerialPort::kUSB, AHRS::SerialDataType::kProcessedData, 200);
-	//m_gyro
-	/*try {
-		SmartDashboard::PutBoolean("NavX initialized", true);
-	} catch (std::exception & ex){
-		SmartDashboard::PutBoolean("NavX initialized", false);
-	}*/
 	m_swerveDrive.init();
 
 

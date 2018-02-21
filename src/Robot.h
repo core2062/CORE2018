@@ -18,6 +18,8 @@
 #define FRONT_LEFT_DRIVE_PORT 16
 #define BACK_RIGHT_DRIVE_PORT 17
 #define BACK_LEFT_DRIVE_PORT 18
+#define RIGHT_LIFT_MOTOR_PORT 19
+#define LEFT_LIFT_MOTOR_PORT 20
 
 using namespace CORE;
 using namespace std;

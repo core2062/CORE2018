@@ -4,8 +4,8 @@
 #include "wpilib.h"
 
 LiftSubsystem::LiftSubsystem(COREJoystick * operatorJoystick) :
-		m_leftLiftMotor(0),
-		m_rightLiftMotor(0),
+		m_leftLiftMotor(RIGHT_LIFT_MOTOR_PORT),
+		m_rightLiftMotor(LEFT_LIFT_MOTOR_PORT),
 		m_liftTopLimit("Lift Top Limit", 0),
 		m_liftBottomLimit("Lift Bottom Limit", 0) {
 	m_operatorJoystick = operatorJoystick;
@@ -29,11 +29,7 @@ void LiftSubsystem::teleop() {
 	}
 }
 
-void LiftSubsystem::isLifting() {
-	SmartDashboard::PutNumber("Lift Position", m_liftPosition);
-}
-
 void LiftSubsystem::setLift(double liftMotorPercentage) {
 	m_leftLiftMotor->Set(ControlMode::PercentOutput, liftMotorPercentage);
-	m_rightLiftMotor->Set(ControlMode::PercentOutput, liftMotorPercentage);
+	m_rightLiftMotor->Set(ControlMode::PercentOutput, -liftMotorPercentage);
 }

@@ -13,7 +13,6 @@ public:
 	void teleop();
 	void isLifting();
 	void setLift(double);
-	void liftPosistion(double);
 	TalonSRX *m_leftLiftMotor;
 	TalonSRX *m_rightLiftMotor;
 private:

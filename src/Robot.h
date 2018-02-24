@@ -1,11 +1,11 @@
 #pragma once
 
-#include <wpilib.h>
+#include <WPILib.h>
 #include "ctre/Phoenix.h"
 //#include "IntakeSubsystem.h"
 //#include "ScorerSubsystem.h"
 //#include "ClimberSubsystem.h"
-//#include "LiftSubsystem.h"
+#include "LiftSubsystem.h"
 #include "CORERobotLib.h"
 #include "DriveSubsystem.h"
 #include "COREHardware/COREJoystick.h"

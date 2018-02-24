@@ -4,7 +4,8 @@ LiftUpToSwitch::LiftUpToSwitch() {
 }
 void LiftUpToSwitch::actionInit(){
 }
-void LiftUpToSwitch::action(){
+COREAutonAction::actionStatus LiftUpToSwitch::action(){
+	return 0;
 }
 void LiftUpToSwitch::actionEnd(){
 

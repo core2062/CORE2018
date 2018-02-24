@@ -3,11 +3,11 @@
 LiftUpToScale::LiftUpToScale() {
 }
 void LiftUpToScale::actionInit(){
-	if (liftPosition == 0.0){
 
-	}
 }
-void LiftUpToScale::action(){
+COREAutonAction::actionStatus LiftUpToScale::action(){
+
+	return COREAutonAction::actionStatus::END();
 }
 void LiftUpToScale::actionEnd(){
 

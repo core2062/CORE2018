@@ -6,8 +6,8 @@ DropCube::DropCube() {
 void DropCube::actionInit() {
 
 }
-void DropCube::action() {
-
+COREAutonAction::actionStatus DropCube::action() {
+	return 0;
 }
 void DropCube::actionEnd() {
 

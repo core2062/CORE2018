@@ -8,7 +8,7 @@ void IntakeCubeAction::actionInit() {
 
 }
 COREAutonAction::actionStatus IntakeCubeAction::action() {
-	return 0;
+return 0;
 }
 void IntakeCubeAction::actionEnd() {
 

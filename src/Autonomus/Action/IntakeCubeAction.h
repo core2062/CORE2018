@@ -6,7 +6,7 @@ class IntakeCubeAction : public COREAutonAction {
 public:
 	IntakeCubeAction();
 	void actionInit();
-	actionStatus action();
+	actionStatus action() override;
 	void actionEnd();
 };
 

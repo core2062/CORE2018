@@ -76,8 +76,11 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="cdt.managedbuild.config.gnu.cross.exe.debug.1104744751.236986122" name="LiftSubsystem.cpp" rcbsApplicability="disable" resourcePath="src/LiftSubsystem.cpp" toolsToInvoke="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1505235107.100278721">
+						<tool id="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1505235107.100278721" name="Cross G++ Compiler" superClass="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1505235107"/>
+					</fileInfo>
 					<sourceEntries>
-						<entry excluding="src/IntakeSubsystem.cpp|src/ScorerSubsystem.cpp|src/LiftSubsystem.cpp|src/Autonomous Actions/LiftToSwitchAction.cpp|src/Autonomous Actions/IntakeCubeAction.cpp|src/ClimberSubsystem.cpp|gradle|googletest|Debug|cpp|CORERobotLib|cmake-build-debug|build" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="src/Autonomous Actions/LiftToSwitchAction.cpp|src/Autonomous Actions/IntakeCubeAction.cpp|gradle|googletest|Debug|cpp|CORERobotLib|cmake-build-debug|build" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

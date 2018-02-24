@@ -1,5 +1,3 @@
-#ifndef SRC_AUTONOMOUS_ACTION_INTAKECUBEACTION_H_
-#define SRC_AUTONOMOUS_ACTION_INTAKECUBEACTION_H_
 #include <CORERobotlib.h>
 #include <IntakeSubsystem.h>
 #include <ScorerSubsystem.h>
@@ -10,8 +8,7 @@ public:
 	void actionInit();
 	actionStatus action() override;
 	void actionEnd();
+	bool cubeInScorer();
 	IntakeSubsystem intakeSubsystem;
 	ScorerSubsystem scorerSubsystem;
 };
-
-#endif

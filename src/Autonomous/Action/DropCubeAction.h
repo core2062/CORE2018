@@ -1,8 +1,6 @@
-#ifndef SRC_AUTONOMOUS_ACTION_DROPCUBE_H_
-#define SRC_AUTONOMOUS_ACTION_DROPCUBE_H_
 #include <CORERobotLib.h>
-#include <COREAuton.h>
 #include <ScorerSubsystem.h>
+#include <Robot.h>
 
 
 class DropCube : public COREAutonAction{
@@ -11,7 +9,6 @@ public:
 	void actionInit();
 	actionStatus action() override;
 	void actionEnd();
-	ScorerSubsystem scorerSubsystem;
+	CORE2018 Robot;
 };
 
-#endif

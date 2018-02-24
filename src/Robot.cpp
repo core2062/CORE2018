@@ -4,6 +4,8 @@
 CORE2018::CORE2018() {
     std::cout << "CORE2018" << std::endl;
     CORELog::logInfo("Testing");
+    m_instance = this;
+
 
 }
 
@@ -17,6 +19,13 @@ void CORE2018::teleopInit() {
 
 void CORE2018::teleop() {
 
+}
+
+CORE2018* CORE2018::GetInstance() {
+	if(!m_instance) {
+		CORELog::logError("Get instance returning null pointer!");
+	}
+	return m_instance;
 }
 
 

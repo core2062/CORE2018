@@ -3,9 +3,9 @@
 #include "WPILib.h"
 #include "ctre/Phoenix.h"
 #include <iostream>
-//#include "IntakeSubsystem.h"
-//#include "ScorerSubsystem.h"
-//#include "ClimberSubsystem.h"
+#include "IntakeSubsystem.h"
+#include "ScorerSubsystem.h"
+#include "ClimberSubsystem.h"
 #include "LiftSubsystem.h"
 #include "CORERobotLib.h"
 #include "DriveSubsystem.h"
@@ -26,16 +26,21 @@ using namespace CORE;
 using namespace std;
 
 class CORE2018: public CORERobot {
+private:
+    static CORE2018 *m_instance;
+
 public:
 	CORE2018();
     void robotInit() override;
     void teleopInit() override;
     void teleop() override;
 
-	//DriveSubsystem driveSubsystem;
+    CORE2018* GetInstance();
+
+	DriveSubsystem driveSubsystem;
 	//ClimberSubsystem climberSubsystem;
-	//LiftSubsystem liftSubsystem;
-	//IntakeSubsystem intakeSystem;
-	//ScorerSubsystem scorerSubsystem;
+	LiftSubsystem liftSubsystem;
+	IntakeSubsystem intakeSystem;
+	ScorerSubsystem scorerSubsystem;
 
 };

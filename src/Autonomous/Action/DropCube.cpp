@@ -1,4 +1,4 @@
-#include <Autonomus/Action/DropCube.h>
+#include <Autonomous/Action/DropCube.h>
 
 DropCube::DropCube() {
 
@@ -7,7 +7,8 @@ void DropCube::actionInit() {
 
 }
 COREAutonAction::actionStatus DropCube::action() {
-	return 0;
+	scorerSubsystem.outakeCube();
+	return COREAutonAction::actionStatus::END;
 }
 void DropCube::actionEnd() {
 

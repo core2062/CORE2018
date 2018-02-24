@@ -1,7 +1,8 @@
-#ifndef SRC_AUTONOMUS_ACTION_LIFTUPTOSWITCH_H_
-#define SRC_AUTONOMUS_ACTION_LIFTUPTOSWITCH_H_
+#ifndef SRC_AUTONOMOUS_ACTION_LIFTUPTOSWITCH_H_
+#define SRC_AUTONOMOUS_ACTION_LIFTUPTOSWITCH_H_
 #include <LiftSubsystem.h>
 #include <CORERobotlib.h>
+
 
 class LiftUpToSwitch : public COREAutonAction {
 public:
@@ -9,6 +10,7 @@ public:
 	void actionInit();
 	actionStatus action() override;
 	void actionEnd();
+	LiftSubsystem liftSubsystem;
 };
 
 #endif

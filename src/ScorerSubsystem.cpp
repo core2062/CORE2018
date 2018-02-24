@@ -1,9 +1,8 @@
 #include "ScorerSubsystem.h"
-#include "ctre/Phoenix.h"
 
 
 // TODO fill these motors in with actual ports that we are going to be using
-ScorerSubsystem::ScorerSubsystem(COREJoystick * operatorJoystick) :
+ScorerSubsystem::ScorerSubsystem() :
 		m_frontLeftSolenoid(0, 1),
 		m_frontRightSolenoid(0, 1),
 		m_backRightSolenoid(0, 1),
@@ -11,28 +10,27 @@ ScorerSubsystem::ScorerSubsystem(COREJoystick * operatorJoystick) :
 		m_leftArmMotor(2),
 		m_rightArmMotor(3),
 		m_cubeRotatorMotor(1) {
-	m_rightYJoystick = 0;
-	m_operatorJoystick = operatorJoystick;
+
 }
 
 void ScorerSubsystem::robotInit() {
-	m_operatorJoystick->registerButton(CORE::COREJoystick::JoystickButton::RIGHT_TRIGGER);
-	m_operatorJoystick->registerButton(CORE::COREJoystick::JoystickButton::LEFT_TRIGGER);
-	m_operatorJoystick->registerAxis(CORE::COREJoystick::JoystickAxis::RIGHT_STICK_Y);
+	operatorJoystick->registerButton(CORE::COREJoystick::JoystickButton::RIGHT_TRIGGER);
+	operatorJoystick->registerButton(CORE::COREJoystick::JoystickButton::LEFT_TRIGGER);
+	operatorJoystick->registerAxis(CORE::COREJoystick::JoystickAxis::RIGHT_STICK_Y);
 }
 
 void ScorerSubsystem::teleopInit() {
 }
 
 void ScorerSubsystem::teleop() {
-	m_rightYJoystick = m_operatorJoystick->getAxis(CORE::COREJoystick::JoystickAxis::RIGHT_STICK_Y);
-	if (m_rightYJoystick >= 0.1 || m_rightYJoystick <= -0.1) {
-		rotateSetCube(m_rightYJoystick);
+	double y = operatorJoystick->getAxis(CORE::COREJoystick::JoystickAxis::RIGHT_STICK_Y);
+	if (y >= 0.1 || y <= -0.1) {
+		rotateSetCube(y);
 	}
-	if (m_operatorJoystick->getButton(CORE::COREJoystick::JoystickButton::RIGHT_TRIGGER)) {
+	if (operatorJoystick->getButton(CORE::COREJoystick::JoystickButton::RIGHT_TRIGGER)) {
 		intakeCube();
 	}
-	if (m_operatorJoystick->getButton(CORE::COREJoystick::JoystickButton::LEFT_TRIGGER)) {
+	if (operatorJoystick->getButton(CORE::COREJoystick::JoystickButton::LEFT_TRIGGER)) {
 		outakeCube();
 	}
 }

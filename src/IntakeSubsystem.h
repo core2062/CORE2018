@@ -2,12 +2,13 @@
 
 #include "ctre/Phoenix.h"
 #include "CORERobotLib.h"
-#include "Robot.h"
 
-class IntakeSubsystem {
+using namespace CORE;
+
+class IntakeSubsystem : public CORESubsystem {
 
 public:
-	IntakeSubsystem(COREJoystick * operatorJoystick);
+	IntakeSubsystem();
 	void robotInit();
 	void teleopInit();
 	void teleop();

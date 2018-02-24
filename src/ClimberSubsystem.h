@@ -2,7 +2,6 @@
 
 #include "ctre/Phoenix.h"
 #include "CORERobotLib.h"
-#include "Robot.h"
 #include "COREHardware/COREJoystick.h"
 
 class ClimberSubsystem {

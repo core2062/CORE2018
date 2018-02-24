@@ -1,7 +1,8 @@
 #pragma once
 
-#include <wpilib.h>
+#include "WPILib.h"
 #include "ctre/Phoenix.h"
+#include <iostream>
 //#include "IntakeSubsystem.h"
 //#include "ScorerSubsystem.h"
 //#include "ClimberSubsystem.h"
@@ -24,23 +25,13 @@
 using namespace CORE;
 using namespace std;
 
-class CORE2018: public frc::TimedRobot {
+class CORE2018: public CORERobot {
 public:
 	CORE2018();
-	~CORE2018();
-	void RobotInit() override;
-	void RobotPeriodic() override;
-	void DisabledInit() override;
-	void DisabledPeriodic() override;
-	void AutonomousInit() override;
-	void AutonomousPeriodic() override;
-	void TeleopInit() override;
-	void TeleopPeriodic() override;
-	void TestInit() override;
-	void TestPeriodic() override;
+    void robotInit() override;
+    void teleopInit() override;
+    void teleop() override;
 
-	frc::Joystick m_driverJoystick;
-	frc::Joystick m_operatorJoystick;
 	//DriveSubsystem driveSubsystem;
 	//ClimberSubsystem climberSubsystem;
 	//LiftSubsystem liftSubsystem;
@@ -48,4 +39,3 @@ public:
 	//ScorerSubsystem scorerSubsystem;
 
 };
-

@@ -2,7 +2,6 @@
 
 #include "ctre/Phoenix.h"
 #include <CORERobotLib.h>
-#include "Robot.h"
 #include "COREHardware/COREJoystick.h"
 
 class LiftSubsystem {
@@ -13,12 +12,12 @@ public:
 	void teleop();
 	void isLifting();
 	void setLift(double);
-	TalonSRX *m_leftLiftMotor;
-	TalonSRX *m_rightLiftMotor;
+	void liftPosistion(double);
+	TalonSRX m_leftLiftMotor;
+	TalonSRX m_rightLiftMotor;
 private:
 	COREJoystick * m_operatorJoystick;
 	int m_liftPosition;
-	int m_leftYJoystickPosition;
 	COREConstant<double> m_liftTopLimit;
 	COREConstant<double> m_liftBottomLimit;
 };

@@ -36,6 +36,12 @@ model {
             json {
                 headers.srcDir "CORERobotLib/3rdparty/json/src"
             }
+			CORERobotLib {
+				headers.srcDir "CORERobotLib/src"
+				binaries.withType(StaticLibraryBinary) {
+					staticLibraryFile = file("CORERobotLib/lib/libCORERobotLib.a")
+				}
+			}
         }
     }
     components {
@@ -49,8 +55,8 @@ model {
                     include '**/*.cpp'
                 }
                 exportedHeaders{
-                    srcDirs = ['src', 'src']
-                    include '**/*.hpp', '**/*.h'
+                    srcDirs = ['src']
+                    include '**/*.h'
                 }
 
                 // Define my dependencies. In this case, WPILib (+ friends), CTRE Phoenix (Talon SRX) and NavX.
@@ -59,10 +65,7 @@ model {
                 lib library: "wpilib"
                 lib library: "ctre"
                 lib library: "navx"
-            }
-			binaries.withType(NativeBinarySpec) {
-                cppCompiler.args '-IX:/git/CORE2018/CORERobotLib/src'
-				linker.args '-LX:/git/CORE2018/CORERobotLib/lib -lCORERobotLib'
+				lib library: "CORERobotLib", linkage: "static"
             }
         }
     }

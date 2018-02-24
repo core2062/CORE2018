@@ -4,27 +4,29 @@
 #include "ctre/Phoenix.h"
 #include "CORERobotLib.h"
 #include "AHRS.h"
-#include "COREHardware/COREJoystick.h"
+
 
 class DriveSubsystem : public CORESubsystem {
-private:
-	COREJoystick * m_driverJoystick;
-	double m_wheelbase = 20.8;
-	double m_trackwidth = 25.881;
-
 public:
-	DriveSubsystem(COREJoystick * driverJoystick);
-	CORESwerve m_swerveDrive;
-	void robotInit();
-	void teleopInit();
-	void teleop();
-	void teleopEnd();
+	DriveSubsystem();
+	void robotInit() override;
+	void teleopInit() override;
+	void teleop() override;
+	void teleopEnd() override;
 	void resetEncoders();
+	void initTalons();
 	void test() override;
-    void testInit();
+	void testInit();
 	double getGyroYaw();
 	void resetYaw();
-	double m_drivePID_P, m_drivePID_I, m_drivePID_D;
-	AHRS *m_gyro;
 
+private:
+	double m_wheelbase = 20.8;
+	double m_trackwidth = 25.881;
+	CORESwerve m_swerveDrive;
+	AHRS *m_gyro;
+	COREConstant <double> m_angleOffset, m_steerPID_P, m_steerPID_I, m_steerPID_D;
+	CORESwerve::SwerveModule *m_rightFrontModule, *m_leftFrontModule, *m_rightBackModule, *m_leftBackModule;
+	TalonSRX m_rightFrontSteerMotor, m_rightBackSteerMotor, m_leftFrontSteerMotor, m_leftBackSteerMotor,
+			m_rightFrontDriveMotor, m_rightBackDriveMotor, m_leftFrontDriveMotor, m_leftBackDriveMotor;
 };

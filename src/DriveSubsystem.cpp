@@ -17,8 +17,7 @@ DriveSubsystem::DriveSubsystem() :
 		m_rightBackModule(new CORESwerve::SwerveModule(&m_rightBackDriveMotor, &m_rightBackSteerMotor)),
 		m_leftFrontModule(new CORESwerve::SwerveModule(&m_leftFrontDriveMotor, &m_leftFrontSteerMotor)),
 		m_leftBackModule(new CORESwerve::SwerveModule(&m_leftBackDriveMotor, &m_leftBackSteerMotor)),
-		m_swerveDrive(m_wheelbase, m_trackwidth, m_wheelCircumference, m_ticksToRotation,
-				m_leftFrontModule, m_leftBackModule, m_rightBackModule, m_rightFrontModule),
+		m_swerveDrive(m_wheelbase, m_trackwidth, 3.0, 1228.8, m_leftFrontModule, m_leftBackModule, m_rightBackModule, m_rightFrontModule),
 		m_steerPID_P("Steer PID P", 0.001),
 		m_steerPID_I("Steer PID I", 0),
 		m_steerPID_D("Steer PID D", 0),
@@ -48,24 +47,28 @@ void DriveSubsystem::teleopInit() {
 }
 
 void DriveSubsystem::teleop() {
-    //	Gets the joystick values for each of the functions
+    CORELog::logInfo("Before getting joystick values");
+	//	Gets the joystick values for each of the functions
     double x = driverJoystick->getAxis(COREJoystick::LEFT_STICK_X);
     double y = driverJoystick->getAxis(COREJoystick::LEFT_STICK_Y);
 
     double theta = driverJoystick->getAxis(COREJoystick::RIGHT_STICK_X);
+	CORELog::logInfo("After getting joystick values");
 
-    double forward = y * cos(getGyroYaw() - m_angleOffset.Get()) + x *
+
+	double forward = y * cos(getGyroYaw() - m_angleOffset.Get()) + x *
                                                                    sin(getGyroYaw() - m_angleOffset.Get());
     double strafeRight = -y * sin(getGyroYaw() - m_angleOffset.Get()) +
                          x * cos(getGyroYaw() - m_angleOffset.Get());
     m_swerveDrive.calculate(forward, strafeRight, theta);
     m_swerveDrive.update();
 
-
+	CORELog::logInfo("Before getting stuff from sensor collection");
     SmartDashboard::PutNumber("Right Front Speed", m_rightFrontDriveMotor.GetSensorCollection().GetQuadratureVelocity());
     SmartDashboard::PutNumber("Left Front Speed", m_leftFrontDriveMotor.GetSensorCollection().GetQuadratureVelocity());
     SmartDashboard::PutNumber("Right Back Speed", m_rightBackDriveMotor.GetSensorCollection().GetQuadratureVelocity());
     SmartDashboard::PutNumber("Left Back Speed", m_leftBackDriveMotor.GetSensorCollection().GetQuadratureVelocity());
+	CORELog::logInfo("After getting stuff from sensor collection");
 
     SmartDashboard::PutNumber("Right Front Angle", m_rightFrontModule->getAngle());
     SmartDashboard::PutNumber("Left Front Angle", m_leftFrontModule->getAngle());

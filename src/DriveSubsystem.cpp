@@ -1,6 +1,8 @@
 #include "ctre/Phoenix.h"
 #include "DriveSubsystem.h"
 #include "Robot.h"
+#include "COREHardware/COREJoystick.h"
+#include "COREFramework/COREScheduler.h"
 
 DriveSubsystem::DriveSubsystem() :
 		m_rightFrontSteerMotor(0),
@@ -15,7 +17,8 @@ DriveSubsystem::DriveSubsystem() :
 		m_rightBackModule(new CORESwerve::SwerveModule(&m_rightBackDriveMotor, &m_rightBackSteerMotor)),
 		m_leftFrontModule(new CORESwerve::SwerveModule(&m_leftFrontDriveMotor, &m_leftFrontSteerMotor)),
 		m_leftBackModule(new CORESwerve::SwerveModule(&m_leftBackDriveMotor, &m_leftBackSteerMotor)),
-		m_swerveDrive(m_wheelbase, m_trackwidth, m_leftFrontModule, m_leftBackModule, m_rightBackModule, m_rightFrontModule),
+		m_swerveDrive(m_wheelbase, m_trackwidth, m_wheelCircumference, m_ticksToRotation,
+				m_leftFrontModule, m_leftBackModule, m_rightBackModule, m_rightFrontModule),
 		m_steerPID_P("Steer PID P", 0.001),
 		m_steerPID_I("Steer PID I", 0),
 		m_steerPID_D("Steer PID D", 0),

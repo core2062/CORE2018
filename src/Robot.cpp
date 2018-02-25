@@ -1,5 +1,6 @@
 #include <Robot.h>
 #include "ctre/Phoenix.h"
+#include "CORELogging/COREDataLog.h"
 
 CORE2018::CORE2018() {
     std::cout << "CORE2018" << std::endl;
@@ -8,7 +9,7 @@ CORE2018::CORE2018() {
 }
 
 void CORE2018::robotInit() {
-    CORELog::logInfo("robo init");
+    CORELog::logInfo("Robot init");
 }
 
 void CORE2018::teleopInit() {

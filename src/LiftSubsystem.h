@@ -3,6 +3,7 @@
 #include "ctre/Phoenix.h"
 #include <CORERobotLib.h>
 #include "COREHardware/COREJoystick.h"
+#include "COREUtilities/COREConstant.h"
 
 class LiftSubsystem {
 public:

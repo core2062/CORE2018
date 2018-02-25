@@ -2,7 +2,8 @@
 
 #include "ctre/Phoenix.h"
 #include "WPILib.h"
-#include "CORERobotLib.h"
+#include <CORERobotLib.h>
+#include "COREFramework/COREScheduler.h"
 
 
 using namespace CORE;

@@ -1,7 +1,10 @@
 #pragma once
 
 #include "ctre/Phoenix.h"
-#include "CORERobotLib.h"
+#include <WPILib.h>
+#include "COREFramework/COREScheduler.h"
+#include <CORERobotLib.h>
+#include "COREHardware/COREJoystick.h"
 
 using namespace CORE;
 

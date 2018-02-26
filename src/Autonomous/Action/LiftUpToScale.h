@@ -1,5 +1,5 @@
-#ifndef SRC_AUTONOMOUS_ACTION_LIFTUPTOSCALE_H_
-#define SRC_AUTONOMOUS_ACTION_LIFTUPTOSCALE_H_
+#pragma once
+
 #include <LiftSubsystem.h>
 #include <CORERobotlib.h>
 
@@ -12,5 +12,3 @@ public:
 	void actionEnd();
 	LiftSubsystem liftSubsystem;
 };
-
-#endif

@@ -1,7 +1,6 @@
-#ifndef SRC_AUTONOMOUS_ACTION_DROPCUBE_H_
-#define SRC_AUTONOMOUS_ACTION_DROPCUBE_H_
+#pragma once
+
 #include <CORERobotLib.h>
-#include <COREAuton.h>
 #include <ScorerSubsystem.h>
 
 
@@ -13,5 +12,3 @@ public:
 	void actionEnd();
 	ScorerSubsystem scorerSubsystem;
 };
-
-#endif

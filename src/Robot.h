@@ -5,7 +5,6 @@
 #include <iostream>
 //#include "IntakeSubsystem.h"
 //#include "ScorerSubsystem.h"
-//#include "ClimberSubsystem.h"
 #include "LiftSubsystem.h"
 #include "CORERobotLib.h"
 #include "DriveSubsystem.h"
@@ -33,8 +32,7 @@ public:
     void teleop() override;
 
 	DriveSubsystem driveSubsystem;
-	//ClimberSubsystem climberSubsystem;
-	//LiftSubsystem liftSubsystem;
+	LiftSubsystem liftSubsystem;
 	//IntakeSubsystem intakeSystem;
 	//ScorerSubsystem scorerSubsystem;
 

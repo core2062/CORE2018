@@ -2,13 +2,11 @@
 #include "ctre/Phoenix.h"
 
 CORE2018::CORE2018() {
-    std::cout << "CORE2018" << std::endl;
-    CORELog::logInfo("Testing");
 
 }
 
 void CORE2018::robotInit() {
-    CORELog::logInfo("robo init");
+
 }
 
 void CORE2018::teleopInit() {

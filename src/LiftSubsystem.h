@@ -4,9 +4,11 @@
 #include <CORERobotLib.h>
 #include "COREHardware/COREJoystick.h"
 
-class LiftSubsystem {
+using namespace CORE;
+
+class LiftSubsystem : public CORESubsystem {
 public:
-	LiftSubsystem(COREJoystick * operatorJoystick);
+	LiftSubsystem();
 	void robotInit();
 	void teleopInit();
 	void teleop();

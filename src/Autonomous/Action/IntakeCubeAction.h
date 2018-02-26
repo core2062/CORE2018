@@ -1,5 +1,5 @@
-#ifndef SRC_AUTONOMOUS_ACTION_INTAKECUBEACTION_H_
-#define SRC_AUTONOMOUS_ACTION_INTAKECUBEACTION_H_
+#pragma once
+
 #include <CORERobotlib.h>
 #include <IntakeSubsystem.h>
 #include <ScorerSubsystem.h>
@@ -13,5 +13,3 @@ public:
 	IntakeSubsystem intakeSubsystem;
 	ScorerSubsystem scorerSubsystem;
 };
-
-#endif

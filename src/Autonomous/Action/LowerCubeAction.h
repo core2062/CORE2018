@@ -1,5 +1,5 @@
-#ifndef SRC_AUTONOMOUS_ACTION_LOWERCUBEACTION_H_
-#define SRC_AUTONOMOUS_ACTION_LOWERCUBEACTION_H_
+#pragma once
+
 #include <CORERobotlib.h>
 
 class LowerCubeAction: public COREAutonAction {

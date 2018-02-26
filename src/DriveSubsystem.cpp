@@ -3,25 +3,23 @@
 #include "Robot.h"
 
 DriveSubsystem::DriveSubsystem() :
-		m_rightFrontSteerMotor(0),
-		m_leftFrontSteerMotor(0),
-		m_rightBackSteerMotor(0),
-		m_leftBackSteerMotor(0),
-		m_rightFrontDriveMotor(0),
-		m_leftFrontDriveMotor(0),
-		m_rightBackDriveMotor(0),
-		m_leftBackDriveMotor(0),
+		m_rightFrontSteerMotor(FRONT_RIGHT_STEER_PORT),
+		m_leftFrontSteerMotor(FRONT_LEFT_STEER_PORT),
+		m_rightBackSteerMotor(BACK_RIGHT_STEER_PORT),
+		m_leftBackSteerMotor(BACK_LEFT_STEER_PORT),
+		m_rightFrontDriveMotor(FRONT_RIGHT_DRIVE_PORT),
+		m_leftFrontDriveMotor(FRONT_LEFT_DRIVE_PORT),
+		m_rightBackDriveMotor(BACK_RIGHT_DRIVE_PORT),
+		m_leftBackDriveMotor(BACK_LEFT_DRIVE_PORT),
 		m_rightFrontModule(new CORESwerve::SwerveModule(&m_rightFrontDriveMotor, &m_rightFrontSteerMotor)),
 		m_rightBackModule(new CORESwerve::SwerveModule(&m_rightBackDriveMotor, &m_rightBackSteerMotor)),
 		m_leftFrontModule(new CORESwerve::SwerveModule(&m_leftFrontDriveMotor, &m_leftFrontSteerMotor)),
 		m_leftBackModule(new CORESwerve::SwerveModule(&m_leftBackDriveMotor, &m_leftBackSteerMotor)),
-		m_swerveDrive(m_wheelbase, m_trackwidth, 3.0, 1228.8, m_leftFrontModule, m_leftBackModule, m_rightBackModule, m_rightFrontModule),
 		m_steerPID_P("Steer PID P", 0.001),
 		m_steerPID_I("Steer PID I", 0),
 		m_steerPID_D("Steer PID D", 0),
-		m_angleOffset("Swerve Steer Angle Offset", 0),
-		m_gyro(new AHRS(SerialPort::Port::kUSB, AHRS::SerialDataType::kProcessedData, 200)) {
-
+		m_gyro(new AHRS(SPI::Port::kMXP/*, AHRS::SerialDataType::kProcessedData, 200*/)) {
+    m_swerveDrive = new CORESwerve(m_wheelbase, m_trackwidth, 3.0, 1228.8, m_leftFrontModule, m_leftBackModule, m_rightBackModule, m_rightFrontModule);
 }
 
 void DriveSubsystem::robotInit() {
@@ -29,44 +27,30 @@ void DriveSubsystem::robotInit() {
 	driverJoystick->registerAxis(CORE::COREJoystick::LEFT_STICK_Y);
 	driverJoystick->registerAxis(CORE::COREJoystick::RIGHT_STICK_X);
 	SmartDashboard::PutBoolean("Zero Modules", false);
-
-	//m_gyro = new AHRS(SerialPort::kUSB, AHRS::SerialDataType::kProcessedData, 200);
-	//m_gyro
-	/*try {
-		SmartDashboard::PutBoolean("NavX initialized", true);
-	} catch (std::exception & ex){
-		SmartDashboard::PutBoolean("NavX initialized", false);
-	}*/
+    resetYaw();
 	initTalons();
 }
 
 void DriveSubsystem::teleopInit() {
-    m_swerveDrive.setSteerPID(m_steerPID_P.Get(), m_steerPID_I.Get(), m_steerPID_D.Get());
+    m_swerveDrive->setSteerPID(m_steerPID_P.Get(), m_steerPID_I.Get(), m_steerPID_D.Get());
 }
 
 void DriveSubsystem::teleop() {
-    CORELog::logInfo("Before getting joystick values");
 	//	Gets the joystick values for each of the functions
     double x = driverJoystick->getAxis(COREJoystick::LEFT_STICK_X);
     double y = driverJoystick->getAxis(COREJoystick::LEFT_STICK_Y);
-
     double theta = driverJoystick->getAxis(COREJoystick::RIGHT_STICK_X);
-	CORELog::logInfo("After getting joystick values");
 
+	double forward = y * cos(getGyroYaw()) + x * sin(getGyroYaw());
+    double strafeRight = -y * sin(getGyroYaw()) +
+                         x * cos(getGyroYaw());
+    m_swerveDrive->calculate(forward, strafeRight, theta);
+    m_swerveDrive->update();
 
-	double forward = y * cos(getGyroYaw() - m_angleOffset.Get()) + x *
-                                                                   sin(getGyroYaw() - m_angleOffset.Get());
-    double strafeRight = -y * sin(getGyroYaw() - m_angleOffset.Get()) +
-                         x * cos(getGyroYaw() - m_angleOffset.Get());
-    m_swerveDrive.calculate(forward, strafeRight, theta);
-    m_swerveDrive.update();
-
-	CORELog::logInfo("Before getting stuff from sensor collection");
     SmartDashboard::PutNumber("Right Front Speed", m_rightFrontDriveMotor.GetSensorCollection().GetQuadratureVelocity());
     SmartDashboard::PutNumber("Left Front Speed", m_leftFrontDriveMotor.GetSensorCollection().GetQuadratureVelocity());
     SmartDashboard::PutNumber("Right Back Speed", m_rightBackDriveMotor.GetSensorCollection().GetQuadratureVelocity());
     SmartDashboard::PutNumber("Left Back Speed", m_leftBackDriveMotor.GetSensorCollection().GetQuadratureVelocity());
-	CORELog::logInfo("After getting stuff from sensor collection");
 
     SmartDashboard::PutNumber("Right Front Angle", m_rightFrontModule->getAngle());
     SmartDashboard::PutNumber("Left Front Angle", m_leftFrontModule->getAngle());

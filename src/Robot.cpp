@@ -1,5 +1,6 @@
 #include <Robot.h>
 #include "ctre/Phoenix.h"
+#include "CORELogging/COREDataLog.h"
 
 CORE2018::CORE2018() {
 

@@ -1,6 +1,8 @@
 #include "ctre/Phoenix.h"
 #include "DriveSubsystem.h"
 #include "Robot.h"
+#include "COREHardware/COREJoystick.h"
+#include "COREFramework/COREScheduler.h"
 
 DriveSubsystem::DriveSubsystem() :
 		m_rightFrontSteerMotor(FRONT_RIGHT_STEER_PORT),

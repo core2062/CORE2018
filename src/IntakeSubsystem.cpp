@@ -1,10 +1,10 @@
 #include "IntakeSubsystem.h"
 
-
 // TODO fill this in with actual motor ports and solenoid stuff
 IntakeSubsystem::IntakeSubsystem() :
 		m_leftIntakeMotor(0),
 		m_rightIntakeMotor(0),
+		m_operatorJoystick(0),
 		m_leftIntakeSolenoid(0, 1, 2),
 		m_rightIntakeSolenoid(0, 1, 2) {
 	m_intakeMotorPercentage = 0;

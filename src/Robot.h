@@ -1,6 +1,6 @@
 #pragma once
 
-#include "WPILib.h"
+#include <WPILib.h>
 #include "ctre/Phoenix.h"
 #include <iostream>
 //#include "IntakeSubsystem.h"
@@ -9,6 +9,7 @@
 #include "CORERobotLib.h"
 #include "DriveSubsystem.h"
 #include "COREHardware/COREJoystick.h"
+#include "COREFramework/CORERobot.h"
 
 #define FRONT_RIGHT_STEER_PORT 11
 #define FRONT_LEFT_STEER_PORT 12
@@ -20,6 +21,8 @@
 #define BACK_LEFT_DRIVE_PORT 18
 #define RIGHT_LIFT_MOTOR_PORT 19
 #define LEFT_LIFT_MOTOR_PORT 20
+#define LEFT_INTAKE_MOTOR_PORT 21
+#define RIGHT_INTAKE_MOTOR_PORT 22
 
 using namespace CORE;
 using namespace std;

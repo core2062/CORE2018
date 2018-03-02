@@ -1,3 +1,5 @@
+#pragma once
+
 #include <CORERobotlib.h>
 #include <IntakeSubsystem.h>
 #include <ScorerSubsystem.h>

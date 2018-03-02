@@ -1,3 +1,5 @@
+#pragma once
+
 #include <CORERobotLib.h>
 #include <ScorerSubsystem.h>
 #include <Robot.h>
@@ -11,4 +13,3 @@ public:
 	void actionEnd();
 	CORE2018 Robot;
 };
-

@@ -2,14 +2,13 @@
 
 #include <LiftSubsystem.h>
 #include <CORERobotlib.h>
-#include <Robot.h>
 
-class LiftUpToSwitch : public COREAutonAction {
+
+class LiftUpToScale: public COREAutonAction{
 public:
-	LiftUpToSwitch();
+	LiftUpToScale();
 	void actionInit();
 	actionStatus action() override;
 	void actionEnd();
-	CORE2018 Robot;
-	double m_switchHeight;
+	LiftSubsystem liftSubsystem;
 };

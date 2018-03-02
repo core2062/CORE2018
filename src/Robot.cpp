@@ -20,7 +20,12 @@ void CORE2018::teleopInit() {
 void CORE2018::teleop() {
 
 }
-
+void CORE2018::testInit() {
+	CORELog::logInfo("test init");
+}
+void CORE2018::test() {
+	CORELog::logInfo("test");
+}
 CORE2018* CORE2018::GetInstance() {
 	if(!m_instance) {
 		CORELog::logError("Get instance returning null pointer!");

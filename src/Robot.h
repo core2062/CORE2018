@@ -34,6 +34,8 @@ public:
     void robotInit() override;
     void teleopInit() override;
     void teleop() override;
+    void test() override;
+    void testInit() override;
 
     CORE2018* GetInstance();
 

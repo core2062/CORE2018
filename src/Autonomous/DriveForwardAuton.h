@@ -2,9 +2,7 @@
 #pragma once
 
 #include <memory>
-
 #include <CORERobotLib.h>
-
 #include "Actions.h"
 
 using namespace CORE;

@@ -1,13 +1,15 @@
 #include "IntakeSubsystem.h"
+#include "ctre/Phoenix.h"
+#include "COREHardware/COREJoystick.h"
+#include "COREFramework/COREScheduler.h"
+#include <WPILib.h>
 
 // TODO fill this in with actual motor ports and solenoid stuff
 IntakeSubsystem::IntakeSubsystem() :
 		m_leftIntakeMotor(0),
 		m_rightIntakeMotor(0),
-		m_operatorJoystick(0),
 		m_leftIntakeSolenoid(0, 1, 2),
 		m_rightIntakeSolenoid(0, 1, 2) {
-	m_intakeMotorPercentage = 0;
 
 }
 
@@ -26,9 +28,9 @@ void IntakeSubsystem::teleop() {
 		closeIntake();
 	}
 	if (operatorJoystick->getButton(CORE::COREJoystick::JoystickButton::LEFT_BUTTON)) {
-		setIntake(0.2);
+		setIntakeSpeed(0.2);
 	} else {
-		setIntake(0);
+		setIntakeSpeed(0);
 	}
 }
 
@@ -42,7 +44,7 @@ void IntakeSubsystem::closeIntake() {
 	m_rightIntakeSolenoid.Set(DoubleSolenoid::kForward);
 }
 
-void IntakeSubsystem::setIntake(double intakeMotorPercent) {
+void IntakeSubsystem::setIntakeSpeed(double intakeMotorPercent) {
 	m_leftIntakeMotor.Set(ControlMode::PercentOutput, m_intakeMotorPercentage);
 	m_rightIntakeMotor.Set(ControlMode::PercentOutput, m_intakeMotorPercentage);
 }

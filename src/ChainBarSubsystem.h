@@ -4,6 +4,7 @@
 #include <WPILib.h>
 
 #include "ctre/Phoenix.h"
+#include "COREFramework/COREScheduler.h"
 
 using namespace CORE;
 
@@ -16,5 +17,5 @@ public:
 	void setChainBar(double speed);
 	void setRotation(double speed);
 private:
-	TalonSRX chainBarMotor, rotationMotor;
+	TalonSRX m_chainBarMotor, m_rotationMotor;
 };

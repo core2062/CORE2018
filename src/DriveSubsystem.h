@@ -3,6 +3,7 @@
 //#include "Robot.h"
 #include "ctre/Phoenix.h"
 #include <CORERobotLib.h>
+#include "COREKinematics/SwerveTracker.h"
 #include "AHRS.h"
 #include "COREFramework/COREScheduler.h"
 
@@ -14,12 +15,24 @@ public:
 	void teleopInit() override;
 	void teleop() override;
 	void teleopEnd() override;
+	void auton();
+	void autonInit();
 	void resetEncoders();
 	void initTalons();
 	void test() override;
 	void testInit();
 	double getGyroYaw();
 	void resetYaw();
+
+
+	void startPath(Path path, bool reversed = false, double maxAccel = 25.0,
+			double tolerance = .25, bool gradualStop = true, double lookahead = 0.0);
+	void resetTracker(Position2d initialPos);
+	Path m_path;
+	SwerveTracker *m_swerveTracker= nullptr;
+	AdaptivePursuit m_pursuit;
+	RobotFrame *frame = nullptr;
+	COREVector path;
 
 private:
 	double m_wheelbase = 20.8;

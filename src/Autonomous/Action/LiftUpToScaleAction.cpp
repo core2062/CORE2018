@@ -1,13 +1,13 @@
 #include <Autonomous/Action/LiftUpToScaleAction.h>
 #include "Robot.h"
 
-LiftUpToScale::LiftUpToScale() {
+LiftUpToScaleAction::LiftUpToScaleAction() {
  m_scaleHeight = 7.0;
 }
-void LiftUpToScale::actionInit(){
+void LiftUpToScaleAction::actionInit(){
 
 }
-COREAutonAction::actionStatus LiftUpToScale::action(){
+COREAutonAction::actionStatus LiftUpToScaleAction::action(){
 	if (Robot.liftSubsystem.m_liftPosition <= m_scaleHeight) {
 		Robot.liftSubsystem.setLift(0.2);
 		return COREAutonAction::actionStatus::CONTINUE;
@@ -16,6 +16,6 @@ COREAutonAction::actionStatus LiftUpToScale::action(){
 		return COREAutonAction::actionStatus::END;
 	}
 }
-void LiftUpToScale::actionEnd(){
+void LiftUpToScaleAction::actionEnd(){
 
 }

@@ -16,9 +16,10 @@ public:
 	void teleop() override;
 	void rotateSetCube(double);
 	void intakeCube();
-	void outakeCube();
-	bool m_isCubeInIntake;
+	void outtakeCube();
+	bool m_isCubeInIntake = false;
 private:
+	bool m_hasEjected = false;
 	DoubleSolenoid m_frontLeftSolenoid, m_frontRightSolenoid, m_backRightSolenoid, m_backLeftSolenoid;
 	TalonSRX m_leftArmMotor, m_rightArmMotor, m_cubeRotatorMotor;
 };

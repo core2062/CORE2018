@@ -1,5 +1,7 @@
 #include "ScorerSubsystem.h"
-
+#include "COREFramework/COREScheduler.h"
+#include "ctre/Phoenix.h"
+#include <WPILib.h>
 
 // TODO fill these motors in with actual ports that we are going to be using
 ScorerSubsystem::ScorerSubsystem() :
@@ -14,8 +16,7 @@ ScorerSubsystem::ScorerSubsystem() :
 }
 
 void ScorerSubsystem::robotInit() {
-	operatorJoystick->registerButton(CORE::COREJoystick::JoystickButton::RIGHT_TRIGGER);
-	operatorJoystick->registerButton(CORE::COREJoystick::JoystickButton::LEFT_TRIGGER);
+	operatorJoystick->registerButton(CORE::COREJoystick::JoystickButton::LEFT_BUTTON);
 	operatorJoystick->registerAxis(CORE::COREJoystick::JoystickAxis::RIGHT_STICK_Y);
 }
 
@@ -27,11 +28,14 @@ void ScorerSubsystem::teleop() {
 	if (y >= 0.1 || y <= -0.1) {
 		rotateSetCube(y);
 	}
-	if (operatorJoystick->getButton(CORE::COREJoystick::JoystickButton::RIGHT_TRIGGER)) {
+	if (operatorJoystick->getRisingEdge(CORE::COREJoystick::LEFT_BUTTON) == true &&
+			m_hasEjected == false) {
+		outtakeCube();
+		m_hasEjected = true;
+	} else if (operatorJoystick->getRisingEdge(CORE::COREJoystick::LEFT_BUTTON) == true &&
+			m_hasEjected == true) {
 		intakeCube();
-	}
-	if (operatorJoystick->getButton(CORE::COREJoystick::JoystickButton::LEFT_TRIGGER)) {
-		outakeCube();
+		m_hasEjected = false;
 	}
 }
 
@@ -47,7 +51,7 @@ void ScorerSubsystem::intakeCube() {
 	m_backRightSolenoid.Set(DoubleSolenoid::kForward);
 }
 
-void ScorerSubsystem::outakeCube() {
+void ScorerSubsystem::outtakeCube() {
 	m_frontLeftSolenoid.Set(DoubleSolenoid::kReverse);
 	m_frontRightSolenoid.Set(DoubleSolenoid::kReverse);
 	m_backLeftSolenoid.Set(DoubleSolenoid::kReverse);

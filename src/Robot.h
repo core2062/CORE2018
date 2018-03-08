@@ -47,7 +47,6 @@ public:
 //    CORE2018* GetInstance();
 
 	DriveSubsystem driveSubsystem;
-	//ClimberSubsystem climberSubsystem;
     ChainBarSubsystem chainBarSubsystem;
 	LiftSubsystem liftSubsystem;
 	IntakeSubsystem intakeSystem;

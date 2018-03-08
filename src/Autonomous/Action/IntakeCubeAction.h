@@ -10,7 +10,7 @@ public:
 	void actionInit();
 	actionStatus action() override;
 	void actionEnd();
-	bool cubeInScorer();
+	bool cubeInScorer;
 	IntakeSubsystem intakeSubsystem;
 	ScorerSubsystem scorerSubsystem;
 };

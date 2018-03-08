@@ -20,7 +20,8 @@ DriveSubsystem::DriveSubsystem() :
 		m_steerPID_P("Steer PID P", 0.001),
 		m_steerPID_I("Steer PID I", 0),
 		m_steerPID_D("Steer PID D", 0),
-		m_gyro(new AHRS(SPI::Port::kMXP/*, AHRS::SerialDataType::kProcessedData, 200*/)) {
+		m_gyro(new AHRS(SPI::Port::kMXP/*, AHRS::SerialDataType::kProcessedData, 200*/)),
+		m_pursuit(0, 0, .1, m_path, false, 0) {
     m_swerveDrive = new CORESwerve(m_wheelbase, m_trackwidth, 3.0, 1228.8, m_leftFrontModule, m_leftBackModule, m_rightBackModule, m_rightFrontModule);
 }
 
@@ -28,6 +29,7 @@ void DriveSubsystem::robotInit() {
 	driverJoystick->registerAxis(CORE::COREJoystick::LEFT_STICK_X);
 	driverJoystick->registerAxis(CORE::COREJoystick::LEFT_STICK_Y);
 	driverJoystick->registerAxis(CORE::COREJoystick::RIGHT_STICK_X);
+	driverJoystick->registerButton(CORE::COREJoystick::START_BUTTON);
 	SmartDashboard::PutBoolean("Zero Modules", false);
     resetYaw();
 	initTalons();
@@ -47,6 +49,10 @@ void DriveSubsystem::teleop() {
     double strafeRight = -y * sin(getGyroYaw()) + x * cos(getGyroYaw());
     m_swerveDrive->calculate(forward, strafeRight, theta);
     m_swerveDrive->update();
+
+    if (driverJoystick->getRisingEdge(CORE::COREJoystick::START_BUTTON)) {
+    	resetYaw();
+    }
 
     SmartDashboard::PutNumber("Right Front Speed", m_rightFrontDriveMotor.GetSensorCollection().GetQuadratureVelocity());
     SmartDashboard::PutNumber("Left Front Speed", m_leftFrontDriveMotor.GetSensorCollection().GetQuadratureVelocity());
@@ -107,6 +113,43 @@ void DriveSubsystem::resetYaw() {
 double DriveSubsystem::getGyroYaw() {
 	SmartDashboard::PutNumber("Gyro Yaw", m_gyro->GetYaw());
 	return m_gyro->GetYaw();
+}
+
+void DriveSubsystem::startPath(Path path, bool reversed,
+		double maxAccel, double tolerance, bool gradualStop, double lookahead) {
+	m_pursuit = AdaptivePursuit(lookahead, maxAccel, .025, path, reversed, tolerance, gradualStop);
+}
+
+void DriveSubsystem::resetTracker(Position2d initialPos) {
+	m_swerveTracker->reset(Timer::GetFPGATimestamp(), initialPos);
+}
+
+void DriveSubsystem::autonInit() {
+	Position2d startingPosition;
+	resetTracker(startingPosition);
+
+}
+
+void DriveSubsystem::auton() {
+	if (!m_pursuit.isDone()) {
+		Position2d pos;
+		if (frame == nullptr) {
+			pos = m_swerveTracker->getLatestFieldToVehicle();
+		} else {
+			pos = frame->getLatest(path);
+		}
+		Position2d::Delta command = m_pursuit.update(pos,
+				Timer::GetFPGATimestamp());
+		COREVector setpoint = m_swerveDrive->inverseKinematics();
+		double maxVel = 0.0;
+		maxVel = max(maxVel, setpoint.GetX());
+		if (maxVel > 100) {
+			setpoint = COREVector(setpoint.GetX(), setpoint.GetY());
+		}
+	} else {
+
+	}
+
 }
 
 void DriveSubsystem::teleopEnd() {

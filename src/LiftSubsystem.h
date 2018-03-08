@@ -4,6 +4,7 @@
 #include <CORERobotLib.h>
 #include "COREHardware/COREJoystick.h"
 #include "COREUtilities/COREConstant.h"
+#include "COREFramework/COREScheduler.h"
 
 using namespace CORE;
 
@@ -21,6 +22,5 @@ public:
 	double m_liftPosition;
 	COREConstant<double> m_liftBottomLimit;
 private:
-	COREJoystick * m_operatorJoystick;
 	COREConstant<double> m_liftTopLimit;
 };

@@ -18,9 +18,9 @@ public:
 	void liftPosistion(double);
 	TalonSRX m_leftLiftMotor;
 	TalonSRX m_rightLiftMotor;
+	double m_liftPosition;
+	COREConstant<double> m_liftBottomLimit;
 private:
 	COREJoystick * m_operatorJoystick;
-	int m_liftPosition;
 	COREConstant<double> m_liftTopLimit;
-	COREConstant<double> m_liftBottomLimit;
 };

@@ -2,6 +2,7 @@
 
 #include <CORERobotLib.h>
 #include <ScorerSubsystem.h>
+#include <Robot.h>
 
 
 class DropCube : public COREAutonAction{
@@ -10,5 +11,5 @@ public:
 	void actionInit();
 	actionStatus action() override;
 	void actionEnd();
-	ScorerSubsystem scorerSubsystem;
+	CORE2018 Robot;
 };

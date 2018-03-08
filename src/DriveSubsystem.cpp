@@ -44,8 +44,7 @@ void DriveSubsystem::teleop() {
     double theta = driverJoystick->getAxis(COREJoystick::RIGHT_STICK_X);
 
 	double forward = y * cos(getGyroYaw()) + x * sin(getGyroYaw());
-    double strafeRight = -y * sin(getGyroYaw()) +
-                         x * cos(getGyroYaw());
+    double strafeRight = -y * sin(getGyroYaw()) + x * cos(getGyroYaw());
     m_swerveDrive->calculate(forward, strafeRight, theta);
     m_swerveDrive->update();
 
@@ -61,14 +60,14 @@ void DriveSubsystem::teleop() {
 }
 
 void DriveSubsystem::resetEncoders() {
-	m_rightFrontSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 10);
-	m_leftFrontSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 10);
-	m_rightBackSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 10);
-	m_leftBackSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 10);
-	m_rightFrontDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 10);
-	m_leftFrontDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 10);
-	m_rightBackDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 10);
-	m_leftBackDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 10);
+	m_rightFrontSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
+	m_leftFrontSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
+	m_rightBackSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
+	m_leftBackSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
+	m_rightFrontDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
+	m_leftFrontDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
+	m_rightBackDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
+	m_leftBackDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
 }
 
 void DriveSubsystem::initTalons() {

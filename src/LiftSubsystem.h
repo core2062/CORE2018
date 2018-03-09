@@ -1,26 +1,27 @@
 #pragma once
 
 #include "ctre/Phoenix.h"
+#include "WPILib.h"
 #include <CORERobotLib.h>
 #include "COREHardware/COREJoystick.h"
 #include "COREUtilities/COREConstant.h"
 
 using namespace CORE;
+using namespace frc;
 
 class LiftSubsystem : public CORESubsystem {
 public:
 	LiftSubsystem();
-	void robotInit();
-	void teleopInit();
-	void teleop();
-	void isLifting();
-	void setLift(double);
-	void liftPosistion(double);
+	void robotInit() override;
+	void teleopInit() override;
+	void teleop() override;
+	void setLift(double speed);
+
+private:
 	TalonSRX m_leftLiftMotor;
 	TalonSRX m_rightLiftMotor;
 	double m_liftPosition;
-	COREConstant<double> m_liftBottomLimit;
-private:
 	COREJoystick * m_operatorJoystick;
 	COREConstant<double> m_liftTopLimit;
+	DigitalInput m_liftBottomLimitSwitch;
 };

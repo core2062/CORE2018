@@ -1,12 +1,14 @@
 #include "IntakeSubsystem.h"
 
+#include "Robot.h"
+
 // TODO fill this in with actual motor ports and solenoid stuff
 IntakeSubsystem::IntakeSubsystem() :
 		m_leftIntakeMotor(0),
 		m_rightIntakeMotor(0),
 		m_operatorJoystick(0),
-		m_leftIntakeSolenoid(0, 1, 2),
-		m_rightIntakeSolenoid(0, 1, 2) {
+		m_leftIntakeSolenoid(LEFT_INTAKE_IN_SOLENOID_PORT, LEFT_INTAKE_OUT_SOLENOID_PORT),
+		m_rightIntakeSolenoid(RIGHT_INTAKE_IN_SOLENOID_PORT, RIGHT_INTAKE_OUT_SOLENOID_PORT, 2) {
 	m_intakeMotorPercentage = 0;
 
 }

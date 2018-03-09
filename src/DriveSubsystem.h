@@ -7,7 +7,7 @@
 #include "COREFramework/COREScheduler.h"
 
 
-class DriveSubsystem : public CORESubsystem {
+class DriveSubsystem : public CORESubsystem, public CORETask {
 public:
 	DriveSubsystem();
 	void robotInit() override;
@@ -16,8 +16,7 @@ public:
 	void teleopEnd() override;
 	void resetEncoders();
 	void initTalons();
-	void test() override;
-	void testInit();
+	void autonInitTask() override;
 	double getGyroYaw();
 	void resetYaw();
 

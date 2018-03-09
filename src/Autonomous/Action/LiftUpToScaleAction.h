@@ -3,9 +3,9 @@
 #include "WPILib.h"
 #include "Robot.h"
 
-class LiftUpToScale: public COREAutonAction {
+class LiftUpToScaleAction: public COREAutonAction {
 public:
-	LiftUpToScale();
+	LiftUpToScaleAction();
 	void actionInit();
 	actionStatus action() override;
 	void actionEnd();

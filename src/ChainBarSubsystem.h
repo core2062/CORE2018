@@ -5,6 +5,7 @@
 #include "COREUtilities/COREConstant.h"
 #include "COREHardware/COREJoystick.h"
 #include "ctre/Phoenix.h"
+#include "COREFramework/COREScheduler.h"
 
 using namespace CORE;
 

@@ -1,6 +1,7 @@
 #include <LiftSubsystem.h>
-
+#include "ctre/Phoenix.h"
 #include "Robot.h"
+#include "COREFramework/COREScheduler.h"
 
 LiftSubsystem::LiftSubsystem() :
 		m_leftLiftMotor(LEFT_LIFT_MOTOR_PORT),
@@ -8,7 +9,7 @@ LiftSubsystem::LiftSubsystem() :
 		m_liftTopLimit("Lift Top Limit"),
 		m_liftBottomLimitSwitch(LIFT_BOTTOM_LIMIT_SWITCH) {
 	m_liftPosition = 0;
-	m_rightLiftMotor.SetInverted(true);
+	m_leftLiftMotor.SetInverted(true);
 }
 
 void LiftSubsystem::robotInit() {

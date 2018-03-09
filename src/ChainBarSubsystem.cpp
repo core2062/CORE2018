@@ -1,4 +1,7 @@
 #include <ChainBarSubsystem.h>
+#include "ctre/Phoenix.h"
+#include "COREFramework/COREScheduler.h"
+
 #include "COREUtilities/COREConstant.h"
 #include "Robot.h"
 

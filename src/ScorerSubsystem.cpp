@@ -1,4 +1,7 @@
 #include "ScorerSubsystem.h"
+#include "COREFramework/COREScheduler.h"
+#include "ctre/Phoenix.h"
+#include <WPILib.h>
 
 #include "Robot.h"
 
@@ -25,6 +28,12 @@ void ScorerSubsystem::teleop() {
 		}
 		m_scorerClosed = ! m_scorerClosed;
 	}
+	if (operatorJoystick->getButton(CORE::COREJoystick::JoystickButton::RIGHT_TRIGGER)) {
+		intakeCube();
+	}
+	if (operatorJoystick->getButton(CORE::COREJoystick::JoystickButton::LEFT_TRIGGER)) {
+		outakeCube();
+	}
 }
 
 void ScorerSubsystem::closeScorer() {
@@ -33,4 +42,11 @@ void ScorerSubsystem::closeScorer() {
 
 void ScorerSubsystem::openScorer() {
 	m_scorerSolenoid.Set(DoubleSolenoid::kReverse);
+}
+
+void ScorerSubsystem::outakeCube() {
+	m_frontLeftSolenoid.Set(DoubleSolenoid::kReverse);
+	m_frontRightSolenoid.Set(DoubleSolenoid::kReverse);
+	m_backLeftSolenoid.Set(DoubleSolenoid::kReverse);
+	m_backRightSolenoid.Set(DoubleSolenoid::kReverse);
 }

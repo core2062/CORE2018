@@ -5,6 +5,7 @@
 #include <CORERobotLib.h>
 #include "COREHardware/COREJoystick.h"
 #include "COREUtilities/COREConstant.h"
+#include "COREFramework/COREScheduler.h"
 
 using namespace CORE;
 using namespace frc;
@@ -21,6 +22,8 @@ public:
 private:
 	TalonSRX m_leftLiftMotor;
 	TalonSRX m_rightLiftMotor;
+	double m_liftPosition;
+	COREConstant<double> m_liftBottomLimit;
 	COREJoystick * m_operatorJoystick;
 	COREConstant<double> m_liftTopLimit;
 	DigitalInput m_liftBottomLimitSwitch;

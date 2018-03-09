@@ -1,15 +1,11 @@
 #include <Robot.h>
 #include "ctre/Phoenix.h"
 #include "CORELogging/COREDataLog.h"
+#include <CORERobotLib.h>
 
 CORE2018::CORE2018() {
     std::cout << "CORE2018" << std::endl;
     CORELog::logInfo("Testing");
-/*
-    m_instance = this;
-*/
-
-
 }
 
 void CORE2018::robotInit() {

@@ -19,9 +19,11 @@ void IntakeSubsystem::robotInit() {
 	m_leftIntakeMotor.Set(ControlMode::PercentOutput, 0);
 	operatorJoystick->registerButton(CORE::COREJoystick::JoystickButton::LEFT_BUTTON);
 }
+
 void IntakeSubsystem::teleopInit() {
 
 }
+
 void IntakeSubsystem::teleop() {
 	if (operatorJoystick->getRisingEdge(CORE::COREJoystick::JoystickButton::RIGHT_BUTTON)) {
 		openIntake();

@@ -10,12 +10,12 @@ void IntakeCubeAction::actionInit() {
 }
 COREAutonAction::actionStatus IntakeCubeAction::action() {
 
-	//if(cubeInScorer == true){
+	if(cubeInScorer == true){
 
-	//}
-	//else{
+	}
+	else{
 
-	//}
+	}
 	return COREAutonAction::actionStatus::END;
 }
 void IntakeCubeAction::actionEnd() {

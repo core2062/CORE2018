@@ -47,7 +47,7 @@ void ChainBarSubsystem::teleop() {
 
     double x = operatorJoystick->getAxis(COREJoystick::JoystickAxis::RIGHT_STICK_Y);
     if(abs(x) > 0.01) {
-        setRotation(x);
+        setRotation(x*0.25);
     } else {
         setRotation(0);
     }

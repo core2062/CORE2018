@@ -1,18 +1,18 @@
 #include <Autonomous/Action/DropCubeAction.h>
 
-DropCubeAction::DropCubeAction() {
+DropCube::DropCube() {
 
 }
-void DropCubeAction::actionInit() {
+void DropCube::actionInit() {
 
 }
-COREAutonAction::actionStatus DropCubeAction::action() {
-	if (Robot.scorerSubsystem.m_scorerClosed == true) {
-		Robot.scorerSubsystem.openScorer();
+COREAutonAction::actionStatus DropCube::action() {
+	if (Robot.scorerSubsystem.m_isCubeInIntake == true) {
+		Robot.scorerSubsystem.outakeCube();
 	}
 
 	return COREAutonAction::actionStatus::END;
 }
-void DropCubeAction::actionEnd() {
+void DropCube::actionEnd() {
 
 }

@@ -1,8 +1,6 @@
-#pragma once
 #include <CORERobotLib.h>
 #include <DriveSubsystem.h>
 #include <Robot.h>
-#include "COREFramework/COREAuton.h"
 
 class DriveDistanceAction : public COREAutonAction {
 public:

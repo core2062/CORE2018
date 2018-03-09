@@ -45,9 +45,7 @@ using namespace std;
 
 class CORE2018: public CORERobot {
 private:
-/*
     static CORE2018 *m_instance;
-*/
 
 public:
 	CORE2018();
@@ -56,8 +54,8 @@ public:
     void teleop() override;
     void test() override;
     void testInit() override;
-//
-//    CORE2018* GetInstance();
+
+    static CORE2018* GetInstance();
 
 	DriveSubsystem driveSubsystem;
     ChainBarSubsystem chainBarSubsystem;

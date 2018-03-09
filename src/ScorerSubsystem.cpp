@@ -7,24 +7,27 @@
 
 ScorerSubsystem::ScorerSubsystem() :
 		m_scorerSolenoid(SCORER_IN_SOLENOID_PORT, SCORER_OUT_SOLENOID_PORT) {
-    m_buttonPressed = false;
+    m_scorerClosed = false;
 }
 
 void ScorerSubsystem::robotInit() {
-	operatorJoystick->registerButton(CORE::COREJoystick::JoystickButton::LEFT_TRIGGER);
+	operatorJoystick->registerButton(CORE::COREJoystick::JoystickButton::RIGHT_TRIGGER);
 	openScorer();
-	m_scorerClosed = false;
 }
 
 void ScorerSubsystem::teleopInit() {
+
 }
 
 void ScorerSubsystem::teleop() {
-	if (operatorJoystick->m_joystick.GetRawButton(1)) {
-        closeScorer();
-	} else {
-        openScorer();
-    }
+	if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::RIGHT_TRIGGER)) {
+        if(m_scorerClosed) {
+            openScorer();
+        } else {
+            closeScorer();
+        }
+        m_scorerClosed = !m_scorerClosed;
+	}
 }
 
 void ScorerSubsystem::closeScorer() {

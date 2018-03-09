@@ -4,13 +4,13 @@
 #include <IntakeSubsystem.h>
 #include <ScorerSubsystem.h>
 
-class IntakeCubeAction : public COREAutonAction {
+class IntakeAction : public COREAutonAction {
 public:
-	IntakeCubeAction();
+	IntakeAction();
 	void actionInit();
 	actionStatus action() override;
 	void actionEnd();
-	bool cubeInScorer;
+	bool cubeInScorer();
 	IntakeSubsystem intakeSubsystem;
 	ScorerSubsystem scorerSubsystem;
 };

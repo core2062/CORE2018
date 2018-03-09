@@ -1,9 +1,8 @@
 #pragma once
 
 #include "Action/DriveDistanceAction.h"
-#include "Action/DropCubeAction.h"
-#include "Action/IntakeCubeAction.h"
-#include "Action/LiftUpToScaleAction.h"
-#include "Action/LiftUpToSwitchAction.h"
-#include "Action/LowerLiftAction.h"
+#include "Action/IntakeAction.h"
 #include "Action/RotateArmAction.h"
+#include "Action/ScorerAction.h"
+#include "Action/LiftAction.h"
+

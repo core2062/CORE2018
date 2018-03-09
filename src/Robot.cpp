@@ -5,12 +5,15 @@
 
 CORE2018* CORE2018::m_instance;
 
-CORE2018::CORE2018() {
+CORE2018::CORE2018():
+        m_chainBarIntakeAngle("Chain Bar Intake Position Angle"),
+        m_chainBarSwitchAngle("Chain Bar Switch Position Angle") {
     m_instance = this;
 }
 
 void CORE2018::robotInit() {
-
+    operatorJoystick->registerButton(COREJoystick::JoystickButton::A_BUTTON);
+    operatorJoystick->registerButton(COREJoystick::JoystickButton::B_BUTTON);
 }
 
 void CORE2018::teleopInit() {
@@ -18,7 +21,12 @@ void CORE2018::teleopInit() {
 }
 
 void CORE2018::teleop() {
-    scorerSubsystem.teleop();
+    if(operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::A_BUTTON)) { //Intake Position
+        chainBarSubsystem.SetChainBarRequestedAngle(m_chainBarIntakeAngle.Get());
+    } else if(operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::B_BUTTON)) { //Switch Position
+        chainBarSubsystem.SetChainBarRequestedAngle(m_chainBarSwitchAngle.Get());
+    }
+
 }
 
 void CORE2018::testInit() {

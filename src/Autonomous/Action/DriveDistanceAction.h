@@ -1,12 +1,11 @@
+#pragma once
+
 #include <CORERobotLib.h>
-#include <DriveSubsystem.h>
-#include <Robot.h>
 
 class DriveDistanceAction : public COREAutonAction {
 public:
 	DriveDistanceAction();
-	void actionInit();
+	void actionInit() override;
 	actionStatus action() override;
-	void actionEnd();
-	CORE2018 Robot;
+	void actionEnd() override;
 };

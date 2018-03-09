@@ -1,15 +1,11 @@
-#pragma once
-
 #include <CORERobotLib.h>
 #include <ScorerSubsystem.h>
-#include <Robot.h>
 
-
-class DropCube : public COREAutonAction{
+class RotateArmAction : public COREAutonAction {
 public:
-	DropCube();
+	RotateArmAction();
 	void actionInit();
 	actionStatus action() override;
 	void actionEnd();
-	CORE2018 Robot;
+	ScorerSubsystem scorerSubsystem;
 };

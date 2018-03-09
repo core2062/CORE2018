@@ -36,23 +36,11 @@ void DriveSubsystem::robotInit() {
 }
 
 void DriveSubsystem::teleopInit() {
-    m_leftFrontModule->setAngleOffset(0);
-    m_rightFrontModule->setAngleOffset(0);
-    m_leftBackModule->setAngleOffset(0);
-    m_rightBackModule->setAngleOffset(0);
-
     if(SmartDashboard::GetBoolean("Zero Modules", false)) {
         SmartDashboard::PutBoolean("Zero Modules", false);
         CORELog::logInfo("Zeroing modules");
-        Preferences::GetInstance()->PutDouble("Front Left Steer Offset", m_leftFrontModule->getAngle(true));
-        Preferences::GetInstance()->PutDouble("Front Right Steer Offset", m_rightFrontModule->getAngle(true));
-        Preferences::GetInstance()->PutDouble("Back Left Steer Offset", m_leftBackModule->getAngle(true));
-        Preferences::GetInstance()->PutDouble("Back Right Steer Offset", m_rightBackModule->getAngle(true));
+        m_swerveDrive->zeroOffsets();
     }
-    m_leftFrontModule->setAngleOffset(Preferences::GetInstance()->GetDouble("Front Left Steer Offset", 25.5));
-    m_rightFrontModule->setAngleOffset(Preferences::GetInstance()->GetDouble("Front Right Steer Offset", 133.6));
-    m_leftBackModule->setAngleOffset(Preferences::GetInstance()->GetDouble("Back Left Steer Offset", 352.2));
-    m_rightBackModule->setAngleOffset(Preferences::GetInstance()->GetDouble("Back Right Steer Offset", 17.2));
     m_swerveDrive->calculate(0, 0, 0);
     m_swerveDrive->update();
     m_swerveDrive->setSteerPID(m_steerPID_P.Get(), m_steerPID_I.Get(), m_steerPID_D.Get());
@@ -83,6 +71,7 @@ void DriveSubsystem::teleop() {
     m_swerveDrive->update();
 
     if (driverJoystick->getRisingEdge(CORE::COREJoystick::START_BUTTON)) {
+		CORELog::logWarning("Zeroing Yaw!");
     	resetYaw();
     }
 

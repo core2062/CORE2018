@@ -62,5 +62,5 @@ public:
 	LiftSubsystem liftSubsystem;
 	IntakeSubsystem intakeSystem;
 	ScorerSubsystem scorerSubsystem;
-
+    COREConstant<double> m_chainBarIntakeAngle, m_chainBarSwitchAngle;
 };

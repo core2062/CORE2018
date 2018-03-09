@@ -1,3 +1,4 @@
+#pragma once
 #include <CORERobotLib.h>
 #include <DriveSubsystem.h>
 #include <Robot.h>

@@ -22,8 +22,6 @@ public:
 private:
 	TalonSRX m_leftLiftMotor;
 	TalonSRX m_rightLiftMotor;
-	double m_liftPosition;
-	COREConstant<double> m_liftBottomLimit;
 	COREJoystick * m_operatorJoystick;
 	COREConstant<double> m_liftTopLimit;
 	DigitalInput m_liftBottomLimitSwitch;

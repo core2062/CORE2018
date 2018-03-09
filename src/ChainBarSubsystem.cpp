@@ -7,10 +7,10 @@
 
 ChainBarSubsystem::ChainBarSubsystem() : m_chainBarMotor(CHAINBAR_MOTOR_PORT),
                                          m_rotationMotor(ROTATION_MOTOR_PORT),
-										 m_chainBarLowerTopLimit("chainBarLowerTopLimit", 0),
-										 m_chainBarUpperTopLimit("chainBarUpperTopLimit", 0),
-										 m_chainBarBottomLimit("chainBarBottomLimit", 0),
-										 m_liftChangePoint("liftChangePoint", 0) {
+										 m_chainBarLowerTopLimit("Chain Bar Lower Top Limit"),
+										 m_chainBarUpperTopLimit("Chain Bar Upper Top Limit"),
+										 m_chainBarBottomLimit("Chain Bar Bottom Limit"),
+										 m_liftChangePoint("Lift Change Point") {
 
 }
 

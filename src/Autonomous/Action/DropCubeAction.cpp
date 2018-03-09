@@ -6,7 +6,7 @@ DropCubeAction::DropCubeAction() {
 void DropCubeAction::actionInit() {
 
 }
-COREAutonAction::actionStatus DropCube::action() {
+COREAutonAction::actionStatus DropCubeAction::action() {
 	if (Robot.scorerSubsystem.m_scorerClosed == true) {
 		Robot.scorerSubsystem.openScorer();
 	}

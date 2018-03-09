@@ -20,7 +20,7 @@ DriveSubsystem::DriveSubsystem() :
 		m_steerPID_P("Steer PID P", 0.005),
 		m_steerPID_I("Steer PID I", 0),
 		m_steerPID_D("Steer PID D", 0),
-		m_pursuit(0, 0, .1, m_path, false, 0) {
+		m_pursuit(0, 0, .1, m_path, false, 0),
 		m_gyro(new AHRS(SerialPort::Port::kUSB, AHRS::SerialDataType::kProcessedData, 200)) {
     m_swerveDrive = new CORESwerve(m_wheelbase, m_trackwidth, 3.0, 1228.8, m_leftFrontModule, m_leftBackModule, m_rightBackModule, m_rightFrontModule);
 }

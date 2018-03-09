@@ -17,11 +17,11 @@ DriveSubsystem::DriveSubsystem() :
 		m_rightBackModule(new CORESwerve::SwerveModule(&m_rightBackDriveMotor, &m_rightBackSteerMotor)),
 		m_leftFrontModule(new CORESwerve::SwerveModule(&m_leftFrontDriveMotor, &m_leftFrontSteerMotor)),
 		m_leftBackModule(new CORESwerve::SwerveModule(&m_leftBackDriveMotor, &m_leftBackSteerMotor)),
-		m_steerPID_P("Steer PID P", 0.001),
+		m_steerPID_P("Steer PID P", 0.005),
 		m_steerPID_I("Steer PID I", 0),
 		m_steerPID_D("Steer PID D", 0),
-		m_gyro(new AHRS(SPI::Port::kMXP/*, AHRS::SerialDataType::kProcessedData, 200*/)),
 		m_pursuit(0, 0, .1, m_path, false, 0) {
+		m_gyro(new AHRS(SerialPort::Port::kUSB, AHRS::SerialDataType::kProcessedData, 200)) {
     m_swerveDrive = new CORESwerve(m_wheelbase, m_trackwidth, 3.0, 1228.8, m_leftFrontModule, m_leftBackModule, m_rightBackModule, m_rightFrontModule);
 }
 
@@ -36,18 +36,50 @@ void DriveSubsystem::robotInit() {
 }
 
 void DriveSubsystem::teleopInit() {
+    m_leftFrontModule->setAngleOffset(0);
+    m_rightFrontModule->setAngleOffset(0);
+    m_leftBackModule->setAngleOffset(0);
+    m_rightBackModule->setAngleOffset(0);
+
+    if(SmartDashboard::GetBoolean("Zero Modules", false)) {
+        SmartDashboard::PutBoolean("Zero Modules", false);
+        CORELog::logInfo("Zeroing modules");
+        Preferences::GetInstance()->PutDouble("Front Left Steer Offset", m_leftFrontModule->getAngle(true));
+        Preferences::GetInstance()->PutDouble("Front Right Steer Offset", m_rightFrontModule->getAngle(true));
+        Preferences::GetInstance()->PutDouble("Back Left Steer Offset", m_leftBackModule->getAngle(true));
+        Preferences::GetInstance()->PutDouble("Back Right Steer Offset", m_rightBackModule->getAngle(true));
+    }
+    m_leftFrontModule->setAngleOffset(Preferences::GetInstance()->GetDouble("Front Left Steer Offset", 25.5));
+    m_rightFrontModule->setAngleOffset(Preferences::GetInstance()->GetDouble("Front Right Steer Offset", 133.6));
+    m_leftBackModule->setAngleOffset(Preferences::GetInstance()->GetDouble("Back Left Steer Offset", 352.2));
+    m_rightBackModule->setAngleOffset(Preferences::GetInstance()->GetDouble("Back Right Steer Offset", 17.2));
+    m_swerveDrive->calculate(0, 0, 0);
+    m_swerveDrive->update();
     m_swerveDrive->setSteerPID(m_steerPID_P.Get(), m_steerPID_I.Get(), m_steerPID_D.Get());
 }
 
 void DriveSubsystem::teleop() {
 	//	Gets the joystick values for each of the functions
-    double x = driverJoystick->getAxis(COREJoystick::LEFT_STICK_X);
+    double x = -1 * driverJoystick->getAxis(COREJoystick::LEFT_STICK_X);
     double y = driverJoystick->getAxis(COREJoystick::LEFT_STICK_Y);
-    double theta = driverJoystick->getAxis(COREJoystick::RIGHT_STICK_X);
+	SmartDashboard::PutNumber("Joystick X", x);
+    SmartDashboard::PutNumber("Joystick Y", y);
+    if(abs(x) < 0.05) {
+        x = 0;
+    }
+    if(abs(y) < 0.05) {
+        y = 0;
+    }
 
-	double forward = y * cos(getGyroYaw()) + x * sin(getGyroYaw());
-    double strafeRight = -y * sin(getGyroYaw()) + x * cos(getGyroYaw());
-    m_swerveDrive->calculate(forward, strafeRight, theta);
+    SmartDashboard::PutNumber("Gyro Yaw", getGyroYaw());
+
+	double theta = driverJoystick->getAxis(COREJoystick::RIGHT_STICK_X);
+
+    double gyro_radians = toRadians(getGyroYaw());
+    double temp = y * cos(gyro_radians) + x * sin(gyro_radians);
+    x = -y * sin(gyro_radians) + x * cos(gyro_radians);
+    y = temp;
+    m_swerveDrive->calculate(x, y, -theta);
     m_swerveDrive->update();
 
     if (driverJoystick->getRisingEdge(CORE::COREJoystick::START_BUTTON)) {
@@ -66,14 +98,14 @@ void DriveSubsystem::teleop() {
 }
 
 void DriveSubsystem::resetEncoders() {
-	m_rightFrontSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
-	m_leftFrontSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
-	m_rightBackSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
-	m_leftBackSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
-	m_rightFrontDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
-	m_leftFrontDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
-	m_rightBackDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
-	m_leftBackDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
+	m_rightFrontSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 10);
+	m_leftFrontSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 10);
+	m_rightBackSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 10);
+	m_leftBackSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 10);
+	m_rightFrontDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 10);
+	m_leftFrontDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 10);
+	m_rightBackDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 10);
+	m_leftBackDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 10);
 }
 
 void DriveSubsystem::initTalons() {
@@ -104,6 +136,15 @@ void DriveSubsystem::initTalons() {
 	m_rightFrontSteerMotor.Set(ControlMode::PercentOutput, 0);
 	m_leftBackSteerMotor.Set(ControlMode::PercentOutput, 0);
 	m_rightBackSteerMotor.Set(ControlMode::PercentOutput, 0);
+
+    m_leftFrontSteerMotor.SetInverted(true);
+    m_rightFrontSteerMotor.SetInverted(true);
+    m_leftBackSteerMotor.SetInverted(true);
+    m_rightBackSteerMotor.SetInverted(true);
+    m_leftFrontDriveMotor.SetInverted(true);
+    m_rightFrontDriveMotor.SetInverted(true);
+    m_leftBackDriveMotor.SetInverted(true);
+    m_rightBackDriveMotor.SetInverted(true);
 }
 
 void DriveSubsystem::resetYaw() {
@@ -111,7 +152,6 @@ void DriveSubsystem::resetYaw() {
 }
 
 double DriveSubsystem::getGyroYaw() {
-	SmartDashboard::PutNumber("Gyro Yaw", m_gyro->GetYaw());
 	return m_gyro->GetYaw();
 }
 
@@ -163,27 +203,18 @@ void DriveSubsystem::teleopEnd() {
 	m_rightBackSteerMotor.Set(ControlMode::PercentOutput, 0);
 }
 
-void DriveSubsystem::testInit() {
-	resetYaw();
+void DriveSubsystem::autonInitTask() {
+    CORELog::logInfo("Test");
+    resetYaw();
+    m_leftFrontModule->setAngleOffset(0);
+    m_rightFrontModule->setAngleOffset(0);
+    m_leftBackModule->setAngleOffset(0);
+    m_rightBackModule->setAngleOffset(0);
+    m_leftFrontModule->setAnglePID(0, 0, 0);
+    m_rightFrontModule->setAnglePID(0, 0, 0);
+    m_leftBackModule->setAnglePID(0, 0, 0);
+    m_rightBackModule->setAnglePID(0, 0, 0);
 
-	m_leftFrontModule->setAngleOffset(0);
-	m_rightFrontModule->setAngleOffset(0);
-	m_leftBackModule->setAngleOffset(0);
-	m_rightBackModule->setAngleOffset(0);
-	m_leftFrontModule->setAnglePID(0, 0, 0);
-	m_rightFrontModule->setAnglePID(0, 0, 0);
-	m_leftBackModule->setAnglePID(0, 0, 0);
-	m_rightBackModule->setAnglePID(0, 0, 0);
-}
-
-void DriveSubsystem::test() {
-	if(SmartDashboard::GetBoolean("Zero Modules", false)) {
-		SmartDashboard::PutBoolean("Zero Modules", false);
-		Preferences::GetInstance()->PutDouble("Front Left Steer Offset", m_leftFrontModule->getAngle(true));
-		Preferences::GetInstance()->PutDouble("Front Right Steer Offset", m_rightFrontModule->getAngle(true));
-		Preferences::GetInstance()->PutDouble("Back Left Steer Offset", m_leftBackModule->getAngle(true));
-		Preferences::GetInstance()->PutDouble("Back Right Steer Offset", m_rightBackModule->getAngle(true));
-	}
 	SmartDashboard::PutNumber("Gyro Yaw", m_gyro->GetYaw());
 	SmartDashboard::PutNumber("Front Left Steer Angle", m_leftFrontModule->getAngle());
 	SmartDashboard::PutNumber("Front Right Steer Angle", m_rightFrontModule->getAngle());

@@ -1,3 +1,5 @@
 /Debug/
 build/
 cmake-build-debug/
+.idea/
+.gradle/

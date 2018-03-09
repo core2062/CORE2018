@@ -14,12 +14,9 @@ public:
 	void robotInit() override;
 	void teleopInit() override;
 	void teleop() override;
-	void rotateSetCube(double);
-	void intakeCube();
-	void outtakeCube();
-	bool m_isCubeInIntake = false;
+	void closeScorer();
+	void openScorer();
 private:
-	bool m_hasEjected = false;
-	DoubleSolenoid m_frontLeftSolenoid, m_frontRightSolenoid, m_backRightSolenoid, m_backLeftSolenoid;
-	TalonSRX m_leftArmMotor, m_rightArmMotor, m_cubeRotatorMotor;
+	DoubleSolenoid m_scorerSolenoid;
+	bool m_scorerClosed;
 };

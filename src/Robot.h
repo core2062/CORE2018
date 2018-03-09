@@ -12,6 +12,8 @@
 #include "COREHardware/COREJoystick.h"
 #include "COREFramework/CORERobot.h"
 
+
+/************************* Motors *************************/
 #define FRONT_RIGHT_STEER_PORT 11
 #define FRONT_LEFT_STEER_PORT 12
 #define BACK_RIGHT_STEER_PORT 13
@@ -26,6 +28,17 @@
 #define RIGHT_INTAKE_MOTOR_PORT 22
 #define CHAINBAR_MOTOR_PORT 23
 #define ROTATION_MOTOR_PORT 24
+
+/************************* Solenoids *************************/
+#define SCORER_IN_SOLENOID_PORT 0
+#define SCORER_OUT_SOLENOID_PORT 1
+#define RIGHT_INTAKE_IN_SOLENOID_PORT 2
+#define RIGHT_INTAKE_OUT_SOLENOID_PORT 3
+#define LEFT_INTAKE_IN_SOLENOID_PORT 4
+#define LEFT_INTAKE_OUT_SOLENOID_PORT 5
+
+/************************* Digital Inputs *************************/
+#define LIFT_BOTTOM_LIMIT_SWITCH 0
 
 using namespace CORE;
 using namespace std;

@@ -3,55 +3,48 @@
 #include "ctre/Phoenix.h"
 #include <WPILib.h>
 
-// TODO fill these motors in with actual ports that we are going to be using
+#include "Robot.h"
+
 ScorerSubsystem::ScorerSubsystem() :
-		m_frontLeftSolenoid(0, 1),
-		m_frontRightSolenoid(0, 1),
-		m_backRightSolenoid(0, 1),
-		m_backLeftSolenoid(0, 1),
-		m_leftArmMotor(2),
-		m_rightArmMotor(3),
-		m_cubeRotatorMotor(1) {
+		m_scorerSolenoid(SCORER_IN_SOLENOID_PORT, SCORER_OUT_SOLENOID_PORT) {
 
 }
 
 void ScorerSubsystem::robotInit() {
-	operatorJoystick->registerButton(CORE::COREJoystick::JoystickButton::LEFT_BUTTON);
-	operatorJoystick->registerAxis(CORE::COREJoystick::JoystickAxis::RIGHT_STICK_Y);
+	operatorJoystick->registerButton(CORE::COREJoystick::JoystickButton::RIGHT_BUTTON);
+	openScorer();
+	m_scorerClosed = false;
 }
 
 void ScorerSubsystem::teleopInit() {
 }
 
 void ScorerSubsystem::teleop() {
-	double y = operatorJoystick->getAxis(CORE::COREJoystick::JoystickAxis::RIGHT_STICK_Y);
-	if (y >= 0.1 || y <= -0.1) {
-		rotateSetCube(y);
+	if (operatorJoystick->getRisingEdge(CORE::COREJoystick::JoystickButton::RIGHT_BUTTON)) {
+		if(m_scorerClosed) {
+			openScorer();
+		} else {
+			closeScorer();
+		}
+		m_scorerClosed = ! m_scorerClosed;
 	}
-	if (operatorJoystick->getRisingEdge(CORE::COREJoystick::LEFT_BUTTON) == true &&
-			m_hasEjected == false) {
-		outtakeCube();
-		m_hasEjected = true;
-	} else if (operatorJoystick->getRisingEdge(CORE::COREJoystick::LEFT_BUTTON) == true &&
-			m_hasEjected == true) {
+	if (operatorJoystick->getButton(CORE::COREJoystick::JoystickButton::RIGHT_TRIGGER)) {
 		intakeCube();
-		m_hasEjected = false;
+	}
+	if (operatorJoystick->getButton(CORE::COREJoystick::JoystickButton::LEFT_TRIGGER)) {
+		outakeCube();
 	}
 }
 
-void ScorerSubsystem::rotateSetCube(double armMotorPercent) {
-	m_leftArmMotor.Set(ControlMode::PercentOutput, armMotorPercent);
-	m_rightArmMotor.Set(ControlMode::PercentOutput, armMotorPercent);
+void ScorerSubsystem::closeScorer() {
+	m_scorerSolenoid.Set(DoubleSolenoid::kForward);
 }
 
-void ScorerSubsystem::intakeCube() {
-	m_frontLeftSolenoid.Set(DoubleSolenoid::kForward);
-	m_frontRightSolenoid.Set(DoubleSolenoid::kForward);
-	m_backLeftSolenoid.Set(DoubleSolenoid::kForward);
-	m_backRightSolenoid.Set(DoubleSolenoid::kForward);
+void ScorerSubsystem::openScorer() {
+	m_scorerSolenoid.Set(DoubleSolenoid::kReverse);
 }
 
-void ScorerSubsystem::outtakeCube() {
+void ScorerSubsystem::outakeCube() {
 	m_frontLeftSolenoid.Set(DoubleSolenoid::kReverse);
 	m_frontRightSolenoid.Set(DoubleSolenoid::kReverse);
 	m_backLeftSolenoid.Set(DoubleSolenoid::kReverse);

@@ -5,7 +5,6 @@
 #include <CORERobotLib.h>
 #include "COREFramework/COREScheduler.h"
 
-
 using namespace CORE;
 
 class ScorerSubsystem  : public CORESubsystem {

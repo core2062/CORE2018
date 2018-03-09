@@ -5,9 +5,9 @@
 #include <Robot.h>
 
 
-class DropCubeAction : public COREAutonAction{
+class DropCube : public COREAutonAction{
 public:
-	DropCubeAction();
+	DropCube();
 	void actionInit();
 	actionStatus action() override;
 	void actionEnd();

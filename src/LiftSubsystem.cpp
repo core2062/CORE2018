@@ -29,9 +29,9 @@ void LiftSubsystem::teleopInit() {
 void LiftSubsystem::teleop() {
 	double y = -operatorJoystick->getAxis(CORE::COREJoystick::JoystickAxis::LEFT_STICK_Y);
 	if (y >= 0.01 && m_rightLiftMotor.GetSelectedSensorPosition(0) < m_liftTopLimit.Get()) {
-		setLift(y);
+		setLift(y*0.25);
 	} else if (y <= -0.01 && !m_liftBottomLimitSwitch.Get()) {
-		setLift(y);
+		setLift(y*0.25);
 	} else {
 		setLift(0);
 	}

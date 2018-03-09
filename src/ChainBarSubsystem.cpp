@@ -1,9 +1,13 @@
 #include <ChainBarSubsystem.h>
-
+#include "COREUtilities/COREConstant.h"
 #include "Robot.h"
 
 ChainBarSubsystem::ChainBarSubsystem() : m_chainBarMotor(CHAINBAR_MOTOR_PORT),
-                                         m_rotationMotor(ROTATION_MOTOR_PORT) {
+                                         m_rotationMotor(ROTATION_MOTOR_PORT),
+										 m_chainBarLowerTopLimit("chainBarLowerTopLimit", 0),
+										 m_chainBarUpperTopLimit("chainBarUpperTopLimit", 0),
+										 m_chainBarBottomLimit("chainBarBottomLimit", 0),
+										 m_liftChangePoint("liftChangePoint", 0) {
 
 }
 
@@ -21,7 +25,16 @@ void ChainBarSubsystem::teleopInit() {
 
 void ChainBarSubsystem::teleop() {
     double y = operatorJoystick->getAxis(COREJoystick::JoystickAxis::RIGHT_STICK_X);
-    if(abs(y) > 0.01) {
+    if (m_chainBarBottomLimit.Get() >= m_chainBarPosition) {
+    	setChainBar(0);
+    }
+    else if ((m_chainBarPosition >= m_chainBarLowerTopLimit.Get()) && (m_liftPosition < m_liftChangePoint.Get())) {
+    	setChainBar(0);
+    }
+    else if ((m_chainBarPosition >= m_chainBarUpperTopLimit.Get()) && (m_liftPosition > m_liftChangePoint.Get())) {
+    	setChainBar(0);
+    }
+    else if(abs(y) > 0.01) {
         setChainBar(y);
     } else {
         setChainBar(0);

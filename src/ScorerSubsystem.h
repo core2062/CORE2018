@@ -16,7 +16,7 @@ public:
 	void teleop() override;
 	void closeScorer();
 	void openScorer();
+	bool m_scorerClosed;
 private:
 	DoubleSolenoid m_scorerSolenoid;
-	bool m_scorerClosed;
 };

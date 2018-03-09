@@ -7,8 +7,8 @@ void DropCube::actionInit() {
 
 }
 COREAutonAction::actionStatus DropCube::action() {
-	if (Robot.scorerSubsystem.m_isCubeInIntake == true) {
-		Robot.scorerSubsystem.outakeCube();
+	if (Robot.scorerSubsystem.m_scorerClosed == true) {
+		Robot.scorerSubsystem.openScorer();
 	}
 
 	return COREAutonAction::actionStatus::END;

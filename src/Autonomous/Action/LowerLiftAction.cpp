@@ -7,7 +7,7 @@ void LowerLiftAction::actionInit() {
 
 }
 COREAutonAction::actionStatus LowerLiftAction::action() {
-	if (Robot.liftSubsystem.m_liftPosition <= Robot.liftSubsystem.m_liftBottomLimit.Get()) {
+	if (Robot.liftSubsystem.m_liftPosition == 0) {
 		Robot.liftSubsystem.setLift(-0.2);
 		return COREAutonAction::actionStatus::CONTINUE;
 	} else {

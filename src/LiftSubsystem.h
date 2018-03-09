@@ -16,11 +16,11 @@ public:
 	void teleopInit() override;
 	void teleop() override;
 	void setLift(double speed);
+	double m_liftPosition;
 
 private:
 	TalonSRX m_leftLiftMotor;
 	TalonSRX m_rightLiftMotor;
-	double m_liftPosition;
 	COREJoystick * m_operatorJoystick;
 	COREConstant<double> m_liftTopLimit;
 	DigitalInput m_liftBottomLimitSwitch;

@@ -18,7 +18,6 @@ LiftSubsystem::LiftSubsystem() :
 	m_liftPosition = 0;
 	m_leftLiftMotor.SetInverted(true);
 
-
 }
 
 void LiftSubsystem::robotInit() {

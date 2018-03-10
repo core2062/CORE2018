@@ -18,4 +18,5 @@ public:
 
 private:
 	static COREConstant<int> m_bottomHeight, m_topHeight; //TODO: Add more constants
+	liftAction m_requestedLiftAction;
 };

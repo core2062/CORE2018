@@ -6,6 +6,7 @@
 #include "COREHardware/COREJoystick.h"
 #include "COREUtilities/COREConstant.h"
 #include "COREFramework/COREScheduler.h"
+#include "COREControl/COREPID.h"
 
 using namespace CORE;
 using namespace frc;

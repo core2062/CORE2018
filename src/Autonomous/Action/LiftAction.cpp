@@ -3,6 +3,8 @@
 
 LiftAction::LiftAction(liftAction action) {
 
+	m_requestedLiftAction = action;
+
 }
 
 LiftAction::LiftAction(int newPosition) {
@@ -10,17 +12,32 @@ LiftAction::LiftAction(int newPosition) {
 }
 
 void LiftAction::actionInit(){
+	//TODO add top, bottom, scale, and switch functions to Lift Subsystem
+	switch(m_requestedLiftAction) {
 
+	case TOP:
+
+
+		break;
+	case BOTTOM:
+
+		break;
+	case SCALE:
+		break;
+	case SWITCH:
+
+		break;
+	default:
+		break;
+
+
+	}
 }
 
 COREAutonAction::actionStatus LiftAction::action(){
-/*	if (Robot.liftSubsystem.m_liftPosition <= m_scaleHeight) {
-		Robot.liftSubsystem.setLift(0.2);
-		return COREAutonAction::actionStatus::CONTINUE;
-	} else {
-		Robot.liftSubsystem.setLift(0);
-		return COREAutonAction::actionStatus::END;
-	}*/
+
+
+
 	//TODO: Write this code
 	return COREAutonAction::actionStatus::END;
 }

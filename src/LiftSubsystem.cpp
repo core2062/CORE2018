@@ -45,3 +45,8 @@ void LiftSubsystem::setLift(double liftMotorPercentage) {
 	m_leftLiftMotor.Set(ControlMode::PercentOutput, liftMotorPercentage);
 	m_rightLiftMotor.Set(ControlMode::PercentOutput, liftMotorPercentage);
 }
+
+
+
+
+

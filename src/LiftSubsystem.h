@@ -17,6 +17,8 @@ public:
 	void teleopInit() override;
 	void teleop() override;
 	void setLift(double speed);
+	void setLiftSwitch(double setPoint);
+	void setLiftScale(double setPoint);
 	double m_liftPosition;
 
 private:

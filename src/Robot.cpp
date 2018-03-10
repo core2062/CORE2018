@@ -2,6 +2,8 @@
 #include "ctre/Phoenix.h"
 #include "CORELogging/COREDataLog.h"
 #include <CORERobotLib.h>
+#include "COREFramework/COREScheduler.h"
+#include "CORELogging/CORELog.h"
 
 CORE2018* CORE2018::m_instance;
 

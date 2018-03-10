@@ -1,6 +1,7 @@
 #include "ScorerSubsystem.h"
 #include "COREFramework/COREScheduler.h"
 #include "ctre/Phoenix.h"
+#include "CORELogging/CORELog.h"
 #include <WPILib.h>
 
 #include "Robot.h"

@@ -3,8 +3,16 @@
 #include "Robot.h"
 #include "COREHardware/COREJoystick.h"
 #include "COREFramework/COREScheduler.h"
+#include "COREUtilities/COREVector.h"
+#include "Timer.h"
+#include "SerialPort.h"
+#include "CORELogging/CORELog.h"
 
 DriveSubsystem::DriveSubsystem() :
+		m_pursuit(0, 0, .1, m_path, false, 0),
+		m_steerPID_P("Steer PID P"),
+		m_steerPID_I("Steer PID I"),
+		m_steerPID_D("Steer PID D"),
 		m_rightFrontSteerMotor(FRONT_RIGHT_STEER_PORT),
 		m_leftFrontSteerMotor(FRONT_LEFT_STEER_PORT),
 		m_rightBackSteerMotor(BACK_RIGHT_STEER_PORT),
@@ -14,15 +22,11 @@ DriveSubsystem::DriveSubsystem() :
 		m_rightBackDriveMotor(BACK_RIGHT_DRIVE_PORT),
 		m_leftBackDriveMotor(BACK_LEFT_DRIVE_PORT),
 		m_rightFrontModule(new CORESwerve::SwerveModule(&m_rightFrontDriveMotor, &m_rightFrontSteerMotor)),
-		m_rightBackModule(new CORESwerve::SwerveModule(&m_rightBackDriveMotor, &m_rightBackSteerMotor)),
 		m_leftFrontModule(new CORESwerve::SwerveModule(&m_leftFrontDriveMotor, &m_leftFrontSteerMotor)),
+		m_rightBackModule(new CORESwerve::SwerveModule(&m_rightBackDriveMotor, &m_rightBackSteerMotor)),
 		m_leftBackModule(new CORESwerve::SwerveModule(&m_leftBackDriveMotor, &m_leftBackSteerMotor)),
-		m_steerPID_P("Steer PID P"),
-		m_steerPID_I("Steer PID I"),
-		m_steerPID_D("Steer PID D"),
-		m_pursuit(0, 0, .1, m_path, false, 0),
 		m_gyro(new AHRS(SerialPort::Port::kUSB, AHRS::SerialDataType::kProcessedData, 200)),
-        total(0,0) {
+        m_total(0,0) {
     m_swerveDrive = new CORESwerve(m_wheelbase, m_trackwidth, 3.0, 1228.8*4, m_leftFrontModule, m_leftBackModule, m_rightBackModule, m_rightFrontModule);
 }
 
@@ -69,10 +73,10 @@ void DriveSubsystem::teleop() {
     y = temp;
 
     COREVector vector = m_swerveDrive->forwardKinematics(gyro_radians);
-    total = total.AddVector(vector);
+    m_total = m_total.AddVector(vector);
 
-    SmartDashboard::PutNumber("Total X", total.GetX());
-    SmartDashboard::PutNumber("Total Y", total.GetY());
+    SmartDashboard::PutNumber("Total X", m_total.GetX());
+    SmartDashboard::PutNumber("Total Y", m_total.GetY());
 
     m_swerveDrive->inverseKinematics(x, y, -theta);
 
@@ -162,6 +166,7 @@ void DriveSubsystem::resetTracker(Position2d initialPos) {
 void DriveSubsystem::autonInit() {
 	Position2d startingPosition;
 	resetTracker(startingPosition);
+	m_swerveTracker->start();
 
 }
 
@@ -173,16 +178,17 @@ void DriveSubsystem::auton() {
 		} else {
 			pos = frame->getLatest(path);
 		}
-		Position2d::Delta command = m_pursuit.update(pos,
-				Timer::GetFPGATimestamp());
-		COREVector setpoint = m_swerveDrive->forwardKinematics(0);
+		COREVector setpoint = m_swerveDrive->forwardKinematics(getGyroYaw());
 		double maxVel = 0.0;
 		maxVel = max(maxVel, setpoint.GetX());
 		if (maxVel > 100) {
-			setpoint = COREVector(setpoint.GetX(), setpoint.GetY());
+			double scaling = 100 / maxVel;
+			setpoint = COREVector(setpoint.GetMagnitude() * scaling, setpoint.GetDegrees() * scaling);
 		}
-	} else {
-
+		m_rightFrontModule->drive(setpoint);
+		m_leftFrontModule->drive(setpoint);
+		m_rightBackModule->drive(setpoint);
+		m_leftBackModule->drive(setpoint);
 	}
 
 }

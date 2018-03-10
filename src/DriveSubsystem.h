@@ -37,11 +37,11 @@ private:
 	double m_wheelbase = 20.8;
 	double m_trackwidth = 25.881;
 	double m_fudgeFactor = 1.0;
+	COREConstant <double> m_steerPID_P, m_steerPID_I, m_steerPID_D;
+	TalonSRX m_rightFrontSteerMotor, m_leftFrontSteerMotor, m_rightBackSteerMotor, m_leftBackSteerMotor,
+			m_rightFrontDriveMotor, m_leftFrontDriveMotor, m_rightBackDriveMotor, m_leftBackDriveMotor;
+	CORESwerve::SwerveModule *m_rightFrontModule, *m_leftFrontModule, *m_rightBackModule, *m_leftBackModule;
 	CORESwerve* m_swerveDrive;
 	AHRS *m_gyro;
-	COREConstant <double> m_steerPID_P, m_steerPID_I, m_steerPID_D;
-	COREVector total;
-	CORESwerve::SwerveModule *m_rightFrontModule, *m_leftFrontModule, *m_rightBackModule, *m_leftBackModule;
-	TalonSRX m_rightFrontSteerMotor, m_rightBackSteerMotor, m_leftFrontSteerMotor, m_leftBackSteerMotor,
-			m_rightFrontDriveMotor, m_rightBackDriveMotor, m_leftFrontDriveMotor, m_leftBackDriveMotor;
+	COREVector m_total;
 };

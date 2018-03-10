@@ -2,6 +2,7 @@
 #include "ctre/Phoenix.h"
 #include "Robot.h"
 #include "COREFramework/COREScheduler.h"
+#include <WPILib.h>
 
 LiftSubsystem::LiftSubsystem() :
 		m_leftLiftMotor(LEFT_LIFT_MOTOR_PORT),

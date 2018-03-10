@@ -1,6 +1,8 @@
 #include "IntakeSubsystem.h"
-
+#include "ctre/Phoenix.h"
 #include "Robot.h"
+#include "COREFramework/COREScheduler.h"
+#include <WPILib.h>
 
 // TODO fill this in with actual motor ports and solenoid stuff
 IntakeSubsystem::IntakeSubsystem() :

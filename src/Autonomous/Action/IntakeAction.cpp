@@ -6,7 +6,23 @@ IntakeAction::IntakeAction() {
 
 }
 void IntakeAction::actionInit() {
-
+	switch(m_intakeRequestedAction) {
+	case INTAKE:
+		CORE2018::GetInstance()->intakeSystem.setIntakeSpeed(0.2);
+		break;
+	case OUTTAKE:
+		CORE2018::GetInstance()->intakeSystem.setIntakeSpeed(-0.2);
+		break;
+	case CLOSE:
+		CORE2018::GetInstance()->intakeSystem.closeIntake();
+		break;
+	case OPENINTAKE:
+		CORE2018::GetInstance()->intakeSystem.openIntake();
+		break;
+	case STOP:
+		CORE2018::GetInstance()->intakeSystem.setIntakeSpeed(0);
+		break;
+	}
 }
 COREAutonAction::actionStatus IntakeAction::action() {
 	//TODO: Write this code

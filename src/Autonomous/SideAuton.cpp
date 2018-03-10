@@ -3,7 +3,7 @@
 #include <WPILib.h>
 #include <CORERobotLib.h>
 
-SideAuton::SideAuton() : COREAuton("Side Auton", false) {
+SideAuton::SideAuton() : COREAuton("Side Auton") {
 	m_moveToSwitch = new Node(5, new DriveDistanceAction());
 	m_outtakeCubeToSwitch = new Node(5, new ScorerAction(scorerAction::OPEN));
 	m_moveToCubeStack = new Node(5, new DriveDistanceAction());

@@ -1,6 +1,14 @@
 #include <CORERobotLib.h>
 #include <ScorerSubsystem.h>
 
+enum armAction {
+
+	UP,
+	MIDDLE,
+	DOWN
+
+};
+
 class RotateArmAction : public COREAutonAction {
 public:
 	RotateArmAction();
@@ -8,4 +16,10 @@ public:
 	actionStatus action() override;
 	void actionEnd();
 	ScorerSubsystem scorerSubsystem;
+
+
+
+private:
+
+	armAction m_requestedArmAction;
 };

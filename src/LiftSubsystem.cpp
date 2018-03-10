@@ -40,16 +40,13 @@ void LiftSubsystem::teleopInit() {
 
 void LiftSubsystem::teleop() {
     SmartDashboard::PutNumber("Lift Encoder", m_rightLiftMotor.GetSelectedSensorPosition(0));
-/*in progress code*/
     double liftSpeed = operatorJoystick -> getAxis(CORE::COREJoystick::JoystickAxis::LEFT_STICK_X);
-    double liftHeight = m_liftPosition;
+    double liftHeight = m_rightLiftMotor.GetSensorCollection().SetPulseWidthPosition(0,0);
     if(abs(liftSpeed) > 0.01) {
     	if(liftSpeed > 0 && liftHeight > m_liftTopLimit.Get()) {
                 liftSpeed = 0;
             } else if(liftSpeed < 0 && liftHeight < m_liftBottomLimit.Get()) {
                 liftSpeed = 0;
-            } else {
-                liftSpeed = liftSpeed;
             }
 		} else {
 			if(liftSpeed > liftHeight){

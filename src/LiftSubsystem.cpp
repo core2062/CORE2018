@@ -2,17 +2,17 @@
 #include "ctre/Phoenix.h"
 #include "Robot.h"
 #include "COREFramework/COREScheduler.h"
-#include <WPILib.h>
 
-LiftSubsystem::LiftSubsystem() :
+LiftSubsystem::LiftSubsystem() {
 		m_leftLiftMotor(LEFT_LIFT_MOTOR_PORT),
 		m_rightLiftMotor(RIGHT_LIFT_MOTOR_PORT),
 		m_liftTopLimit("Lift Top Limit"),
-		m_liftBottomLimitSwitch(LIFT_BOTTOM_LIMIT_SWITCH) {
+		m_liftBottomLimitSwitch(LIFT_BOTTOM_LIMIT_SWITCH); {
 	m_liftPosition = 0;
 	m_leftLiftMotor.SetInverted(true);
+	m_liftPID(0,0,0);
 }
-
+}
 void LiftSubsystem::robotInit() {
 	m_leftLiftMotor.Set(ControlMode::PercentOutput, 0);
 	m_rightLiftMotor.Set(ControlMode::PercentOutput, 0);
@@ -25,28 +25,43 @@ void LiftSubsystem::robotInit() {
 }
 
 void LiftSubsystem::teleopInit() {
+	m_liftPID.setProportionalConstant(m_liftUpP.Get());
+	m_liftPID.setIntegralConstant(m_liftUpI.Get());
+	m_liftPID.setDerivativeConstant(m_liftUpD.Get());
 }
 
 void LiftSubsystem::teleop() {
-	double y = -operatorJoystick->getAxis(CORE::COREJoystick::JoystickAxis::LEFT_STICK_Y);
-	if (y >= 0.01 && m_rightLiftMotor.GetSelectedSensorPosition(0) < m_liftTopLimit.Get()) {
-		setLift(y*0.25);
-	} else if (y <= -0.01 && !m_liftBottomLimitSwitch.Get()) {
-		setLift(y*0.25);
-	} else {
-		setLift(0);
-	}
     SmartDashboard::PutNumber("Lift Speed", y);
-
     SmartDashboard::PutNumber("Lift Encoder", m_rightLiftMotor.GetSelectedSensorPosition(0));
+/*in progress code*/
+    double liftSpeed = operatorJoystick -> getAxis(CORE::COREJoystick::JoystickAxis::LEFT_STICK_X);
+    double liftHeight = m_liftPosition();
+    if(abs(liftSpeed) > 0.01) {
+    	if(liftSpeed > 0 && liftHeight > m_liftTopLimit.Get()) {
+                liftSpeed = 0;
+            } else if(liftSpeed < 0 && liftHeight < m_liftBottomLimit.Get()) {
+                liftSpeed = 0;
+            } else {
+                liftSpeed() = liftSpeed;
+            }
+		} else {
+			if(liftSpeed > liftHeight){
+				m_liftPID.setProportionalConstant(m_liftUpP.Get());
+				m_liftPID.setIntegralConstant(m_liftUpI.Get());
+				m_liftPID.setDerivativeConstant(m_liftUpD.Get());
+				liftSpeed = m_liftPID.calculate(m_liftPosition - liftHeight());
+		} else{
+				m_liftPID.setProportionalConstant(m_liftUpP.Get());
+				m_liftPID.setIntegralConstant(m_liftUpI.Get());
+				m_liftPID.setDerivativeConstant(m_liftUpD.Get());
+				liftSpeed = m_liftPID.calculate(m_liftPosition - liftHeight());
+		}
 }
+setLift(liftSpeed);
+SmartDashboard::PutNumber("Lift Height", liftHeight());
+        }
 
 void LiftSubsystem::setLift(double liftMotorPercentage) {
 	m_leftLiftMotor.Set(ControlMode::PercentOutput, liftMotorPercentage);
 	m_rightLiftMotor.Set(ControlMode::PercentOutput, liftMotorPercentage);
 }
-
-
-
-
-

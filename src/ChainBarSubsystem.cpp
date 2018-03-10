@@ -1,8 +1,6 @@
 #include <ChainBarSubsystem.h>
 #include "ctre/Phoenix.h"
 #include "COREFramework/COREScheduler.h"
-#include <WPILib.h>
-#include "COREControl/COREPID.h"
 
 #include "COREUtilities/COREConstant.h"
 #include "Robot.h"
@@ -46,6 +44,7 @@ void ChainBarSubsystem::teleopInit() {
     m_chainBarPID.setIntegralConstant(m_chainBarUpI.Get());
     m_chainBarPID.setDerivativeConstant(m_chainBarUpD.Get());
     SetChainBarRequestedAngle(GetChainBarAngle());
+
 
     m_rotationPID.setProportionalConstant(m_rotationP.Get());
     m_rotationPID.setIntegralConstant(m_rotationI.Get());
@@ -100,9 +99,9 @@ void ChainBarSubsystem::teleop() {
         }
     } else {
         if(operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::DPAD_S)) {
-            m_requestedRotationAngle = -180;
+            m_requestedRotationAngle = 180;
         } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::DPAD_E)) {
-            m_requestedRotationAngle = -90;
+            m_requestedRotationAngle = 90;
         }
         rotationSpeed = m_rotationPID.calculate(m_requestedRotationAngle - GetRotationAngle());
     }

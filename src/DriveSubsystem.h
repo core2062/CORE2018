@@ -40,6 +40,7 @@ private:
 	CORESwerve* m_swerveDrive;
 	AHRS *m_gyro;
 	COREConstant <double> m_steerPID_P, m_steerPID_I, m_steerPID_D;
+	COREVector total;
 	CORESwerve::SwerveModule *m_rightFrontModule, *m_leftFrontModule, *m_rightBackModule, *m_leftBackModule;
 	TalonSRX m_rightFrontSteerMotor, m_rightBackSteerMotor, m_leftFrontSteerMotor, m_leftBackSteerMotor,
 			m_rightFrontDriveMotor, m_rightBackDriveMotor, m_leftFrontDriveMotor, m_leftBackDriveMotor;

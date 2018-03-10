@@ -17,12 +17,13 @@ DriveSubsystem::DriveSubsystem() :
 		m_rightBackModule(new CORESwerve::SwerveModule(&m_rightBackDriveMotor, &m_rightBackSteerMotor)),
 		m_leftFrontModule(new CORESwerve::SwerveModule(&m_leftFrontDriveMotor, &m_leftFrontSteerMotor)),
 		m_leftBackModule(new CORESwerve::SwerveModule(&m_leftBackDriveMotor, &m_leftBackSteerMotor)),
-		m_steerPID_P("Steer PID P", 0.005),
-		m_steerPID_I("Steer PID I", 0),
-		m_steerPID_D("Steer PID D", 0),
+		m_steerPID_P("Steer PID P"),
+		m_steerPID_I("Steer PID I"),
+		m_steerPID_D("Steer PID D"),
 		m_pursuit(0, 0, .1, m_path, false, 0),
-		m_gyro(new AHRS(SerialPort::Port::kUSB, AHRS::SerialDataType::kProcessedData, 200)) {
-    m_swerveDrive = new CORESwerve(m_wheelbase, m_trackwidth, 3.0, 1228.8, m_leftFrontModule, m_leftBackModule, m_rightBackModule, m_rightFrontModule);
+		m_gyro(new AHRS(SerialPort::Port::kUSB, AHRS::SerialDataType::kProcessedData, 200)),
+        total(0,0) {
+    m_swerveDrive = new CORESwerve(m_wheelbase, m_trackwidth, 3.0, 1228.8*4, m_leftFrontModule, m_leftBackModule, m_rightBackModule, m_rightFrontModule);
 }
 
 void DriveSubsystem::robotInit() {
@@ -41,8 +42,7 @@ void DriveSubsystem::teleopInit() {
         CORELog::logInfo("Zeroing modules");
         m_swerveDrive->zeroOffsets();
     }
-    m_swerveDrive->calculate(0, 0, 0);
-    m_swerveDrive->update();
+    m_swerveDrive->inverseKinematics(0, 0, 0);
     m_swerveDrive->setSteerPID(m_steerPID_P.Get(), m_steerPID_I.Get(), m_steerPID_D.Get());
 }
 
@@ -67,8 +67,14 @@ void DriveSubsystem::teleop() {
     double temp = y * cos(gyro_radians) + x * sin(gyro_radians);
     x = -y * sin(gyro_radians) + x * cos(gyro_radians);
     y = temp;
-    m_swerveDrive->calculate(x, y, -theta);
-    m_swerveDrive->update();
+
+    COREVector vector = m_swerveDrive->forwardKinematics(gyro_radians);
+    total = total.AddVector(vector);
+
+    SmartDashboard::PutNumber("Total X", total.GetX());
+    SmartDashboard::PutNumber("Total Y", total.GetY());
+
+    m_swerveDrive->inverseKinematics(x, y, -theta);
 
     if (driverJoystick->getRisingEdge(CORE::COREJoystick::START_BUTTON)) {
 		CORELog::logWarning("Zeroing Yaw!");
@@ -87,14 +93,14 @@ void DriveSubsystem::teleop() {
 }
 
 void DriveSubsystem::resetEncoders() {
-	m_rightFrontSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 10);
-	m_leftFrontSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 10);
-	m_rightBackSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 10);
-	m_leftBackSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 10);
-	m_rightFrontDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 10);
-	m_leftFrontDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 10);
-	m_rightBackDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 10);
-	m_leftBackDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 10);
+	m_rightFrontSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
+	m_leftFrontSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
+	m_rightBackSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
+	m_leftBackSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
+	m_rightFrontDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
+	m_leftFrontDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
+	m_rightBackDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
+	m_leftBackDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
 }
 
 void DriveSubsystem::initTalons() {
@@ -169,7 +175,7 @@ void DriveSubsystem::auton() {
 		}
 		Position2d::Delta command = m_pursuit.update(pos,
 				Timer::GetFPGATimestamp());
-		COREVector setpoint = m_swerveDrive->inverseKinematics();
+		COREVector setpoint = m_swerveDrive->forwardKinematics(0);
 		double maxVel = 0.0;
 		maxVel = max(maxVel, setpoint.GetX());
 		if (maxVel > 100) {

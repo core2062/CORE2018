@@ -9,7 +9,8 @@ CORE2018* CORE2018::m_instance;
 
 CORE2018::CORE2018():
         m_chainBarIntakeAngle("Chain Bar Intake Position Angle"),
-        m_chainBarSwitchAngle("Chain Bar Switch Position Angle") {
+        m_chainBarSwitchAngle("Chain Bar Switch Position Angle"),
+        m_chainBarUpAngle("Chain Bar Up Position Angle") {
     m_instance = this;
 }
 
@@ -29,6 +30,8 @@ void CORE2018::teleop() {
     } else if(operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::B_BUTTON)) { //Switch Position
         chainBarSubsystem.SetChainBarRequestedAngle(m_chainBarSwitchAngle.Get());
         chainBarSubsystem.SetRotationRequestedAngle(-90);
+    } else if(operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::Y_BUTTON)) { //Up Position
+        chainBarSubsystem.SetChainBarRequestedAngle(m_chainBarUpAngle.Get());
     }
 
 }

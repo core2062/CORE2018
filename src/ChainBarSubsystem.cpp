@@ -53,7 +53,7 @@ void ChainBarSubsystem::teleopInit() {
 }
 
 void ChainBarSubsystem::teleop() {
-    double chainBarSpeed = operatorJoystick->getAxis(COREJoystick::JoystickAxis::RIGHT_STICK_Y);
+    double chainBarSpeed = -operatorJoystick->getAxis(COREJoystick::JoystickAxis::RIGHT_STICK_Y);
     double chainBarAngle = GetChainBarAngle();
 
     if(abs(chainBarSpeed) > 0.01) {

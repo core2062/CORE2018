@@ -8,9 +8,8 @@
 IntakeSubsystem::IntakeSubsystem() :
 		m_leftIntakeMotor(LEFT_INTAKE_MOTOR_PORT),
 		m_rightIntakeMotor(RIGHT_INTAKE_MOTOR_PORT),
-		m_leftIntakeSolenoid(LEFT_INTAKE_IN_SOLENOID_PORT, LEFT_INTAKE_OUT_SOLENOID_PORT),
-		m_rightIntakeSolenoid(RIGHT_INTAKE_IN_SOLENOID_PORT, RIGHT_INTAKE_OUT_SOLENOID_PORT) {
-
+		m_intakeSolenoid(INTAKE_IN_SOLENOID_PORT, INTAKE_OUT_SOLENOID_PORT){
+	m_rightIntakeMotor.SetInverted(true);
 }
 
 void IntakeSubsystem::robotInit() {
@@ -23,13 +22,14 @@ void IntakeSubsystem::teleopInit() {
 }
 
 void IntakeSubsystem::teleop() {
-	if (operatorJoystick->getRisingEdge(CORE::COREJoystick::JoystickButton::RIGHT_BUTTON)) {
+	if (operatorJoystick->getRisingEdge(CORE::COREJoystick::JoystickButton::LEFT_TRIGGER)) {
 		openIntake();
-	}
-	if (operatorJoystick->getRisingEdge(CORE::COREJoystick::JoystickButton::B_BUTTON)) {
+		setIntakeSpeed(-0.2);
+	} else if (operatorJoystick->getRisingEdge(CORE::COREJoystick::JoystickButton::LEFT_BUTTON)) {
 		closeIntake();
-	}
-	if (operatorJoystick->getButton(CORE::COREJoystick::JoystickButton::LEFT_BUTTON)) {
+		setIntakeSpeed(-0.2);
+	} else if (operatorJoystick->getButton(CORE::COREJoystick::JoystickButton::RIGHT_BUTTON)) {
+		closeIntake();
 		setIntakeSpeed(0.2);
 	} else {
 		setIntakeSpeed(0);
@@ -37,13 +37,11 @@ void IntakeSubsystem::teleop() {
 }
 
 void IntakeSubsystem::openIntake() {
-	m_leftIntakeSolenoid.Set(DoubleSolenoid::kReverse);
-	m_rightIntakeSolenoid.Set(DoubleSolenoid::kReverse);
+	m_intakeSolenoid.Set(DoubleSolenoid::kReverse);
 }
 
 void IntakeSubsystem::closeIntake() {
-	m_leftIntakeSolenoid.Set(DoubleSolenoid::kForward);
-	m_rightIntakeSolenoid.Set(DoubleSolenoid::kForward);
+	m_intakeSolenoid.Set(DoubleSolenoid::kForward);
 }
 
 void IntakeSubsystem::setIntakeSpeed(double intakeMotorPercent) {

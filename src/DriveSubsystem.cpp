@@ -27,7 +27,7 @@ DriveSubsystem::DriveSubsystem() :
 		m_leftBackModule(new CORESwerve::SwerveModule(&m_leftBackDriveMotor, &m_leftBackSteerMotor)),
 		m_gyro(new AHRS(SerialPort::Port::kUSB, AHRS::SerialDataType::kProcessedData, 200)),
         m_total(0,0) {
-    m_swerveDrive = new CORESwerve(m_wheelbase, m_trackwidth, 3.0, 1228.8*4, m_leftFrontModule, m_leftBackModule, m_rightBackModule, m_rightFrontModule);
+    m_swerveDrive = new CORESwerve(m_wheelbase, m_trackwidth, 3.0, 1228.8, m_leftFrontModule, m_leftBackModule, m_rightBackModule, m_rightFrontModule);
 }
 
 void DriveSubsystem::robotInit() {

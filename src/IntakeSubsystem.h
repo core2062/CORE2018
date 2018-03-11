@@ -21,6 +21,6 @@ public:
 	void closeIntake();
 	TalonSRX m_leftIntakeMotor, m_rightIntakeMotor;
 private:
-	DoubleSolenoid m_leftIntakeSolenoid, m_rightIntakeSolenoid;
+	DoubleSolenoid m_intakeSolenoid;
 	double m_intakeMotorPercentage = 0.0;
 };

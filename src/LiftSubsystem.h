@@ -21,7 +21,8 @@ public:
 	void setLift(double speed);
 	void setLiftSwitch(double setPoint);
 	void setLiftScale(double setPoint);
-	double m_liftPosition;
+	void SetRequestedPosition(double position);
+	double GetLiftPosition();
 
 private:
 	TalonSRX m_leftLiftMotor;
@@ -31,4 +32,5 @@ private:
 	COREConstant<double> m_liftBottomLimit;
 	DigitalInput m_liftBottomLimitSwitch;
 	COREPID m_liftPID;
+	double m_requestedPosition;
 };

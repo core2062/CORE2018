@@ -32,10 +32,8 @@
 /************************* Solenoids *************************/
 #define SCORER_IN_SOLENOID_PORT 0
 #define SCORER_OUT_SOLENOID_PORT 1
-#define RIGHT_INTAKE_IN_SOLENOID_PORT 2
-#define RIGHT_INTAKE_OUT_SOLENOID_PORT 3
-#define LEFT_INTAKE_IN_SOLENOID_PORT 4
-#define LEFT_INTAKE_OUT_SOLENOID_PORT 5
+#define INTAKE_IN_SOLENOID_PORT 3
+#define INTAKE_OUT_SOLENOID_PORT 4
 
 /************************* Digital Inputs *************************/
 #define LIFT_BOTTOM_LIMIT_SWITCH 0

@@ -99,9 +99,9 @@ void ChainBarSubsystem::teleop() {
         }
     } else {
         if(operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::DPAD_S)) {
-            m_requestedRotationAngle = 180;
+            m_requestedRotationAngle = -180;
         } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::DPAD_E)) {
-            m_requestedRotationAngle = 90;
+            m_requestedRotationAngle = -90;
         }
         rotationSpeed = m_rotationPID.calculate(m_requestedRotationAngle - GetRotationAngle());
     }

@@ -66,11 +66,16 @@ void DriveSubsystem::teleop() {
     SmartDashboard::PutNumber("Gyro Yaw", getGyroYaw());
 
 	double theta = driverJoystick->getAxis(COREJoystick::RIGHT_STICK_X);
+    if(abs(theta) < 0.05) {
+        theta = 0;
+    }
 
     double gyro_radians = toRadians(getGyroYaw());
     double temp = y * cos(gyro_radians) + x * sin(gyro_radians);
     x = -y * sin(gyro_radians) + x * cos(gyro_radians);
     y = temp;
+
+    CORELog::logInfo("Testing");
 
     COREVector vector = m_swerveDrive->forwardKinematics(gyro_radians);
     m_total = m_total.AddVector(vector);

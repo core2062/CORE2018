@@ -88,6 +88,10 @@ void DriveSubsystem::teleop() {
     SmartDashboard::PutNumber("Returned Vector X", vector.GetX());
     SmartDashboard::PutNumber("Returned Vector Y", vector.GetY());
 
+    SmartDashboard::PutNumber("Total X", m_total.GetX());
+    SmartDashboard::PutNumber("Total Y", m_total.GetY());
+    SmartDashboard::PutNumber("Total Magnitude", m_total.GetMagnitude());
+    SmartDashboard::PutNumber("Forward Kinematics Rotation", m_total.GetDegrees());
 
     vector = vector.RotateBy(COREVector::FromRadians(gyro_radians, 1));
     SmartDashboard::PutNumber("Field Oriented X", vector.GetX());

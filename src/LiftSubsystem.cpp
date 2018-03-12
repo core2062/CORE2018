@@ -67,8 +67,8 @@ void LiftSubsystem::teleop() {
 }
 
 void LiftSubsystem::setLift(double liftMotorPercentage) {
-    m_leftLiftMotor.Set(ControlMode::PercentOutput, liftMotorPercentage);
-    m_rightLiftMotor.Set(ControlMode::PercentOutput, liftMotorPercentage);
+    m_leftLiftMotor.Set(ControlMode::PercentOutput, liftMotorPercentage * 0.3);
+    m_rightLiftMotor.Set(ControlMode::PercentOutput, liftMotorPercentage * 0.3);
 }
 
 void LiftSubsystem::SetRequestedPosition(double position) {

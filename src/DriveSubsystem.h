@@ -44,4 +44,5 @@ private:
 	CORESwerve* m_swerveDrive;
 	AHRS *m_gyro;
 	COREVector m_total;
+	double m_x, m_y;
 };

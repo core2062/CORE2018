@@ -15,6 +15,8 @@ IntakeSubsystem::IntakeSubsystem() :
 void IntakeSubsystem::robotInit() {
 	m_leftIntakeMotor.Set(ControlMode::PercentOutput, 0);
 	operatorJoystick->registerButton(CORE::COREJoystick::JoystickButton::LEFT_BUTTON);
+	operatorJoystick->registerButton(CORE::COREJoystick::JoystickButton::LEFT_TRIGGER);
+	operatorJoystick->registerButton(CORE::COREJoystick::JoystickButton::RIGHT_BUTTON);
 }
 
 void IntakeSubsystem::teleopInit() {

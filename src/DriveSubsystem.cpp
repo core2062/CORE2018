@@ -27,7 +27,9 @@ DriveSubsystem::DriveSubsystem() :
 		m_leftBackModule(new CORESwerve::SwerveModule(&m_leftBackDriveMotor, &m_leftBackSteerMotor)),
 		m_gyro(new AHRS(SerialPort::Port::kUSB, AHRS::SerialDataType::kProcessedData, 200)),
         m_total(0,0) {
-    m_swerveDrive = new CORESwerve(m_wheelbase, m_trackwidth, 3.0, 1228.8, m_leftFrontModule, m_leftBackModule, m_rightBackModule, m_rightFrontModule);
+    m_swerveDrive = new CORESwerve(m_wheelbase, m_trackwidth, 3.0, 4915.2, m_leftFrontModule, m_leftBackModule, m_rightBackModule, m_rightFrontModule);
+    m_swerveTracker = SwerveTracker::GetInstance();
+    m_swerveTracker->injectCORESwerve(m_swerveDrive);
 }
 
 void DriveSubsystem::robotInit() {
@@ -45,9 +47,14 @@ void DriveSubsystem::teleopInit() {
         SmartDashboard::PutBoolean("Zero Modules", false);
         CORELog::logInfo("Zeroing modules");
         m_swerveDrive->zeroOffsets();
-    }
+    } else
+        m_swerveDrive->updateOffsets();
+
     m_swerveDrive->inverseKinematics(0, 0, 0);
     m_swerveDrive->setSteerPID(m_steerPID_P.Get(), m_steerPID_I.Get(), m_steerPID_D.Get());
+    m_total.SetXY(0, 0);
+    m_x = 0;
+    m_y = 0;
 }
 
 void DriveSubsystem::teleop() {
@@ -78,10 +85,19 @@ void DriveSubsystem::teleop() {
     CORELog::logInfo("Testing");
 
     COREVector vector = m_swerveDrive->forwardKinematics(gyro_radians);
-    m_total = m_total.AddVector(vector);
+    SmartDashboard::PutNumber("Returned Vector X", vector.GetX());
+    SmartDashboard::PutNumber("Returned Vector Y", vector.GetY());
 
-    SmartDashboard::PutNumber("Total X", m_total.GetX());
-    SmartDashboard::PutNumber("Total Y", m_total.GetY());
+
+    vector = vector.RotateBy(COREVector::FromRadians(gyro_radians, 1));
+    SmartDashboard::PutNumber("Field Oriented X", vector.GetX());
+    SmartDashboard::PutNumber("Field Oriented Y", vector.GetY());
+
+    m_x += vector.GetX();
+    m_y += vector.GetY();
+
+    SmartDashboard::PutNumber("Total X", m_x);
+    SmartDashboard::PutNumber("Total Y", m_y);
 
     m_swerveDrive->inverseKinematics(x, y, -theta);
 
@@ -169,21 +185,44 @@ void DriveSubsystem::resetTracker(Position2d initialPos) {
 }
 
 void DriveSubsystem::autonInit() {
-	Position2d startingPosition;
+	/*Position2d startingPosition;
 	resetTracker(startingPosition);
-	m_swerveTracker->start();
-
+	m_swerveTracker->start();*/
+    m_x = 0;
+    m_y = 0;
 }
 
 void DriveSubsystem::auton() {
 	if (!m_pursuit.isDone()) {
-		Position2d pos;
-		if (frame == nullptr) {
-			pos = m_swerveTracker->getLatestFieldToVehicle();
-		} else {
-			pos = frame->getLatest(path);
-		}
-		COREVector setpoint = m_swerveDrive->forwardKinematics(getGyroYaw());
+        double gyro_radians = toRadians(getGyroYaw());
+        COREVector vector = m_swerveDrive->forwardKinematics(gyro_radians);
+        SmartDashboard::PutNumber("Returned Vector X", vector.GetX());
+        SmartDashboard::PutNumber("Returned Vector Y", vector.GetY());
+
+        vector = vector.RotateBy(COREVector::FromRadians(gyro_radians, 1));
+        SmartDashboard::PutNumber("Field Oriented X", vector.GetX());
+        SmartDashboard::PutNumber("Field Oriented Y", vector.GetY());
+
+        m_x += vector.GetX();
+        m_y += vector.GetY();
+
+        SmartDashboard::PutNumber("Total X", m_x);
+        SmartDashboard::PutNumber("Total Y", m_y);
+
+        COREVector total(m_x, m_y, false);
+
+        Position2d pos(total, COREVector::FromRadians(gyro_radians, 1));
+//		if (frame == nullptr) {
+//			pos = m_swerveTracker->getLatestFieldToVehicle();
+//		} else {
+//			pos = frame->getLatest(path);
+//		}
+        Position2d::Delta command = m_pursuit.update(pos, Timer::GetFPGATimestamp());
+        SmartDashboard::PutNumber("Pursuit X command", command.dx);
+        SmartDashboard::PutNumber("Pursuit Y command", command.dy);
+        SmartDashboard::PutNumber("Pursuit Theta command", command.dtheta);
+        m_swerveDrive->inverseKinematics(command.dx, command.dy, command.dtheta);
+        /*
 		double maxVel = 0.0;
 		maxVel = max(maxVel, setpoint.GetX());
 		if (maxVel > 100) {
@@ -193,7 +232,7 @@ void DriveSubsystem::auton() {
 		m_rightFrontModule->drive(setpoint);
 		m_leftFrontModule->drive(setpoint);
 		m_rightBackModule->drive(setpoint);
-		m_leftBackModule->drive(setpoint);
+		m_leftBackModule->drive(setpoint);*/
 	}
 
 }

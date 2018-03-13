@@ -1,6 +1,6 @@
 #pragma once
 
-#include <CORERobotlib.h>
+#include <CORERobotLib.h>
 #include <IntakeSubsystem.h>
 #include <ScorerSubsystem.h>
 enum intake {

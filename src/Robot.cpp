@@ -12,7 +12,7 @@ CORE2018::CORE2018():
         m_chainBarSwitchAngle("Chain Bar Switch Position Angle"),
         m_chainBarUpAngle("Chain Bar Up Position Angle") {
     m_instance = this;
-//    SetPeriod(3);
+    SetPeriod(0.05);
 }
 
 void CORE2018::robotInit() {

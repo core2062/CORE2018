@@ -28,8 +28,8 @@ DriveSubsystem::DriveSubsystem() :
 		m_gyro(new AHRS(SerialPort::Port::kUSB, AHRS::SerialDataType::kProcessedData, 200)),
         m_total(0,0) {
     m_swerveDrive = new CORESwerve(m_wheelbase, m_trackwidth, 3.0, 4915.2, m_leftFrontModule, m_leftBackModule, m_rightBackModule, m_rightFrontModule);
-    m_swerveTracker = SwerveTracker::GetInstance();
-    m_swerveTracker->injectCORESwerve(m_swerveDrive);
+//    m_swerveTracker = SwerveTracker::GetInstance();
+//    m_swerveTracker->injectCORESwerve(m_swerveDrive);
 }
 
 void DriveSubsystem::robotInit() {
@@ -38,8 +38,11 @@ void DriveSubsystem::robotInit() {
 	driverJoystick->registerAxis(CORE::COREJoystick::RIGHT_STICK_X);
 	driverJoystick->registerButton(CORE::COREJoystick::START_BUTTON);
 	SmartDashboard::PutBoolean("Zero Modules", false);
+    m_swerveDrive->inverseKinematics(0, 0, 0);
+    m_swerveDrive->setSteerPID(m_steerPID_P.Get(), m_steerPID_I.Get(), m_steerPID_D.Get());
     resetYaw();
 	initTalons();
+    m_swerveDrive->updateOffsets();
 }
 
 void DriveSubsystem::teleopInit() {
@@ -59,7 +62,7 @@ void DriveSubsystem::teleopInit() {
 
 void DriveSubsystem::teleop() {
 	//	Gets the joystick values for each of the functions
-    double x = -1 * driverJoystick->getAxis(COREJoystick::LEFT_STICK_X);
+    double x = -driverJoystick->getAxis(COREJoystick::LEFT_STICK_X);
     double y = driverJoystick->getAxis(COREJoystick::LEFT_STICK_Y);
     if(abs(x) < 0.05) {
         x = 0;
@@ -70,7 +73,7 @@ void DriveSubsystem::teleop() {
 
     SmartDashboard::PutNumber("Gyro Yaw", getGyroYaw());
 
-	double theta = driverJoystick->getAxis(COREJoystick::RIGHT_STICK_X);
+	double theta = -driverJoystick->getAxis(COREJoystick::RIGHT_STICK_X);
     if(abs(theta) < 0.05) {
         theta = 0;
     }
@@ -80,14 +83,14 @@ void DriveSubsystem::teleop() {
     x = -y * sin(gyro_radians) + x * cos(gyro_radians);
     y = temp;
 
-    m_swerveDrive->inverseKinematics(x, y, -theta);
+    m_swerveDrive->inverseKinematics(x, y, theta);
 
-    COREVector vector = m_swerveDrive->forwardKinematics(gyro_radians);
-    SmartDashboard::PutNumber("Returned Vector X", vector.GetX());
-    SmartDashboard::PutNumber("Returned Vector Y", vector.GetY());
+    auto result = m_swerveDrive->forwardKinematics(gyro_radians);
+    SmartDashboard::PutNumber("Returned Vector X", result.first);
+    SmartDashboard::PutNumber("Returned Vector Y", result.second);
 
-    m_x += vector.GetX() * cos(gyro_radians) + vector.GetY() * sin(gyro_radians);
-    m_y += vector.GetX() * sin(gyro_radians) + vector.GetY() * cos(gyro_radians);
+    m_x += (result.first * cos(gyro_radians) + result.second * sin(gyro_radians));
+    m_y += (-result.first * sin(gyro_radians) + result.second * cos(gyro_radians));
 
     SmartDashboard::PutNumber("Total X", m_x);
     SmartDashboard::PutNumber("Total Y", m_y);
@@ -175,42 +178,37 @@ void DriveSubsystem::resetTracker(Position2d initialPos) {
 	m_swerveTracker->reset(Timer::GetFPGATimestamp(), initialPos);
 }
 
-void DriveSubsystem::autonInit() {
+void DriveSubsystem::autonInitTask() {
 	/*Position2d startingPosition;
 	resetTracker(startingPosition);
 	m_swerveTracker->start();*/
     m_x = 0;
     m_y = 0;
-    std::vector<Waypoint> waypoints;
-    waypoints.emplace_back(Waypoint(COREVector::FromXY(0, 6), 0.2));
-    Path path1(waypoints);
-    startPath(path1);
+    CORELog::logInfo("Beginning auton");
+    CORELog::logInfo("Got to end of auton Init");
 }
 
-void DriveSubsystem::auton() {
-	if (!m_pursuit.isDone()) {
+void DriveSubsystem::preLoopTask() {
+    if (!m_pursuit.isDone() && CORE::COREDriverstation::getMode() == CORE::COREDriverstation::AUTON) {
         double gyro_radians = toRadians(getGyroYaw());
-        COREVector vector = m_swerveDrive->forwardKinematics(gyro_radians);
-        SmartDashboard::PutNumber("Returned Vector X", vector.GetX());
-        SmartDashboard::PutNumber("Returned Vector Y", vector.GetY());
+        auto result = m_swerveDrive->forwardKinematics(gyro_radians);
+        SmartDashboard::PutNumber("Returned Vector X", result.first);
+        SmartDashboard::PutNumber("Returned Vector Y", result.second);
 
-        m_x += vector.GetX() * cos(gyro_radians) + vector.GetY() * sin(gyro_radians);
-        m_y += vector.GetX() * sin(gyro_radians) + vector.GetY() * cos(gyro_radians);
+        m_x += (result.first * cos(gyro_radians) + result.second * sin(gyro_radians));
+        m_y += (-result.first * sin(gyro_radians) + result.second * cos(gyro_radians));
 
         SmartDashboard::PutNumber("Total X", m_x);
         SmartDashboard::PutNumber("Total Y", m_y);
 
         Position2d pos(COREVector::FromXY(m_x, m_y), COREVector::FromRadians(gyro_radians, 1));
-//		if (frame == nullptr) {
-//			pos = m_swerveTracker->getLatestFieldToVehicle();
-//		} else {
-//			pos = frame->getLatest(path);
-//		}
         Position2d::Delta command = m_pursuit.update(pos, Timer::GetFPGATimestamp());
         SmartDashboard::PutNumber("Pursuit X command", command.dx);
         SmartDashboard::PutNumber("Pursuit Y command", command.dy);
         SmartDashboard::PutNumber("Pursuit Theta command", command.dtheta);
-        m_swerveDrive->inverseKinematics(command.dx, command.dy, command.dtheta);
+
+        m_swerveDrive->inverseKinematics(command.dx * 0.01, 0, 0);
+        CORELog::logInfo("X Command: " + to_string(command.dx));
         /*
 		double maxVel = 0.0;
 		maxVel = max(maxVel, setpoint.GetX());
@@ -237,21 +235,6 @@ void DriveSubsystem::teleopEnd() {
 	m_rightBackSteerMotor.Set(ControlMode::PercentOutput, 0);
 }
 
-void DriveSubsystem::autonInitTask() {
-    CORELog::logInfo("Test");
-    resetYaw();
-    m_leftFrontModule->setAngleOffset(0);
-    m_rightFrontModule->setAngleOffset(0);
-    m_leftBackModule->setAngleOffset(0);
-    m_rightBackModule->setAngleOffset(0);
-    m_leftFrontModule->setAnglePID(0, 0, 0);
-    m_rightFrontModule->setAnglePID(0, 0, 0);
-    m_leftBackModule->setAnglePID(0, 0, 0);
-    m_rightBackModule->setAnglePID(0, 0, 0);
-
-	SmartDashboard::PutNumber("Gyro Yaw", m_gyro->GetYaw());
-	SmartDashboard::PutNumber("Front Left Steer Angle", m_leftFrontModule->getAngle());
-	SmartDashboard::PutNumber("Front Right Steer Angle", m_rightFrontModule->getAngle());
-	SmartDashboard::PutNumber("Back Left Steer Angle", m_leftBackModule->getAngle());
-	SmartDashboard::PutNumber("Back Right Steer Angle", m_rightBackModule->getAngle());
+bool DriveSubsystem::pathDone() {
+    return m_pursuit.isDone();
 }

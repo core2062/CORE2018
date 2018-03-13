@@ -3,15 +3,15 @@
 #include <WPILib.h>
 #include "ctre/Phoenix.h"
 #include <iostream>
+#include "CORERobotLib.h"
+
 #include "IntakeSubsystem.h"
 #include "ScorerSubsystem.h"
 #include "LiftSubsystem.h"
 #include "ChainBarSubsystem.h"
-#include "CORERobotLib.h"
 #include "DriveSubsystem.h"
-#include "COREHardware/COREJoystick.h"
-#include "COREFramework/CORERobot.h"
 
+#include "Autonomous/TestAuton.h"
 
 /************************* Motors *************************/
 #define FRONT_RIGHT_STEER_PORT 11
@@ -61,4 +61,6 @@ public:
 	IntakeSubsystem intakeSystem;
 	ScorerSubsystem scorerSubsystem;
     COREConstant<double> m_chainBarIntakeAngle, m_chainBarSwitchAngle, m_chainBarUpAngle;
+
+    TestAuton testAuton;
 };

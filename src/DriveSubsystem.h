@@ -15,12 +15,12 @@ public:
 	void teleopInit() override;
 	void teleop() override;
 	void teleopEnd() override;
-	void auton();
-	void autonInit();
+	void preLoopTask();
 	void resetEncoders();
 	void initTalons();
 	void autonInitTask() override;
 	double getGyroYaw();
+	bool pathDone();
 	void resetYaw();
 
 
@@ -45,4 +45,5 @@ private:
 	AHRS *m_gyro;
 	COREVector m_total;
 	double m_x, m_y;
+    int count = 0;
 };

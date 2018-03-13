@@ -61,8 +61,6 @@ void DriveSubsystem::teleop() {
 	//	Gets the joystick values for each of the functions
     double x = -1 * driverJoystick->getAxis(COREJoystick::LEFT_STICK_X);
     double y = driverJoystick->getAxis(COREJoystick::LEFT_STICK_Y);
-	SmartDashboard::PutNumber("Joystick X", x);
-    SmartDashboard::PutNumber("Joystick Y", y);
     if(abs(x) < 0.05) {
         x = 0;
     }
@@ -82,24 +80,17 @@ void DriveSubsystem::teleop() {
     x = -y * sin(gyro_radians) + x * cos(gyro_radians);
     y = temp;
 
-    CORELog::logInfo("Testing");
+    m_swerveDrive->inverseKinematics(x, y, -theta);
 
     COREVector vector = m_swerveDrive->forwardKinematics(gyro_radians);
     SmartDashboard::PutNumber("Returned Vector X", vector.GetX());
     SmartDashboard::PutNumber("Returned Vector Y", vector.GetY());
 
-
-    vector = vector.RotateBy(COREVector::FromRadians(gyro_radians, 1));
-    SmartDashboard::PutNumber("Field Oriented X", vector.GetX());
-    SmartDashboard::PutNumber("Field Oriented Y", vector.GetY());
-
-    m_x += vector.GetX();
-    m_y += vector.GetY();
+    m_x += vector.GetX() * cos(gyro_radians) + vector.GetY() * sin(gyro_radians);
+    m_y += vector.GetX() * sin(gyro_radians) + vector.GetY() * cos(gyro_radians);
 
     SmartDashboard::PutNumber("Total X", m_x);
     SmartDashboard::PutNumber("Total Y", m_y);
-
-    m_swerveDrive->inverseKinematics(x, y, -theta);
 
     if (driverJoystick->getRisingEdge(CORE::COREJoystick::START_BUTTON)) {
 		CORELog::logWarning("Zeroing Yaw!");
@@ -190,6 +181,10 @@ void DriveSubsystem::autonInit() {
 	m_swerveTracker->start();*/
     m_x = 0;
     m_y = 0;
+    std::vector<Waypoint> waypoints;
+    waypoints.emplace_back(Waypoint(COREVector::FromXY(0, 6), 0.2));
+    Path path1(waypoints);
+    startPath(path1);
 }
 
 void DriveSubsystem::auton() {
@@ -199,19 +194,13 @@ void DriveSubsystem::auton() {
         SmartDashboard::PutNumber("Returned Vector X", vector.GetX());
         SmartDashboard::PutNumber("Returned Vector Y", vector.GetY());
 
-        vector = vector.RotateBy(COREVector::FromRadians(gyro_radians, 1));
-        SmartDashboard::PutNumber("Field Oriented X", vector.GetX());
-        SmartDashboard::PutNumber("Field Oriented Y", vector.GetY());
-
-        m_x += vector.GetX();
-        m_y += vector.GetY();
+        m_x += vector.GetX() * cos(gyro_radians) + vector.GetY() * sin(gyro_radians);
+        m_y += vector.GetX() * sin(gyro_radians) + vector.GetY() * cos(gyro_radians);
 
         SmartDashboard::PutNumber("Total X", m_x);
         SmartDashboard::PutNumber("Total Y", m_y);
 
-        COREVector total(m_x, m_y, false);
-
-        Position2d pos(total, COREVector::FromRadians(gyro_radians, 1));
+        Position2d pos(COREVector::FromXY(m_x, m_y), COREVector::FromRadians(gyro_radians, 1));
 //		if (frame == nullptr) {
 //			pos = m_swerveTracker->getLatestFieldToVehicle();
 //		} else {

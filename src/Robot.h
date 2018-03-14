@@ -10,7 +10,7 @@
 #include "LiftSubsystem.h"
 #include "ChainBarSubsystem.h"
 #include "DriveSubsystem.h"
-
+#include "Autonomous/SideAuton.h"
 #include "Autonomous/TestAuton.h"
 
 /************************* Motors *************************/
@@ -54,7 +54,6 @@ public:
     void testInit() override;
 
     static CORE2018* GetInstance();
-
 	DriveSubsystem driveSubsystem;
     ChainBarSubsystem chainBarSubsystem;
 	LiftSubsystem liftSubsystem;

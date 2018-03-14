@@ -4,6 +4,7 @@
 #include <CORERobotLib.h>
 #include "COREFramework/COREScheduler.h"
 #include "CORELogging/CORELog.h"
+#include "Autonomous/SideAuton.h"
 
 CORE2018* CORE2018::m_instance;
 
@@ -13,11 +14,15 @@ CORE2018::CORE2018():
         m_chainBarUpAngle("Chain Bar Up Position Angle") {
     m_instance = this;
     SetPeriod(0.05);
+
 }
 
 void CORE2018::robotInit() {
     operatorJoystick->registerButton(COREJoystick::JoystickButton::A_BUTTON);
     operatorJoystick->registerButton(COREJoystick::JoystickButton::B_BUTTON);
+
+
+
 }
 
 void CORE2018::teleopInit() {

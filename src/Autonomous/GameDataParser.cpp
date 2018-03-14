@@ -6,22 +6,19 @@
 void GameDataParser::autonInitTask() {
 	std::string gameOrientation = DriverStation::GetInstance().GetGameSpecificMessage();
 
-	if (gameOrientation[0] == 'L') {
-		switchSide = LEFT;
-	} else {
-		switchSide = RIGHT;
-	}
-	if (gameOrientation[1] == 'L') {
-		scaleSide = LEFT;
-	} else {
-		scaleSide = RIGHT;
+	if (gameOrientation[0] == 'L' && gameOrientation[1] == 'L') {
+		parsedGameOrientation = LL;
+	} else if (gameOrientation[0] == 'L' && gameOrientation[1] == 'R'){
+		parsedGameOrientation = LR;
+	} else if (gameOrientation[0] == 'R' && gameOrientation[1] == 'L') {
+		 parsedGameOrientation= RL;
+	} else if (gameOrientation[0] == 'R' && gameOrientation[1] == 'R'){
+		parsedGameOrientation = RR;
 	}
 	CORELog::logInfo("Game Orientation: " + gameOrientation);
-	}
-side GameDataParser::getScaleSide() {
-	return scaleSide;
 }
-side GameDataParser::getSwitchSide() {
-	return switchSide;
+side GameDataParser::getGameOrientation() {
+	return parsedGameOrientation;
 }
+
 

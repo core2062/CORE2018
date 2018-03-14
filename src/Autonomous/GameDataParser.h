@@ -14,10 +14,10 @@ class GameDataParser : public CORETask {
 	void autonInitTask() override;
 	side getSwitchSide();
 	side getScaleSide();
-
+	side switchSide;
+	side scaleSide;
 
 private:
-	side m_switchSide;
-	side m_scaleSide;
+
 
 };

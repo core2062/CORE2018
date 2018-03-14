@@ -3,6 +3,7 @@
 #include <WPILib.h>
 #include <CORERobotLib.h>
 
+
 SideAuton::SideAuton() : COREAuton("Side Auton") {
 	m_moveToSwitch = new Node(5, new DriveDistanceAction());
 	m_outtakeCubeToSwitch = new Node(5, new ScorerAction(scorerAction::OPEN));
@@ -20,98 +21,101 @@ SideAuton::SideAuton() : COREAuton("Side Auton") {
 }
 
 void SideAuton::addNodes() {
-
-//	std::string gameOrientation = m_driverStation.GetGameSpecificMessage();
-//	switch (/*Number of cubes and to where*/) {
-//	case /*One cube in switch, one cube in scale*/):
-//		if (gameOrientation[0] == 'R' && gameOrientation[1] == 'R') {
-//			m_moveToSwitch->addNext(m_outtakeCubeToSwitch); //might be reversed
-//			m_outtakeCubeToSwitch->addNext(m_moveToCubeStack);
-//			m_moveToCubeStack->addNext(m_intakeCube);//might be reversed
-//			m_intakeCube->addNext(m_moveToScale);
-//			m_moveToScale->addNext(m_liftUpToScale);//might be reversed
-//			m_liftUpToScale->addNext(m_outtakeCubeToScale);
-//		}
-//		else if (gameOrientation[0] == 'L' && gameOrientation[1] == 'R') {
-//			m_moveToSwitch->addNext(m_outtakeCubeToSwitch); //might be reversed
-//			m_outtakeCubeToSwitch->addNext(m_moveToCubeStack);
-//			m_moveToCubeStack->addNext(m_intakeCube);//might be reversed
-//			m_intakeCube->addNext(m_moveToScale);
-//			m_moveToScale->addNext(m_liftUpToScale);//might be reversed
-//			m_liftUpToScale->addNext(m_outtakeCubeToScale);
-//			}
-//		else if (gameOrientation[0] == 'R' && gameOrientation[1] == 'L') {
-//				m_moveToSwitch->addNext(m_outtakeCubeToSwitch); //might be reversed
-//				m_outtakeCubeToSwitch->addNext(m_moveToCubeStack);
-//				m_moveToCubeStack->addNext(m_intakeCube);//might be reversed
-//				m_intakeCube->addNext(m_moveToScale);
-//				m_moveToScale->addNext(m_liftUpToScale);//might be reversed
-//				m_liftUpToScale->addNext(m_outtakeCubeToScale);
-//			}
-//		else if (gameOrientation[0] == 'L' && gameOrientation[1] == 'L') {
-//				m_moveToSwitch->addNext(m_outtakeCubeToSwitch); //might be reversed
-//				m_outtakeCubeToSwitch->addNext(m_moveToCubeStack);
-//				m_moveToCubeStack->addNext(m_intakeCube);//might be reversed
-//				m_intakeCube->addNext(m_moveToScale);
-//				m_moveToScale->addNext(m_liftUpToScale);//might be reversed
-//				m_liftUpToScale->addNext(m_outtakeCubeToScale);
-//			}
-//	}
-//	break;
-//	case /*One cube in switch, two cubes in scale*/:
-//		if (gameOrientation[0] == 'R' && gameOrientation[1] == 'R') {
-//			m_moveToSwitch->addNext(m_outtakeCubeToSwitch); //might be reversed
-//			m_outtakeCubeToSwitch->addNext(m_moveToCubeStack);
-//			m_moveToCubeStack->addNext(m_intakeCube);//might be reversed
-//			m_intakeCube->addNext(m_moveToScale);
-//			m_moveToScale->addNext(m_liftUpToScale);//might be reversed
-//			m_liftUpToScale->addNext(m_outtakeCubeToScale);
-//			m_outtakeCubeToScale->addNext(m_driveToCubes);
-//			m_driveToCubes->addNext(m_intakeSecondCube);//might be reversed
-//			m_intakeSecondCube->addNext(m_driveToScaleSecondTime);
-//			m_driveToScaleSecondTime->addNext(m_outtakeSecondCube);//might be reversed
-//			m_liftUpToScaleSecondTime->addNext(m_outtakeSecondCube);
-//		}
-//		else if (gameOrientation[0] == 'L' && gameOrientation[1] == 'R') {
-//			m_moveToSwitch->addNext(m_outtakeCubeToSwitch);//might be reversed
-//			m_outtakeCubeToSwitch->addNext(m_moveToCubeStack);
-//			m_moveToCubeStack->addNext(m_intakeCube);//might be reversed
-//			m_intakeCube->addNext(m_moveToScale);
-//			m_moveToScale->addNext(m_liftUpToScale);//might be reversed
-//			m_liftUpToScale->addNext(m_outtakeCubeToScale);
-//			m_outtakeCubeToScale->addNext(m_driveToCubes);
-//			m_driveToCubes->addNext(m_intakeSecondCube);//might be reversed
-//			m_intakeSecondCube->addNext(m_driveToScaleSecondTime);
-//			m_driveToScaleSecondTime->addNext(m_outtakeSecondCube);//might be reversed
-//			m_liftUpToScaleSecondTime->addNext(m_outtakeSecondCube);
-//		}
-//		else if (gameOrientation[0] == 'R' && gameOrientation[1] == 'L') {
-//			m_moveToSwitch->addNext(m_outtakeCubeToSwitch);//might be reversed
-//			m_outtakeCubeToSwitch->addNext(m_moveToCubeStack);
-//			m_moveToCubeStack->addNext(m_intakeCube);//might be reversed
-//			m_intakeCube->addNext(m_moveToScale);
-//			m_moveToScale->addNext(m_liftUpToScale);//might be reversed
-//			m_liftUpToScale->addNext(m_outtakeCubeToScale);
-//			m_outtakeCubeToScale->addNext(m_driveToCubes);
-//			m_driveToCubes->addNext(m_intakeSecondCube);//might be reversed
-//			m_intakeSecondCube->addNext(m_driveToScaleSecondTime);
-//			m_driveToScaleSecondTime->addNext(m_outtakeSecondCube);//might be reversed
-//			m_liftUpToScaleSecondTime->addNext(m_outtakeSecondCube);
-//		}
-//		else if (gameOrientation[0] == 'L' && gameOrientation[1] == 'L') {
-//			m_moveToSwitch->addNext(m_outtakeCubeToSwitch);//might be reversed
-//			m_outtakeCubeToSwitch->addNext(m_moveToCubeStack);
-//			m_moveToCubeStack->addNext(m_intakeCube);//might be reversed
-//			m_intakeCube->addNext(m_moveToScale);
-//			m_moveToScale->addNext(m_liftUpToScale);//might be reversed
-//			m_liftUpToScale->addNext(m_outtakeCubeToScale);
-//			m_outtakeCubeToScale->addNext(m_driveToCubes);
-//			m_driveToCubes->addNext(m_intakeSecondCube);//might be reversed
-//			m_intakeSecondCube->addNext(m_driveToScaleSecondTime);
-//			m_driveToScaleSecondTime->addNext(m_liftUpToScaleSecondTime);//might be reversed
-//			m_liftUpToScaleSecondTime->addNext(m_outtakeSecondCube);
-//		}
-//	}
-//	break;
-//	}
+	std::string gameOrientation = DriverStation::GetInstance().GetGameSpecificMessage();
+	std::string sides = gameOrientation.substr(0, 2);
+	switch () {
+	case SWITCH1SCALE1:
+	{
+		switch (sides) {
+		case "RR":
+			m_moveToSwitch->addNext(m_outtakeCubeToSwitch); //might be reversed
+			m_outtakeCubeToSwitch->addNext(m_moveToCubeStack);
+			m_moveToCubeStack->addNext(m_intakeCube);//might be reversed
+			m_intakeCube->addNext(m_moveToScale);
+			m_moveToScale->addNext(m_liftUpToScale);//might be reversed
+			m_liftUpToScale->addNext(m_outtakeCubeToScale);
+			break;
+		case "LR":
+			m_moveToSwitch->addNext(m_outtakeCubeToSwitch); //might be reversed
+			m_outtakeCubeToSwitch->addNext(m_moveToCubeStack);
+			m_moveToCubeStack->addNext(m_intakeCube);//might be reversed
+			m_intakeCube->addNext(m_moveToScale);
+			m_moveToScale->addNext(m_liftUpToScale);//might be reversed
+			m_liftUpToScale->addNext(m_outtakeCubeToScale);
+			break;
+		case "RL":
+			m_moveToSwitch->addNext(m_outtakeCubeToSwitch); //might be reversed
+			m_outtakeCubeToSwitch->addNext(m_moveToCubeStack);
+			m_moveToCubeStack->addNext(m_intakeCube);//might be reversed
+			m_intakeCube->addNext(m_moveToScale);
+			m_moveToScale->addNext(m_liftUpToScale);//might be reversed
+			m_liftUpToScale->addNext(m_outtakeCubeToScale);
+			break;
+		case "LL":
+			m_moveToSwitch->addNext(m_outtakeCubeToSwitch); //might be reversed
+			m_outtakeCubeToSwitch->addNext(m_moveToCubeStack);
+			m_moveToCubeStack->addNext(m_intakeCube);//might be reversed
+			m_intakeCube->addNext(m_moveToScale);
+			m_moveToScale->addNext(m_liftUpToScale);//might be reversed
+			m_liftUpToScale->addNext(m_outtakeCubeToScale);
+			break;
+		}
+		break;
+	}
+	case SWITCH1SCALE2: {
+		switch (sides) {
+			m_moveToSwitch->addNext(m_outtakeCubeToSwitch); //might be reversed
+			m_outtakeCubeToSwitch->addNext(m_moveToCubeStack);
+			m_moveToCubeStack->addNext(m_intakeCube);//might be reversed
+			m_intakeCube->addNext(m_moveToScale);
+			m_moveToScale->addNext(m_liftUpToScale);//might be reversed
+			m_liftUpToScale->addNext(m_outtakeCubeToScale);
+			m_outtakeCubeToScale->addNext(m_driveToCubes);
+			m_driveToCubes->addNext(m_intakeSecondCube);//might be reversed
+			m_intakeSecondCube->addNext(m_driveToScaleSecondTime);
+			m_driveToScaleSecondTime->addNext(m_outtakeSecondCube);//might be reversed
+			m_liftUpToScaleSecondTime->addNext(m_outtakeSecondCube);
+		}
+		else if (gameOrientation[0] == 'L' && gameOrientation[1] == 'R') {
+			m_moveToSwitch->addNext(m_outtakeCubeToSwitch);//might be reversed
+			m_outtakeCubeToSwitch->addNext(m_moveToCubeStack);
+			m_moveToCubeStack->addNext(m_intakeCube);//might be reversed
+			m_intakeCube->addNext(m_moveToScale);
+			m_moveToScale->addNext(m_liftUpToScale);//might be reversed
+			m_liftUpToScale->addNext(m_outtakeCubeToScale);
+			m_outtakeCubeToScale->addNext(m_driveToCubes);
+			m_driveToCubes->addNext(m_intakeSecondCube);//might be reversed
+			m_intakeSecondCube->addNext(m_driveToScaleSecondTime);
+			m_driveToScaleSecondTime->addNext(m_outtakeSecondCube);//might be reversed
+			m_liftUpToScaleSecondTime->addNext(m_outtakeSecondCube);
+		}
+		else if (gameOrientation[0] == 'R' && gameOrientation[1] == 'L') {
+			m_moveToSwitch->addNext(m_outtakeCubeToSwitch);//might be reversed
+			m_outtakeCubeToSwitch->addNext(m_moveToCubeStack);
+			m_moveToCubeStack->addNext(m_intakeCube);//might be reversed
+			m_intakeCube->addNext(m_moveToScale);
+			m_moveToScale->addNext(m_liftUpToScale);//might be reversed
+			m_liftUpToScale->addNext(m_outtakeCubeToScale);
+			m_outtakeCubeToScale->addNext(m_driveToCubes);
+			m_driveToCubes->addNext(m_intakeSecondCube);//might be reversed
+			m_intakeSecondCube->addNext(m_driveToScaleSecondTime);
+			m_driveToScaleSecondTime->addNext(m_outtakeSecondCube);//might be reversed
+			m_liftUpToScaleSecondTime->addNext(m_outtakeSecondCube);
+		}
+		else if (gameOrientation[0] == 'L' && gameOrientation[1] == 'L') {
+			m_moveToSwitch->addNext(m_outtakeCubeToSwitch);//might be reversed
+			m_outtakeCubeToSwitch->addNext(m_moveToCubeStack);
+			m_moveToCubeStack->addNext(m_intakeCube);//might be reversed
+			m_intakeCube->addNext(m_moveToScale);
+			m_moveToScale->addNext(m_liftUpToScale);//might be reversed
+			m_liftUpToScale->addNext(m_outtakeCubeToScale);
+			m_outtakeCubeToScale->addNext(m_driveToCubes);
+			m_driveToCubes->addNext(m_intakeSecondCube);//might be reversed
+			m_intakeSecondCube->addNext(m_driveToScaleSecondTime);
+			m_driveToScaleSecondTime->addNext(m_liftUpToScaleSecondTime);//might be reversed
+			m_liftUpToScaleSecondTime->addNext(m_outtakeSecondCube);
+		}
+	}
+	break;
+	}
 }

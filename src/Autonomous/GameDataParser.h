@@ -6,18 +6,19 @@
 
 using namespace CORE;
 enum side {
-	LEFT,
-	RIGHT
+	LL,
+	LR,
+	RL,
+	RR
 };
 class GameDataParser : public CORETask {
-
+public:
 	void autonInitTask() override;
-	side getSwitchSide();
-	side getScaleSide();
+	side getGameOrientation();
+	side parsedGameOrientation;
 
 
 private:
-	side m_switchSide;
-	side m_scaleSide;
+
 
 };

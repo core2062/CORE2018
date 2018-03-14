@@ -7,9 +7,13 @@
 
 #include "Actions.h"
 #include <WPILib.h>
+#include "Autonomous/GameDataParser.h"
 
 using namespace CORE;
-
+enum cubePlacement {
+	SWITCH1SCALE1,
+	SWITCH1SCALE2
+};
 class SideAuton : COREAuton {
 	SideAuton();
 	void addNodes() override;
@@ -27,4 +31,9 @@ private:
 	Node * m_driveToScaleSecondTime = nullptr;
 	Node * m_liftUpToScaleSecondTime = nullptr;
 	Node * m_outtakeSecondCube = nullptr;
+	GameDataParser gameDataParser;
+	static SendableChooser<cubePlacement> *m_cubePlacementChooser;
+	COREAuton* m_cubePlacement;
+	side m_gameOrientation;
+
 };

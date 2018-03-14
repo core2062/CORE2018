@@ -1,7 +1,7 @@
 #include <CORERobotLib.h>
 #include <ScorerSubsystem.h>
 
-enum armAction {
+enum positionArmAction {
 
 	UP,
 	MIDDLE,
@@ -21,5 +21,5 @@ public:
 
 private:
 
-	armAction m_requestedArmAction;
+	positionArmAction m_requestedArmAction;
 };

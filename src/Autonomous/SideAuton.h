@@ -32,4 +32,5 @@ private:
 	Node * m_liftUpToScaleSecondTime = nullptr;
 	Node * m_outtakeSecondCube = nullptr;
 	GameDataParser gameDataParser;
+	static SendableChooser<cubePlacement> m_cubePlacementChooser;
 };

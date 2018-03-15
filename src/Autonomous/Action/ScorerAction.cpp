@@ -7,6 +7,10 @@ ScorerAction::ScorerAction(scorerAction action) {
 }
 
 void ScorerAction::actionInit() {
+
+}
+
+COREAutonAction::actionStatus ScorerAction::action() {
 	switch(m_requestedAction) {
 		case OPEN:
 			CORE2018::GetInstance()->scorerSubsystem.openScorer();
@@ -17,9 +21,6 @@ void ScorerAction::actionInit() {
 		default:
 			break;
 	}
-}
-
-COREAutonAction::actionStatus ScorerAction::action() {
 	if(m_requestedAction == WAIT_FOR_CUBE) {
 		//TODO: add code here that will keep action looping until cube is detected in scorer, at which point the scorer will close and the action ended.
 		return COREAutonAction::actionStatus::CONTINUE;

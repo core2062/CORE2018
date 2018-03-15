@@ -3,6 +3,7 @@
 #include "CORERobotLib.h"
 #include <WPILib.h>
 #include "ctre/Phoenix.h"
+#include "COREUtilities/COREConstant.h"
 
 using namespace CORE;
 

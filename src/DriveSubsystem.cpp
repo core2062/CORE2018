@@ -61,6 +61,9 @@ void DriveSubsystem::teleopInit() {
 }
 
 void DriveSubsystem::teleop() {
+    if(!m_gyro->IsConnected()) {
+        CORELog::logError("Gyro has died!");
+    }
 	//	Gets the joystick values for each of the functions
     double x = -driverJoystick->getAxis(COREJoystick::LEFT_STICK_X);
     double y = driverJoystick->getAxis(COREJoystick::LEFT_STICK_Y);
@@ -184,14 +187,13 @@ void DriveSubsystem::autonInitTask() {
 	m_swerveTracker->start();*/
     m_x = 0;
     m_y = 0;
-    CORELog::logInfo("Beginning auton");
-    CORELog::logInfo("Got to end of auton Init");
+    m_gyroOffset = getGyroYaw();
 }
 
 void DriveSubsystem::preLoopTask() {
     if (!m_pursuit.isDone() && CORE::COREDriverstation::getMode() == CORE::COREDriverstation::AUTON) {
-        double gyro_radians = toRadians(getGyroYaw());
-        auto result = m_swerveDrive->forwardKinematics(gyro_radians);
+        double gyro_radians = toRadians(getGyroYaw() - m_gyroOffset);
+        auto result = m_swerveDrive->forwardKinematics(0);
         SmartDashboard::PutNumber("Returned Vector X", result.first);
         SmartDashboard::PutNumber("Returned Vector Y", result.second);
 
@@ -207,34 +209,47 @@ void DriveSubsystem::preLoopTask() {
         SmartDashboard::PutNumber("Pursuit Y command", command.dy);
         SmartDashboard::PutNumber("Pursuit Theta command", command.dtheta);
 
-        m_swerveDrive->inverseKinematics(command.dx * 0.01, 0, 0);
+        double maxVel = 0.0;
+        maxVel = max(maxVel, command.dx);
+        if (maxVel > 100) {
+            double scaling = 100 / maxVel;
+            command.dx *= scaling;
+        }
+        maxVel = 0.0;
+        maxVel = max(maxVel, command.dy);
+        if (maxVel > 100) {
+            double scaling = 100 / maxVel;
+            command.dy *= scaling;
+        }
+
+        m_swerveDrive->inverseKinematics(command.dx * 0.01, -command.dy * 0.01, 0);
         CORELog::logInfo("X Command: " + to_string(command.dx));
+        CORELog::logInfo("Y Command: " + to_string(-command.dy));
         /*
-		double maxVel = 0.0;
-		maxVel = max(maxVel, setpoint.GetX());
-		if (maxVel > 100) {
-			double scaling = 100 / maxVel;
-			setpoint = COREVector(setpoint.GetMagnitude() * scaling, setpoint.GetDegrees() * scaling);
-		}
 		m_rightFrontModule->drive(setpoint);
 		m_leftFrontModule->drive(setpoint);
 		m_rightBackModule->drive(setpoint);
 		m_leftBackModule->drive(setpoint);*/
-	}
+	} else {
+
+    }
 
 }
 
 void DriveSubsystem::teleopEnd() {
-	m_leftFrontDriveMotor.Set(ControlMode::PercentOutput, 0);
-	m_rightFrontDriveMotor.Set(ControlMode::PercentOutput, 0);
-	m_leftBackDriveMotor.Set(ControlMode::PercentOutput, 0);
-	m_rightBackDriveMotor.Set(ControlMode::PercentOutput, 0);
-	m_leftFrontSteerMotor.Set(ControlMode::PercentOutput, 0);
-	m_rightFrontSteerMotor.Set(ControlMode::PercentOutput, 0);
-	m_leftBackSteerMotor.Set(ControlMode::PercentOutput, 0);
-	m_rightBackSteerMotor.Set(ControlMode::PercentOutput, 0);
+	zeroMotors();
 }
 
 bool DriveSubsystem::pathDone() {
     return m_pursuit.isDone();
+}
+void DriveSubsystem::zeroMotors() {
+    m_leftFrontDriveMotor.Set(ControlMode::PercentOutput, 0);
+    m_rightFrontDriveMotor.Set(ControlMode::PercentOutput, 0);
+    m_leftBackDriveMotor.Set(ControlMode::PercentOutput, 0);
+    m_rightBackDriveMotor.Set(ControlMode::PercentOutput, 0);
+    m_leftFrontSteerMotor.Set(ControlMode::PercentOutput, 0);
+    m_rightFrontSteerMotor.Set(ControlMode::PercentOutput, 0);
+    m_leftBackSteerMotor.Set(ControlMode::PercentOutput, 0);
+    m_rightBackSteerMotor.Set(ControlMode::PercentOutput, 0);
 }

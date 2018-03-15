@@ -22,9 +22,9 @@ public:
 	double getGyroYaw();
 	bool pathDone();
 	void resetYaw();
+	void zeroMotors();
 
-
-	void startPath(Path path, bool reversed = false, double maxAccel = 25.0,
+	void startPath(Path path, bool reversed = false, double maxAccel = 50.0, //25
 			double tolerance = .25, bool gradualStop = true, double lookahead = 0.0);
 	void resetTracker(Position2d initialPos);
 	Path m_path;
@@ -44,6 +44,6 @@ private:
 	CORESwerve* m_swerveDrive;
 	AHRS *m_gyro;
 	COREVector m_total;
-	double m_x, m_y;
+	double m_x, m_y, m_gyroOffset;
     int count = 0;
 };

@@ -11,6 +11,8 @@
 #include "ChainBarSubsystem.h"
 #include "DriveSubsystem.h"
 
+#include "Autonomous/SideAuton.h"
+#include "Autonomous/TestAuton.h"
 
 /************************* Motors *************************/
 #define FRONT_RIGHT_STEER_PORT 11
@@ -53,7 +55,6 @@ public:
     void testInit() override;
 
     static CORE2018* GetInstance();
-
 	DriveSubsystem driveSubsystem;
     ChainBarSubsystem chainBarSubsystem;
 	LiftSubsystem liftSubsystem;
@@ -61,5 +62,7 @@ public:
 	ScorerSubsystem scorerSubsystem;
     COREConstant<double> m_chainBarIntakeAngle, m_chainBarSwitchAngle, m_chainBarUpAngle;
 
-//    TestAuton testAuton;
+
+
+    TestAuton testAuton;
 };

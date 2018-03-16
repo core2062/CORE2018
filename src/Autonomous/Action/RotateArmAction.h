@@ -3,12 +3,10 @@
 #include <CORERobotLib.h>
 #include <ScorerSubsystem.h>
 
-enum rotateArmAction {
-
+enum rotateArmAction{
 	UP,
 	MIDDLE,
 	DOWN
-
 };
 
 class RotateArmAction : public COREAutonAction {

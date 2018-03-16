@@ -233,17 +233,19 @@ void DriveSubsystem::preLoopTask() {
         m_swerveDrive->inverseKinematics(command.dx * 0.01, -command.dy * 0.01, 0);
         CORELog::logInfo("X Command: " + to_string(command.dx));
         CORELog::logInfo("Y Command: " + to_string(-command.dy));
-
         /*
 		m_rightFrontModule->drive(setpoint);
 		m_leftFrontModule->drive(setpoint);
 		m_rightBackModule->drive(setpoint);
 		m_leftBackModule->drive(setpoint);*/
-	}
+	} else {
+
+    }
+
 }
 
 void DriveSubsystem::teleopEnd() {
-//	zeroMotors();
+	zeroMotors();
 }
 
 bool DriveSubsystem::pathDone() {
@@ -259,6 +261,7 @@ void DriveSubsystem::zeroMotors() {
     m_leftBackSteerMotor.Set(ControlMode::PercentOutput, 0);
     m_rightBackSteerMotor.Set(ControlMode::PercentOutput, 0);
 }
+
 void DriveSubsystem::setLocation(double x, double y) {
     m_x = x;
     m_y = y;

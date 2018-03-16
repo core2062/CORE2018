@@ -20,6 +20,9 @@ CORE2018::CORE2018():
 void CORE2018::robotInit() {
     operatorJoystick->registerButton(COREJoystick::JoystickButton::A_BUTTON);
     operatorJoystick->registerButton(COREJoystick::JoystickButton::B_BUTTON);
+
+
+
 }
 
 void CORE2018::teleopInit() {

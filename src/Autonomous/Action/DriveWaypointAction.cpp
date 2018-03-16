@@ -1,9 +1,8 @@
 #include "DriveWaypointAction.h"
 #include "Robot.h"
-#include "CORERobotLib.h"
 
-DriveWaypointAction::DriveWaypointAction(Path path, bool reversed,
-                                         double tolerance, double maxAccel, bool gradualStop, double lookahead) {
+DriveWaypointAction::DriveWaypointAction(Path path, bool reversed, double tolerance, double maxAccel, bool gradualStop,
+                                         double lookahead) {
     m_path = path;
     m_reversed = reversed;
     m_tolerance = tolerance;
@@ -27,5 +26,5 @@ DriveWaypointAction::actionStatus DriveWaypointAction::action() {
 }
 
 void DriveWaypointAction::actionEnd() {
-
+    CORE2018::GetInstance()->driveSubsystem.zeroMotors();
 }

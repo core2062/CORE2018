@@ -25,7 +25,7 @@ DriveSubsystem::DriveSubsystem() :
 		m_leftFrontModule(new CORESwerve::SwerveModule(&m_leftFrontDriveMotor, &m_leftFrontSteerMotor)),
 		m_rightBackModule(new CORESwerve::SwerveModule(&m_rightBackDriveMotor, &m_rightBackSteerMotor)),
 		m_leftBackModule(new CORESwerve::SwerveModule(&m_leftBackDriveMotor, &m_leftBackSteerMotor)),
-		m_gyro(new AHRS(SerialPort::Port::kUSB, AHRS::SerialDataType::kProcessedData, 200)),
+		m_gyro(new AHRS(SerialPort::Port::kUSB, AHRS::SerialDataType::kProcessedData, 100)),
         m_total(0,0) {
     m_swerveDrive = new CORESwerve(m_wheelbase, m_trackwidth, 3.0, 4915.2, m_leftFrontModule, m_leftBackModule, m_rightBackModule, m_rightFrontModule);
 //    m_swerveTracker = SwerveTracker::GetInstance();
@@ -48,7 +48,7 @@ void DriveSubsystem::robotInit() {
 void DriveSubsystem::teleopInit() {
     if(SmartDashboard::GetBoolean("Zero Modules", false)) {
         SmartDashboard::PutBoolean("Zero Modules", false);
-        CORELog::logInfo("Zeroing modules");
+        CORELog::logWarning("Zeroing modules");
         m_swerveDrive->zeroOffsets();
     } else
         m_swerveDrive->updateOffsets();
@@ -61,6 +61,9 @@ void DriveSubsystem::teleopInit() {
 }
 
 void DriveSubsystem::teleop() {
+    if(!m_gyro->IsConnected()) {
+        CORELog::logError("Gyro has died!");
+    }
 	//	Gets the joystick values for each of the functions
     double x = -driverJoystick->getAxis(COREJoystick::LEFT_STICK_X);
     double y = driverJoystick->getAxis(COREJoystick::LEFT_STICK_Y);
@@ -159,6 +162,11 @@ void DriveSubsystem::initTalons() {
     m_rightFrontDriveMotor.SetInverted(true);
     m_leftBackDriveMotor.SetInverted(true);
     m_rightBackDriveMotor.SetInverted(true);
+
+    m_leftFrontDriveMotor.SetNeutralMode(NeutralMode::Brake);
+    m_rightFrontDriveMotor.SetNeutralMode(NeutralMode::Brake);
+    m_leftBackDriveMotor.SetNeutralMode(NeutralMode::Brake);
+    m_rightBackDriveMotor.SetNeutralMode(NeutralMode::Brake);
 }
 
 void DriveSubsystem::resetYaw() {
@@ -171,11 +179,14 @@ double DriveSubsystem::getGyroYaw() {
 
 void DriveSubsystem::startPath(Path path, bool reversed,
 		double maxAccel, double tolerance, bool gradualStop, double lookahead) {
+    m_x = 0;
+    m_y = 0;
+    m_swerveDrive->zeroEncoders();
 	m_pursuit = AdaptivePursuit(lookahead, maxAccel, .025, path, reversed, tolerance, gradualStop);
 }
 
 void DriveSubsystem::resetTracker(Position2d initialPos) {
-	m_swerveTracker->reset(Timer::GetFPGATimestamp(), initialPos);
+//	m_swerveTracker->reset(Timer::GetFPGATimestamp(), initialPos);
 }
 
 void DriveSubsystem::autonInitTask() {
@@ -184,14 +195,13 @@ void DriveSubsystem::autonInitTask() {
 	m_swerveTracker->start();*/
     m_x = 0;
     m_y = 0;
-    CORELog::logInfo("Beginning auton");
-    CORELog::logInfo("Got to end of auton Init");
+    m_gyroOffset = getGyroYaw();
 }
 
 void DriveSubsystem::preLoopTask() {
     if (!m_pursuit.isDone() && CORE::COREDriverstation::getMode() == CORE::COREDriverstation::AUTON) {
-        double gyro_radians = toRadians(getGyroYaw());
-        auto result = m_swerveDrive->forwardKinematics(gyro_radians);
+        double gyro_radians = toRadians(getGyroYaw() - m_gyroOffset);
+        auto result = m_swerveDrive->forwardKinematics(0);
         SmartDashboard::PutNumber("Returned Vector X", result.first);
         SmartDashboard::PutNumber("Returned Vector Y", result.second);
 
@@ -201,40 +211,55 @@ void DriveSubsystem::preLoopTask() {
         SmartDashboard::PutNumber("Total X", m_x);
         SmartDashboard::PutNumber("Total Y", m_y);
 
-        Position2d pos(COREVector::FromXY(m_x, m_y), COREVector::FromRadians(gyro_radians, 1));
+        Position2d pos(Translation2d(m_x, m_y), Rotation2d::fromRadians(gyro_radians));
         Position2d::Delta command = m_pursuit.update(pos, Timer::GetFPGATimestamp());
         SmartDashboard::PutNumber("Pursuit X command", command.dx);
         SmartDashboard::PutNumber("Pursuit Y command", command.dy);
         SmartDashboard::PutNumber("Pursuit Theta command", command.dtheta);
 
-        m_swerveDrive->inverseKinematics(command.dx * 0.01, 0, 0);
+        double maxVel = 0.0;
+        maxVel = max(maxVel, command.dx);
+        if (maxVel > 100) {
+            double scaling = 100 / maxVel;
+            command.dx *= scaling;
+        }
+        maxVel = 0.0;
+        maxVel = max(maxVel, command.dy);
+        if (maxVel > 100) {
+            double scaling = 100 / maxVel;
+            command.dy *= scaling;
+        }
+
+        m_swerveDrive->inverseKinematics(command.dx * 0.01, -command.dy * 0.01, 0);
         CORELog::logInfo("X Command: " + to_string(command.dx));
+        CORELog::logInfo("Y Command: " + to_string(-command.dy));
+
         /*
-		double maxVel = 0.0;
-		maxVel = max(maxVel, setpoint.GetX());
-		if (maxVel > 100) {
-			double scaling = 100 / maxVel;
-			setpoint = COREVector(setpoint.GetMagnitude() * scaling, setpoint.GetDegrees() * scaling);
-		}
 		m_rightFrontModule->drive(setpoint);
 		m_leftFrontModule->drive(setpoint);
 		m_rightBackModule->drive(setpoint);
 		m_leftBackModule->drive(setpoint);*/
 	}
-
 }
 
 void DriveSubsystem::teleopEnd() {
-	m_leftFrontDriveMotor.Set(ControlMode::PercentOutput, 0);
-	m_rightFrontDriveMotor.Set(ControlMode::PercentOutput, 0);
-	m_leftBackDriveMotor.Set(ControlMode::PercentOutput, 0);
-	m_rightBackDriveMotor.Set(ControlMode::PercentOutput, 0);
-	m_leftFrontSteerMotor.Set(ControlMode::PercentOutput, 0);
-	m_rightFrontSteerMotor.Set(ControlMode::PercentOutput, 0);
-	m_leftBackSteerMotor.Set(ControlMode::PercentOutput, 0);
-	m_rightBackSteerMotor.Set(ControlMode::PercentOutput, 0);
+//	zeroMotors();
 }
 
 bool DriveSubsystem::pathDone() {
     return m_pursuit.isDone();
+}
+void DriveSubsystem::zeroMotors() {
+    m_leftFrontDriveMotor.Set(ControlMode::PercentOutput, 0);
+    m_rightFrontDriveMotor.Set(ControlMode::PercentOutput, 0);
+    m_leftBackDriveMotor.Set(ControlMode::PercentOutput, 0);
+    m_rightBackDriveMotor.Set(ControlMode::PercentOutput, 0);
+    m_leftFrontSteerMotor.Set(ControlMode::PercentOutput, 0);
+    m_rightFrontSteerMotor.Set(ControlMode::PercentOutput, 0);
+    m_leftBackSteerMotor.Set(ControlMode::PercentOutput, 0);
+    m_rightBackSteerMotor.Set(ControlMode::PercentOutput, 0);
+}
+void DriveSubsystem::setLocation(double x, double y) {
+    m_x = x;
+    m_y = y;
 }

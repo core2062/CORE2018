@@ -1,7 +1,9 @@
+#pragma once
+
 #include <CORERobotLib.h>
 #include <ScorerSubsystem.h>
 
-enum armAction {
+enum rotateArmAction {
 
 	UP,
 	MIDDLE,
@@ -21,5 +23,5 @@ public:
 
 private:
 
-	armAction m_requestedArmAction;
+	rotateArmAction m_requestedArmAction;
 };

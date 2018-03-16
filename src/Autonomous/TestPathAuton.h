@@ -4,9 +4,9 @@
 
 using namespace CORE;
 
-class TestAuton : public COREAuton {
+class TestPathAuton : public COREAuton {
 public:
-    TestAuton();
+    TestPathAuton();
 	void addNodes() override;
 
 private:

@@ -1,13 +1,15 @@
 #pragma once
 
 #include "CORERobotLib.h"
+#include "WaypointFollower/WaypointFollower.h"
+
 
 using namespace CORE;
 
 class DriveWaypointAction : public COREAutonAction {
 public:
     DriveWaypointAction(Path path, bool reversed = false, double tolerance = .25,
-                        double maxAccel = 90.0, bool gradualStop = true, double lookahead = 24.0);
+                        double maxAccel = 25.0, bool gradualStop = true, double lookahead = 24.0);
     void actionInit() override;
     actionStatus action() override;
     void actionEnd() override;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CORERobotLib.h"
-#include "COREKinematics/WaypointFollower.h"
+#include "WaypointFollower/WaypointFollower.h"
 
 
 using namespace CORE;

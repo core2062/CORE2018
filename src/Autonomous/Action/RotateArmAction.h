@@ -1,12 +1,12 @@
+#pragma once
+
 #include <CORERobotLib.h>
 #include <ScorerSubsystem.h>
 
-enum positionArmAction {
-
+enum rotateArmAction{
 	UP,
 	MIDDLE,
 	DOWN
-
 };
 
 class RotateArmAction : public COREAutonAction {
@@ -21,5 +21,5 @@ public:
 
 private:
 
-	positionArmAction m_requestedArmAction;
+	rotateArmAction m_requestedArmAction;
 };

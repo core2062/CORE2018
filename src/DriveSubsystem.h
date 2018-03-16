@@ -3,9 +3,11 @@
 //#include "Robot.h"
 #include "ctre/Phoenix.h"
 #include <CORERobotLib.h>
-#include "COREKinematics/SwerveTracker.h"
+//#include "COREKinematics/SwerveTracker.h"
 #include "AHRS.h"
 #include "COREFramework/COREScheduler.h"
+
+#include "WaypointFollower/WaypointFollower.h"
 
 
 class DriveSubsystem : public CORESubsystem, public CORETask {
@@ -23,14 +25,16 @@ public:
 	bool pathDone();
 	void resetYaw();
 	void zeroMotors();
+	void setLocation(double x, double y);
 
-	void startPath(Path path, bool reversed = false, double maxAccel = 50.0, //25
+	void startPath(Path path, bool reversed = false, double maxAccel = 25.0, //25
+
 			double tolerance = .25, bool gradualStop = true, double lookahead = 0.0);
 	void resetTracker(Position2d initialPos);
 	Path m_path;
-	SwerveTracker *m_swerveTracker= nullptr;
+//	SwerveTracker *m_swerveTracker= nullptr;
 	AdaptivePursuit m_pursuit;
-	RobotFrame *frame = nullptr;
+//	RobotFrame *frame = nullptr;
 	COREVector path;
 
 private:

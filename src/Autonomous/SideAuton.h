@@ -32,7 +32,7 @@ private:
 	Node * m_liftUpToScaleSecondTime = nullptr;
 	Node * m_outtakeSecondCube = nullptr;
 	GameDataParser gameDataParser;
-	static SendableChooser<cubePlacement> *m_cubePlacementChooser;
+	SendableChooser<cubePlacement> *m_cubePlacementChooser;
 	COREAuton* m_cubePlacement;
 	side m_gameOrientation;
 

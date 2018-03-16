@@ -25,7 +25,7 @@ DriveSubsystem::DriveSubsystem() :
 		m_leftFrontModule(new CORESwerve::SwerveModule(&m_leftFrontDriveMotor, &m_leftFrontSteerMotor)),
 		m_rightBackModule(new CORESwerve::SwerveModule(&m_rightBackDriveMotor, &m_rightBackSteerMotor)),
 		m_leftBackModule(new CORESwerve::SwerveModule(&m_leftBackDriveMotor, &m_leftBackSteerMotor)),
-		m_gyro(new AHRS(SerialPort::Port::kUSB, AHRS::SerialDataType::kProcessedData, 200)),
+		m_gyro(new AHRS(SerialPort::Port::kUSB, AHRS::SerialDataType::kProcessedData, 100)),
         m_total(0,0) {
     m_swerveDrive = new CORESwerve(m_wheelbase, m_trackwidth, 3.0, 4915.2, m_leftFrontModule, m_leftBackModule, m_rightBackModule, m_rightFrontModule);
 //    m_swerveTracker = SwerveTracker::GetInstance();
@@ -48,7 +48,7 @@ void DriveSubsystem::robotInit() {
 void DriveSubsystem::teleopInit() {
     if(SmartDashboard::GetBoolean("Zero Modules", false)) {
         SmartDashboard::PutBoolean("Zero Modules", false);
-        CORELog::logInfo("Zeroing modules");
+        CORELog::logWarning("Zeroing modules");
         m_swerveDrive->zeroOffsets();
     } else
         m_swerveDrive->updateOffsets();
@@ -162,6 +162,11 @@ void DriveSubsystem::initTalons() {
     m_rightFrontDriveMotor.SetInverted(true);
     m_leftBackDriveMotor.SetInverted(true);
     m_rightBackDriveMotor.SetInverted(true);
+
+    m_leftFrontDriveMotor.SetNeutralMode(NeutralMode::Brake);
+    m_rightFrontDriveMotor.SetNeutralMode(NeutralMode::Brake);
+    m_leftBackDriveMotor.SetNeutralMode(NeutralMode::Brake);
+    m_rightBackDriveMotor.SetNeutralMode(NeutralMode::Brake);
 }
 
 void DriveSubsystem::resetYaw() {
@@ -174,11 +179,14 @@ double DriveSubsystem::getGyroYaw() {
 
 void DriveSubsystem::startPath(Path path, bool reversed,
 		double maxAccel, double tolerance, bool gradualStop, double lookahead) {
+    m_x = 0;
+    m_y = 0;
+    m_swerveDrive->zeroEncoders();
 	m_pursuit = AdaptivePursuit(lookahead, maxAccel, .025, path, reversed, tolerance, gradualStop);
 }
 
 void DriveSubsystem::resetTracker(Position2d initialPos) {
-	m_swerveTracker->reset(Timer::GetFPGATimestamp(), initialPos);
+//	m_swerveTracker->reset(Timer::GetFPGATimestamp(), initialPos);
 }
 
 void DriveSubsystem::autonInitTask() {
@@ -203,7 +211,7 @@ void DriveSubsystem::preLoopTask() {
         SmartDashboard::PutNumber("Total X", m_x);
         SmartDashboard::PutNumber("Total Y", m_y);
 
-        Position2d pos(COREVector::FromXY(m_x, m_y), COREVector::FromRadians(gyro_radians, 1));
+        Position2d pos(Translation2d(m_x, m_y), Rotation2d::fromRadians(gyro_radians));
         Position2d::Delta command = m_pursuit.update(pos, Timer::GetFPGATimestamp());
         SmartDashboard::PutNumber("Pursuit X command", command.dx);
         SmartDashboard::PutNumber("Pursuit Y command", command.dy);
@@ -252,4 +260,9 @@ void DriveSubsystem::zeroMotors() {
     m_rightFrontSteerMotor.Set(ControlMode::PercentOutput, 0);
     m_leftBackSteerMotor.Set(ControlMode::PercentOutput, 0);
     m_rightBackSteerMotor.Set(ControlMode::PercentOutput, 0);
+}
+
+void DriveSubsystem::setLocation(double x, double y) {
+    m_x = x;
+    m_y = y;
 }

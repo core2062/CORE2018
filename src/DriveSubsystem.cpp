@@ -174,8 +174,13 @@ void DriveSubsystem::resetYaw() {
 	m_gyro->ZeroYaw();
 }
 
-double DriveSubsystem::getGyroYaw() {
-	return m_gyro->GetYaw() - 90;
+double DriveSubsystem::getGyroYaw(bool raw) {
+    if(raw) {
+        return m_gyro->GetYaw();
+    } else {
+        return m_gyro->GetYaw() - 90 - m_gyroOffset;
+
+    }
 }
 
 void DriveSubsystem::startPath(Path path, Translation2d startPos, bool reversed, double maxAccel, double tolerance, bool gradualStop,
@@ -194,12 +199,12 @@ void DriveSubsystem::autonInitTask() {
 	/*Position2d startingPosition;
 	resetTracker(startingPosition);
 	m_swerveTracker->start();*/
-    m_gyroOffset = getGyroYaw();
+    m_gyroOffset = getGyroYaw(true);
 }
 
 void DriveSubsystem::preLoopTask() {
     if (!m_pursuit.isDone() && CORE::COREDriverstation::getMode() == CORE::COREDriverstation::AUTON) {
-        double gyro_radians = toRadians(getGyroYaw() - m_gyroOffset);
+        double gyro_radians = toRadians(getGyroYaw());
         auto result = m_swerveDrive->forwardKinematics(0);
         SmartDashboard::PutNumber("Returned Vector X", result.first);
         SmartDashboard::PutNumber("Returned Vector Y", result.second);
@@ -229,10 +234,19 @@ void DriveSubsystem::preLoopTask() {
             command.dy *= scaling;
         }
 
-        m_swerveDrive->inverseKinematics(command.dx, command.dy, 0);
+        double y = - command.dy;
+        double x = - command.dx;
+        double temp = y * cos(gyro_radians) + x * sin(gyro_radians);
+        x = -y * sin(gyro_radians) + x * cos(gyro_radians);
+        y = temp;
+
+        m_swerveDrive->inverseKinematics(x, y, 0);
+
         CORELog::logInfo("X Command: " + to_string(command.dx));
         CORELog::logInfo("Y Command: " + to_string(command.dy));
-	}
+        CORELog::logInfo("Gyro Angle: " + to_string(gyro_radians));
+
+    }
 }
 
 void DriveSubsystem::teleopEnd() {

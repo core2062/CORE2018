@@ -21,13 +21,13 @@ public:
 	void resetEncoders();
 	void initTalons();
 	void autonInitTask() override;
-	double getGyroYaw();
+	double getGyroYaw(bool raw = false);
 	bool pathDone();
 	void resetYaw();
 	void zeroMotors();
 	void setLocation(double x, double y);
 
-	void startPath(Path path, Translation2d startPos = Translation2d(0, 0), bool reversed = false, double maxAccel = 25.0, //25
+	void startPath(Path path, Translation2d startPos = Translation2d(0, 0), bool reversed = false, double maxAccel = 50.0, //25
                    double tolerance = .25, bool gradualStop = true, double lookahead = 0.0);
 	void resetTracker(Position2d initialPos);
 	Path m_path;

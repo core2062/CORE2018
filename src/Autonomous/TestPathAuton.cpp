@@ -19,6 +19,7 @@ void TestPathAuton::addNodes() {
 	CORELog::logInfo("Remaining length (Initial): " + to_string(path1.getRemainingLength()));
     CORE2018::GetInstance()->driveSubsystem.setLocation(path1.getFirstWaypoint().position.getX(),
                                                         path1.getFirstWaypoint().position.getY());
-	m_testNode = new Node(15, new DriveWaypointAction(path1, Translation2d(path1.getFirstWaypoint().position.getX(), path1.getFirstWaypoint().position.getY())));
+	m_testNode = new Node(15, new DriveWaypointAction(path1, Translation2d(path1.getFirstWaypoint().position.getX(),
+                                                                           path1.getFirstWaypoint().position.getY())));
     addFirstNode(m_testNode);
 }

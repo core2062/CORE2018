@@ -23,12 +23,14 @@ public:
 	void setLiftScale(double setPoint);
 	void SetRequestedPosition(double position);
 	double GetLiftPosition();
+	void resetEncoder();
 
 private:
 	TalonSRX m_leftLiftMotor;
 	TalonSRX m_rightLiftMotor;
 	COREConstant<double> m_liftTopLimit;
 	COREConstant<double> m_liftUpP, m_liftUpI, m_liftUpD;
+	COREConstant<double> m_liftDownP, m_liftDownI, m_liftDownD;
 	COREConstant<double> m_liftBottomLimit;
 	DigitalInput m_liftBottomLimitSwitch;
 	COREPID m_liftPID;

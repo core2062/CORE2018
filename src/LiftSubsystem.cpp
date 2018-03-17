@@ -10,6 +10,9 @@ LiftSubsystem::LiftSubsystem() :
         m_liftUpP("Lift Up P"),
         m_liftUpI("Lift Up I"),
         m_liftUpD("Lift Up D"),
+		m_liftDownP("Lift Down P"),
+		m_liftDownI("Lift Down I"),
+		m_liftDownD("Lift Down D"),
         m_liftBottomLimit("LiftBottom Limit"),
         m_leftLiftMotor(LEFT_LIFT_MOTOR_PORT),
         m_rightLiftMotor(RIGHT_LIFT_MOTOR_PORT),
@@ -28,27 +31,33 @@ void LiftSubsystem::robotInit() {
     m_rightLiftMotor.SetSelectedSensorPosition(0, 0, 0);
     m_rightLiftMotor.SetSensorPhase(true);
     operatorJoystick->registerAxis(CORE::COREJoystick::JoystickAxis::LEFT_STICK_Y);
+    operatorJoystick->registerButton(CORE::COREJoystick::X_BUTTON);
 }
 
 void LiftSubsystem::teleopInit() {
     m_liftPID.setProportionalConstant(m_liftUpP.Get());
     m_liftPID.setIntegralConstant(m_liftUpI.Get());
     m_liftPID.setDerivativeConstant(m_liftUpD.Get());
+    SetRequestedPosition(GetLiftPosition());
 }
 
 void LiftSubsystem::teleop() {
     SmartDashboard::PutNumber("Lift Encoder", m_rightLiftMotor.GetSelectedSensorPosition(0));
+    SmartDashboard::PutNumber("Current Lift Position", GetLiftPosition());
+    SmartDashboard::PutNumber("Requested Lift Position", m_requestedPosition);
     double liftSpeed = -operatorJoystick->getAxis(CORE::COREJoystick::JoystickAxis::LEFT_STICK_Y);
     double liftPosition = GetLiftPosition();
     SmartDashboard::PutNumber("Lift Speed", liftSpeed);
+    if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::X_BUTTON)) {
+ 	   SetRequestedPosition(200000);
+    }
     if (abs(liftSpeed) > 0.01) {
-        if (liftSpeed > 0 && liftPosition > m_liftTopLimit.Get()) {
-            liftSpeed = 0;
-        } else if (liftSpeed < 0 && m_liftBottomLimitSwitch.Get()) {
-            liftSpeed = 0;
-        } else {
+    	if (liftSpeed < 0) {
+    		liftSpeed = liftSpeed * 0.25;
+    	} else {
+    		liftSpeed *= 0.5;
+    	}
             SetRequestedPosition(GetLiftPosition());
-        }
     } else {
         if (m_requestedPosition > liftPosition) {
             m_liftPID.setProportionalConstant(m_liftUpP.Get());
@@ -56,19 +65,31 @@ void LiftSubsystem::teleop() {
             m_liftPID.setDerivativeConstant(m_liftUpD.Get());
             liftSpeed = m_liftPID.calculate(m_requestedPosition - liftPosition);
         } else {
-            m_liftPID.setProportionalConstant(m_liftUpP.Get());
-            m_liftPID.setIntegralConstant(m_liftUpI.Get());
-            m_liftPID.setDerivativeConstant(m_liftUpD.Get());
+            m_liftPID.setProportionalConstant(m_liftDownP.Get());
+            m_liftPID.setIntegralConstant(m_liftDownI.Get());
+            m_liftPID.setDerivativeConstant(m_liftDownD.Get());
             liftSpeed = m_liftPID.calculate(m_requestedPosition - liftPosition);
         }
     }
+    if (liftSpeed > 0 && liftPosition > m_liftTopLimit.Get()) {
+                liftSpeed = 0;
+            } else if (liftSpeed < 0 && m_liftBottomLimitSwitch.Get()) {
+                liftSpeed = 0;
+        		resetEncoder();
+        		SetRequestedPosition(0);
+            }
+
     setLift(liftSpeed);
     SmartDashboard::PutNumber("Lift Position", liftPosition);
 }
 
+void LiftSubsystem::resetEncoder() {
+	m_rightLiftMotor.SetSelectedSensorPosition(0, 0, 0);
+}
+
 void LiftSubsystem::setLift(double liftMotorPercentage) {
-    m_leftLiftMotor.Set(ControlMode::PercentOutput, liftMotorPercentage * 0.3);
-    m_rightLiftMotor.Set(ControlMode::PercentOutput, liftMotorPercentage * 0.3);
+    m_leftLiftMotor.Set(ControlMode::PercentOutput, liftMotorPercentage);
+    m_rightLiftMotor.Set(ControlMode::PercentOutput, liftMotorPercentage);
 }
 
 void LiftSubsystem::SetRequestedPosition(double position) {

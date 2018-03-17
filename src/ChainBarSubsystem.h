@@ -1,9 +1,11 @@
 #pragma once
 
-#include "CORERobotLib.h"
+#include <CORERobotLib.h>
 #include <WPILib.h>
 #include "ctre/Phoenix.h"
 #include "COREUtilities/COREConstant.h"
+#include "COREControl/COREPID.h"
+#include "COREFramework/COREScheduler.h"
 
 using namespace CORE;
 
@@ -16,11 +18,11 @@ public:
 
 	void SetChainBarSpeed(double speed);
     void SetChainBarRequestedAngle(double angle);
-	double GetChainBarAngle(bool raw = false);
+	double GetChainBarAngle(bool firstIteration, bool raw = false);
 
     void SetRotationSpeed(double speed);
     void SetRotationRequestedAngle(double angle);
-    double GetRotationAngle(bool raw = false);
+    double GetRotationAngle(bool firstIteration, bool raw = false);
     double GetRotationAngleRelativeToChainBar();
 
 private:
@@ -33,6 +35,7 @@ private:
     COREConstant<double> m_chainBarDownP, m_chainBarDownI, m_chainBarDownD;
     COREConstant<double> m_rotationP, m_rotationI, m_rotationD;
     COREPID m_chainBarPID, m_rotationPID;
+    bool m_firstIteration;
 	double m_requestedChainBarAngle;
     double m_requestedRotationAngle;
 };

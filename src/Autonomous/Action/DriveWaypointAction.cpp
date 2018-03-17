@@ -1,7 +1,7 @@
 #include "DriveWaypointAction.h"
 #include "Robot.h"
 
-DriveWaypointAction::DriveWaypointAction(Path path, bool reversed, double tolerance, double maxAccel, bool gradualStop,
+DriveWaypointAction::DriveWaypointAction(Path path, Translation2d startPos, bool reversed, double tolerance, double maxAccel, bool gradualStop,
                                          double lookahead) {
     m_path = path;
     m_reversed = reversed;
@@ -9,11 +9,12 @@ DriveWaypointAction::DriveWaypointAction(Path path, bool reversed, double tolera
     m_maxAccel = maxAccel;
     m_gradualStop = gradualStop;
     m_lookahead = lookahead;
+    m_startPos = startPos;
 }
 
 void DriveWaypointAction::actionInit() {
     CORELog::logInfo("Starting follower");
-    CORE2018::GetInstance()->driveSubsystem.startPath(m_path, m_reversed, m_maxAccel, m_tolerance, m_gradualStop, m_lookahead);
+    CORE2018::GetInstance()->driveSubsystem.startPath(m_path, m_startPos, m_reversed, m_maxAccel, m_tolerance, m_gradualStop, m_lookahead);
     CORELog::logInfo("Ending start follower");
 }
 

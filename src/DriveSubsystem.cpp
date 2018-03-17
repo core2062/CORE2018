@@ -63,6 +63,7 @@ void DriveSubsystem::teleopInit() {
 void DriveSubsystem::teleop() {
     if(!m_gyro->IsConnected()) {
         CORELog::logError("Gyro has died!");
+        m_gyro = new AHRS(SerialPort::Port::kUSB, AHRS::SerialDataType::kProcessedData, 100);
     }
 	//	Gets the joystick values for each of the functions
     double x = -driverJoystick->getAxis(COREJoystick::LEFT_STICK_X);
@@ -174,13 +175,13 @@ void DriveSubsystem::resetYaw() {
 }
 
 double DriveSubsystem::getGyroYaw() {
-	return m_gyro->GetYaw();
+	return m_gyro->GetYaw() - 90;
 }
 
-void DriveSubsystem::startPath(Path path, bool reversed,
-		double maxAccel, double tolerance, bool gradualStop, double lookahead) {
-    m_x = 0;
-    m_y = 0;
+void DriveSubsystem::startPath(Path path, Translation2d startPos, bool reversed, double maxAccel, double tolerance, bool gradualStop,
+                               double lookahead) {
+    m_x = startPos.getX();
+    m_y = startPos.getY();
     m_swerveDrive->zeroEncoders();
 	m_pursuit = AdaptivePursuit(lookahead, maxAccel, .025, path, reversed, tolerance, gradualStop);
 }
@@ -193,8 +194,6 @@ void DriveSubsystem::autonInitTask() {
 	/*Position2d startingPosition;
 	resetTracker(startingPosition);
 	m_swerveTracker->start();*/
-    m_x = 0;
-    m_y = 0;
     m_gyroOffset = getGyroYaw();
 }
 
@@ -219,29 +218,21 @@ void DriveSubsystem::preLoopTask() {
 
         double maxVel = 0.0;
         maxVel = max(maxVel, command.dx);
-        if (maxVel > 100) {
-            double scaling = 100 / maxVel;
+        if (maxVel > 1) {
+            double scaling = 1 / maxVel;
             command.dx *= scaling;
         }
         maxVel = 0.0;
         maxVel = max(maxVel, command.dy);
-        if (maxVel > 100) {
-            double scaling = 100 / maxVel;
+        if (maxVel > 1) {
+            double scaling = 1 / maxVel;
             command.dy *= scaling;
         }
 
-        m_swerveDrive->inverseKinematics(command.dx * 0.01, -command.dy * 0.01, 0);
+        m_swerveDrive->inverseKinematics(command.dx, command.dy, 0);
         CORELog::logInfo("X Command: " + to_string(command.dx));
-        CORELog::logInfo("Y Command: " + to_string(-command.dy));
-        /*
-		m_rightFrontModule->drive(setpoint);
-		m_leftFrontModule->drive(setpoint);
-		m_rightBackModule->drive(setpoint);
-		m_leftBackModule->drive(setpoint);*/
-	} else {
-
-    }
-
+        CORELog::logInfo("Y Command: " + to_string(command.dy));
+	}
 }
 
 void DriveSubsystem::teleopEnd() {
@@ -265,4 +256,5 @@ void DriveSubsystem::zeroMotors() {
 void DriveSubsystem::setLocation(double x, double y) {
     m_x = x;
     m_y = y;
+    CORELog::logWarning("Inital position X: " + to_string(x) + " Y: " + to_string(y));
 }

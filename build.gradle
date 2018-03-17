@@ -32,7 +32,7 @@ model {
             seasocks {
                 headers.srcDir "CORERobotLib/3rdparty/seasocks/src/main/c"
                 binaries.withType(StaticLibraryBinary) {
-                    staticLibraryFile = file("CORERobotLib/3rdparty/seasocks/" + getPlatformPath(targetPlatform) + "/libseasocks.a")
+                    staticLibraryFile = file("CORERobotLib/3rdparty/seasocks/Linux/arm/libseasocks.a")
                 }
             }
             json {
@@ -62,12 +62,12 @@ model {
                 }
 
                 // Define my dependencies. In this case, WPILib (+ friends), CTRE Phoenix (Talon SRX) and NavX.
-				lib library: "json", linkage: "api"
-                lib library: "seasocks", linkage: "static"
+		lib library: "json", linkage: "api"
                 lib library: "wpilib"
                 lib library: "ctre"
                 lib library: "navx"
-				lib library: "CORERobotLib", linkage: "static"
+		lib library: "CORERobotLib", linkage: "static"
+                lib library: "seasocks", linkage: "static"
             }
         }
     }

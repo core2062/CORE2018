@@ -14,6 +14,8 @@ LiftSubsystem::LiftSubsystem() :
 		m_liftDownI("Lift Down I"),
 		m_liftDownD("Lift Down D"),
         m_liftBottomLimit("LiftBottom Limit"),
+		m_gradualStopLimit("Gradual Stop Lift Limit"),
+		m_maxAcceleration("Maximum Lift Acceleration"),
         m_leftLiftMotor(LEFT_LIFT_MOTOR_PORT),
         m_rightLiftMotor(RIGHT_LIFT_MOTOR_PORT),
         m_liftBottomLimitSwitch(LIFT_BOTTOM_LIMIT_SWITCH),
@@ -71,14 +73,22 @@ void LiftSubsystem::teleop() {
             liftSpeed = m_liftPID.calculate(m_requestedPosition - liftPosition);
         }
     }
-    if (liftSpeed > 0 && liftPosition > m_liftTopLimit.Get()) {
-                liftSpeed = 0;
-            } else if (liftSpeed < 0 && m_liftBottomLimitSwitch.Get()) {
-                liftSpeed = 0;
-        		resetEncoder();
-        		SetRequestedPosition(0);
-            }
 
+    if (liftSpeed > 0 && liftPosition > m_liftTopLimit.Get()) {
+		liftSpeed = 0;
+	} else if (liftSpeed < 0 && m_liftBottomLimitSwitch.Get()) {
+		liftSpeed = 0;
+		resetEncoder();
+		SetRequestedPosition(0);
+	}
+
+	double maxAllowedSpeed = sqrt(2 * (m_requestedPosition - liftPosition) *
+			 m_maxAcceleration.Get());
+	if (fabs(liftSpeed) > maxAllowedSpeed) {
+		liftSpeed = maxAllowedSpeed * (liftSpeed / fabs(liftSpeed));
+	}
+
+    m_currentLiftSpeed = liftSpeed;
     setLift(liftSpeed);
     SmartDashboard::PutNumber("Lift Position", liftPosition);
 }

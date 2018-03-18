@@ -2,6 +2,7 @@
 
 #include <CORERobotLib.h>
 #include <ScorerSubsystem.h>
+#include "COREUtilities/COREConstant.h"
 
 enum rotateArmAction{
 	UP,
@@ -17,9 +18,7 @@ public:
 	void actionEnd();
 	ScorerSubsystem scorerSubsystem;
 
-
-
 private:
-
+	COREConstant <double> m_upChainBarAngle, m_downChainBarAngle, m_middleChainBarAngle;
 	rotateArmAction m_requestedArmAction;
 };

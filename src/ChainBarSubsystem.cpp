@@ -92,7 +92,7 @@ void ChainBarSubsystem::teleop() {
 	}
 
 	double maxChainBarSpeed = sqrt(2 * ((m_requestedChainBarAngle - GetChainBarAngle()) *
-			(fabs(chainBarSpeed - m_currentChainBarSpeed) / m_maxAngularAcceleration.Get())));
+			m_maxAngularAcceleration.Get()));
 	if (fabs(chainBarSpeed) > maxChainBarSpeed) {
 		chainBarSpeed = maxChainBarSpeed * (chainBarSpeed / fabs(chainBarSpeed));
 	}

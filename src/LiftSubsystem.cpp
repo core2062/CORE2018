@@ -83,7 +83,7 @@ void LiftSubsystem::teleop() {
 	}
 
 	double maxAllowedSpeed = sqrt(2 * (m_requestedPosition - liftPosition) *
-			(fabs(liftSpeed - m_currentLiftSpeed) / m_maxAcceleration.Get()));
+			 m_maxAcceleration.Get());
 	if (fabs(liftSpeed) > maxAllowedSpeed) {
 		liftSpeed = maxAllowedSpeed * (liftSpeed / fabs(liftSpeed));
 	}

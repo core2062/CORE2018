@@ -9,7 +9,7 @@
 #include "CORELogging/CORELog.h"
 
 DriveSubsystem::DriveSubsystem() :
-		m_pursuit(0, 0, .1, m_path, false, 0),
+		m_pursuit(0, 0, 0, .1, m_path, false, 0),
 		m_steerPID_P("Steer PID P"),
 		m_steerPID_I("Steer PID I"),
 		m_steerPID_D("Steer PID D"),
@@ -25,8 +25,7 @@ DriveSubsystem::DriveSubsystem() :
 		m_leftFrontModule(new CORESwerve::SwerveModule(&m_leftFrontDriveMotor, &m_leftFrontSteerMotor)),
 		m_rightBackModule(new CORESwerve::SwerveModule(&m_rightBackDriveMotor, &m_rightBackSteerMotor)),
 		m_leftBackModule(new CORESwerve::SwerveModule(&m_leftBackDriveMotor, &m_leftBackSteerMotor)),
-		m_gyro(new AHRS(SerialPort::Port::kUSB, AHRS::SerialDataType::kProcessedData, 100)),
-        m_total(0,0) {
+		m_gyro(new AHRS(SerialPort::Port::kUSB, AHRS::SerialDataType::kProcessedData, 60)) {
     m_swerveDrive = new CORESwerve(m_wheelbase, m_trackwidth, 3.0, 4915.2, m_leftFrontModule, m_leftBackModule, m_rightBackModule, m_rightFrontModule);
 //    m_swerveTracker = SwerveTracker::GetInstance();
 //    m_swerveTracker->injectCORESwerve(m_swerveDrive);
@@ -55,7 +54,6 @@ void DriveSubsystem::teleopInit() {
 
     m_swerveDrive->inverseKinematics(0, 0, 0);
     m_swerveDrive->setSteerPID(m_steerPID_P.Get(), m_steerPID_I.Get(), m_steerPID_D.Get());
-    m_total.SetXY(0, 0);
     m_x = 0;
     m_y = 0;
 }
@@ -89,7 +87,7 @@ void DriveSubsystem::teleop() {
 
     m_swerveDrive->inverseKinematics(x, y, theta);
 
-    auto result = m_swerveDrive->forwardKinematics(gyro_radians);
+    auto result = m_swerveDrive->forwardKinematics();
     SmartDashboard::PutNumber("Returned Vector X", result.first);
     SmartDashboard::PutNumber("Returned Vector Y", result.second);
 
@@ -178,21 +176,27 @@ double DriveSubsystem::getGyroYaw(bool raw) {
     if(raw) {
         return m_gyro->GetYaw();
     } else {
-        return m_gyro->GetYaw() - 90 - m_gyroOffset;
+        return m_gyro->GetYaw() + m_theta - m_gyroOffset;
 
     }
 }
 
-void DriveSubsystem::startPath(Path path, Translation2d startPos, bool reversed, double maxAccel, double tolerance, bool gradualStop,
-                               double lookahead) {
-    m_x = startPos.getX();
-    m_y = startPos.getY();
+void DriveSubsystem::startPath(Path path, Position2d startPos, bool reversed, double maxAccel, double maxAngAccel,
+                               double tolerance, bool gradualStop, double lookahead) {
+    m_x = startPos.getTranslation().getX();
+    m_y = startPos.getTranslation().getY();
+    m_theta = startPos.getRotation().getDegrees();
+    CORELog::logInfo("Theta Angle: " + to_string(m_theta));
     m_swerveDrive->zeroEncoders();
-	m_pursuit = AdaptivePursuit(lookahead, maxAccel, .025, path, reversed, tolerance, gradualStop);
+	m_pursuit = AdaptivePursuit(lookahead, maxAccel, maxAngAccel, .025, path, reversed, tolerance, gradualStop);
 }
 
 void DriveSubsystem::resetTracker(Position2d initialPos) {
-//	m_swerveTracker->reset(Timer::GetFPGATimestamp(), initialPos);
+    m_x = initialPos.getTranslation().getX();
+    m_y = initialPos.getTranslation().getY();
+    m_theta = initialPos.getRotation().getRadians();
+    CORELog::logWarning("Initial position set to X: " + to_string(m_x) + " Y: " + to_string(m_y)
+                        + " Theta: " + to_string(m_theta));
 }
 
 void DriveSubsystem::autonInitTask() {
@@ -203,23 +207,18 @@ void DriveSubsystem::autonInitTask() {
 }
 
 void DriveSubsystem::preLoopTask() {
+    double gyro_radians = toRadians(getGyroYaw());
+    auto result = m_swerveDrive->forwardKinematics();
+
+    m_x += (result.first * cos(gyro_radians) + result.second * sin(gyro_radians));
+    m_y += (-result.first * sin(gyro_radians) + result.second * cos(gyro_radians));
+
+    SmartDashboard::PutNumber("Robot X", m_x);
+    SmartDashboard::PutNumber("Robot Y", m_y);
+
     if (!m_pursuit.isDone() && CORE::COREDriverstation::getMode() == CORE::COREDriverstation::AUTON) {
-        double gyro_radians = toRadians(getGyroYaw());
-        auto result = m_swerveDrive->forwardKinematics(0);
-        SmartDashboard::PutNumber("Returned Vector X", result.first);
-        SmartDashboard::PutNumber("Returned Vector Y", result.second);
-
-        m_x += (result.first * cos(gyro_radians) + result.second * sin(gyro_radians));
-        m_y += (-result.first * sin(gyro_radians) + result.second * cos(gyro_radians));
-
-        SmartDashboard::PutNumber("Total X", m_x);
-        SmartDashboard::PutNumber("Total Y", m_y);
-
         Position2d pos(Translation2d(m_x, m_y), Rotation2d::fromRadians(gyro_radians));
         Position2d::Delta command = m_pursuit.update(pos, Timer::GetFPGATimestamp());
-        SmartDashboard::PutNumber("Pursuit X command", command.dx);
-        SmartDashboard::PutNumber("Pursuit Y command", command.dy);
-        SmartDashboard::PutNumber("Pursuit Theta command", command.dtheta);
 
         double maxVel = 0.0;
         maxVel = max(maxVel, command.dx);
@@ -234,18 +233,14 @@ void DriveSubsystem::preLoopTask() {
             command.dy *= scaling;
         }
 
-        double y = - command.dy;
-        double x = - command.dx;
+        double y = -command.dy;
+        double x = -command.dx;
         double temp = y * cos(gyro_radians) + x * sin(gyro_radians);
         x = -y * sin(gyro_radians) + x * cos(gyro_radians);
         y = temp;
 
-        m_swerveDrive->inverseKinematics(x, y, 0);
-
-        CORELog::logInfo("X Command: " + to_string(command.dx));
-        CORELog::logInfo("Y Command: " + to_string(command.dy));
-        CORELog::logInfo("Gyro Angle: " + to_string(gyro_radians));
-
+        double theta = -command.dtheta;
+        m_swerveDrive->inverseKinematics(x, y, theta);
     }
 }
 
@@ -265,10 +260,4 @@ void DriveSubsystem::zeroMotors() {
     m_rightFrontSteerMotor.Set(ControlMode::PercentOutput, 0);
     m_leftBackSteerMotor.Set(ControlMode::PercentOutput, 0);
     m_rightBackSteerMotor.Set(ControlMode::PercentOutput, 0);
-}
-
-void DriveSubsystem::setLocation(double x, double y) {
-    m_x = x;
-    m_y = y;
-    CORELog::logWarning("Inital position X: " + to_string(x) + " Y: " + to_string(y));
 }

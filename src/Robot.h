@@ -34,7 +34,7 @@
 #define SCORER_IN_SOLENOID_PORT 0
 #define SCORER_OUT_SOLENOID_PORT 1
 #define INTAKE_IN_SOLENOID_PORT 3
-#define INTAKE_OUT_SOLENOID_PORT 4
+#define INTAKE_OUT_SOLENOID_PORT 2
 
 /************************* Digital Inputs *************************/
 #define LIFT_BOTTOM_LIMIT_SWITCH 0
@@ -60,7 +60,7 @@ public:
 	LiftSubsystem liftSubsystem;
 	IntakeSubsystem intakeSystem;
 	ScorerSubsystem scorerSubsystem;
-    COREConstant<double> m_chainBarIntakeAngle, m_chainBarSwitchAngle, m_chainBarUpAngle;
+    COREConstant<double> m_chainBarIntakeAngle, m_chainBarSwitchAngle, m_chainBarUpAngle, m_chainBarFeederAngle;
 
     TestPathAuton testAuton;
 };

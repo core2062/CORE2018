@@ -17,7 +17,8 @@ LiftSubsystem::LiftSubsystem() :
         m_leftLiftMotor(LEFT_LIFT_MOTOR_PORT),
         m_rightLiftMotor(RIGHT_LIFT_MOTOR_PORT),
         m_liftBottomLimitSwitch(LIFT_BOTTOM_LIMIT_SWITCH),
-        m_liftPID(0.0, 0.0, 0.0) {
+        m_liftPID(0.0, 0.0, 0.0),
+        m_liftTicksPerInch("Lift Ticks Per Inch") {
     m_rightLiftMotor.SetInverted(true);
 
 }
@@ -38,49 +39,11 @@ void LiftSubsystem::teleopInit() {
     m_liftPID.setProportionalConstant(m_liftUpP.Get());
     m_liftPID.setIntegralConstant(m_liftUpI.Get());
     m_liftPID.setDerivativeConstant(m_liftUpD.Get());
-    SetRequestedPosition(GetLiftPosition());
+    SetRequestedPosition(GetLiftInches());
 }
 
 void LiftSubsystem::teleop() {
-    SmartDashboard::PutNumber("Lift Encoder", m_rightLiftMotor.GetSelectedSensorPosition(0));
-    SmartDashboard::PutNumber("Current Lift Position", GetLiftPosition());
-    SmartDashboard::PutNumber("Requested Lift Position", m_requestedPosition);
-    double liftSpeed = -operatorJoystick->getAxis(CORE::COREJoystick::JoystickAxis::LEFT_STICK_Y);
-    double liftPosition = GetLiftPosition();
-    SmartDashboard::PutNumber("Lift Speed", liftSpeed);
-    if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::X_BUTTON)) {
- 	   SetRequestedPosition(200000);
-    }
-    if (abs(liftSpeed) > 0.01) {
-    	if (liftSpeed < 0) {
-    		liftSpeed = liftSpeed * 0.25;
-    	} else {
-    		liftSpeed *= 0.5;
-    	}
-            SetRequestedPosition(GetLiftPosition());
-    } else {
-        if (m_requestedPosition > liftPosition) {
-            m_liftPID.setProportionalConstant(m_liftUpP.Get());
-            m_liftPID.setIntegralConstant(m_liftUpI.Get());
-            m_liftPID.setDerivativeConstant(m_liftUpD.Get());
-            liftSpeed = m_liftPID.calculate(m_requestedPosition - liftPosition);
-        } else {
-            m_liftPID.setProportionalConstant(m_liftDownP.Get());
-            m_liftPID.setIntegralConstant(m_liftDownI.Get());
-            m_liftPID.setDerivativeConstant(m_liftDownD.Get());
-            liftSpeed = m_liftPID.calculate(m_requestedPosition - liftPosition);
-        }
-    }
-    if (liftSpeed > 0 && liftPosition > m_liftTopLimit.Get()) {
-                liftSpeed = 0;
-            } else if (liftSpeed < 0 && m_liftBottomLimitSwitch.Get()) {
-                liftSpeed = 0;
-        		resetEncoder();
-        		SetRequestedPosition(0);
-            }
-
-    setLift(liftSpeed);
-    SmartDashboard::PutNumber("Lift Position", liftPosition);
+    SetRequestedSpeed(-operatorJoystick->getAxis(CORE::COREJoystick::JoystickAxis::LEFT_STICK_Y));
 }
 
 void LiftSubsystem::resetEncoder() {
@@ -96,6 +59,57 @@ void LiftSubsystem::SetRequestedPosition(double position) {
     m_requestedPosition = position;
 }
 
+void LiftSubsystem::SetRequestedSpeed(double speed) {
+    m_requestedSpeed = speed;
+}
+
 double LiftSubsystem::GetLiftPosition() {
     return m_rightLiftMotor.GetSelectedSensorPosition(0);
+}
+
+double LiftSubsystem::GetLiftInches() {
+    return GetLiftPosition() / m_liftTicksPerInch.Get();
+}
+
+void LiftSubsystem::postLoopTask() {
+    SmartDashboard::PutNumber("Lift Encoder", m_rightLiftMotor.GetSelectedSensorPosition(0));
+    SmartDashboard::PutNumber("Current Lift Ticks", GetLiftPosition());
+    SmartDashboard::PutNumber("Current Lift Inches", GetLiftInches());
+    SmartDashboard::PutNumber("Requested Lift Position", m_requestedPosition);
+
+    double liftPosition = GetLiftInches();
+    SmartDashboard::PutNumber("Lift Speed", m_requestedSpeed);
+    if (abs(m_requestedSpeed) > 0.01) {
+        if (m_requestedSpeed < 0) {
+            m_requestedSpeed *= 0.1;
+        } else {
+            m_requestedSpeed *= 0.5;
+        }
+        SetRequestedPosition(GetLiftInches());
+    } else {
+        if (m_requestedPosition > liftPosition) {
+            m_liftPID.setProportionalConstant(m_liftUpP.Get());
+            m_liftPID.setIntegralConstant(m_liftUpI.Get());
+            m_liftPID.setDerivativeConstant(m_liftUpD.Get());
+            m_requestedSpeed = m_liftPID.calculate(m_requestedPosition * m_liftTicksPerInch.Get() - GetLiftPosition());
+        } else {
+            m_liftPID.setProportionalConstant(m_liftDownP.Get());
+            m_liftPID.setIntegralConstant(m_liftDownI.Get());
+            m_liftPID.setDerivativeConstant(m_liftDownD.Get());
+            m_requestedSpeed = m_liftPID.calculate(m_requestedPosition * m_liftTicksPerInch.Get() - GetLiftPosition());
+        }
+    }
+    if (m_requestedSpeed > 0 && liftPosition > m_liftTopLimit.Get()) {
+        m_requestedSpeed = 0;
+    } else if (m_liftBottomLimitSwitch.Get()) {
+        if(m_requestedSpeed <= 0) {
+            m_requestedSpeed = 0;
+            SetRequestedPosition(0);
+        }
+        resetEncoder();
+    }
+
+    setLift(m_requestedSpeed);
+    m_requestedSpeed = 0;
+    SmartDashboard::PutNumber("Lift Position", liftPosition);
 }

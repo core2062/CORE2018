@@ -9,19 +9,22 @@
 
 using namespace CORE;
 
-class ChainBarSubsystem : public CORESubsystem {
+class ChainBarSubsystem : public CORESubsystem, public CORETask {
 public:
 	ChainBarSubsystem();
 	void robotInit() override;
 	void teleopInit() override;
 	void teleop() override;
+	void postLoopTask() override;
 
 	void SetChainBarSpeed(double speed);
     void SetChainBarRequestedAngle(double angle);
+	void SetChainBarRequestedSpeed(double speed);
 	double GetChainBarAngle(bool firstIteration, bool raw = false);
 
     void SetRotationSpeed(double speed);
     void SetRotationRequestedAngle(double angle);
+	void SetRotationRequestedSpeed(double speed);
     double GetRotationAngle(bool firstIteration, bool raw = false);
     double GetRotationAngleRelativeToChainBar();
 
@@ -36,6 +39,6 @@ private:
     COREConstant<double> m_rotationP, m_rotationI, m_rotationD;
     COREPID m_chainBarPID, m_rotationPID;
     bool m_firstIteration;
-	double m_requestedChainBarAngle;
-    double m_requestedRotationAngle;
+	double m_requestedChainBarAngle, m_requestedChainBarSpeed;
+    double m_requestedRotationAngle, m_requestedRotationSpeed;
 };

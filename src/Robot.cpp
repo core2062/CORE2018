@@ -9,7 +9,7 @@ CORE2018::CORE2018():
         m_chainBarFeederAngle("Chain Bar Feeder Angle"),
         m_liftLowScalePosition("Lift Low Scale Position"),
         m_liftMidScalePosition("Lift Mid Scale Position"),
-m_liftHighScalePosition("Lift High Scale Position") {
+        m_liftHighScalePosition("Lift High Scale Position") {
     m_instance = this;
     SetPeriod(1/60.0);
 }

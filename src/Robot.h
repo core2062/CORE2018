@@ -60,7 +60,8 @@ public:
 	LiftSubsystem liftSubsystem;
 	IntakeSubsystem intakeSystem;
 	ScorerSubsystem scorerSubsystem;
-    COREConstant<double> m_chainBarIntakeAngle, m_chainBarSwitchAngle, m_chainBarUpAngle, m_chainBarFeederAngle;
+    COREConstant<double> m_chainBarIntakeAngle, m_chainBarSwitchAngle, m_chainBarUpAngle, m_chainBarFeederAngle,
+            m_liftLowScalePosition, m_liftMidScalePosition, m_liftHighScalePosition;
 
     TestPathAuton testAuton;
 };

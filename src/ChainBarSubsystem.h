@@ -20,12 +20,12 @@ public:
 	void SetChainBarSpeed(double speed);
     void SetChainBarRequestedAngle(double angle);
 	void SetChainBarRequestedSpeed(double speed);
-	double GetChainBarAngle(bool firstIteration, bool raw = false);
+	double GetChainBarAngle(bool raw = false);
 
     void SetRotationSpeed(double speed);
     void SetRotationRequestedAngle(double angle);
 	void SetRotationRequestedSpeed(double speed);
-    double GetRotationAngle(bool firstIteration, bool raw = false);
+    double GetRotationAngle(bool raw = false);
     double GetRotationAngleRelativeToChainBar();
 
 private:

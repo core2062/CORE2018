@@ -3,6 +3,8 @@
 #include <CORERobotLib.h>
 #include <IntakeSubsystem.h>
 #include <ScorerSubsystem.h>
+#include "COREUtilities/COREConstant.h"
+
 enum intake {
 	INTAKE,
 	OUTTAKE,
@@ -20,5 +22,6 @@ public:
 	IntakeSubsystem intakeSubsystem;
 	ScorerSubsystem scorerSubsystem;
 private:
+	COREConstant<double> m_outtakeSpeed, m_intakeSpeed;
 	intake m_intakeRequestedAction;
 };

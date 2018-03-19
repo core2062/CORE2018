@@ -14,6 +14,8 @@ LiftSubsystem::LiftSubsystem() :
 		m_liftDownI("Lift Down I"),
 		m_liftDownD("Lift Down D"),
         m_liftBottomLimit("LiftBottom Limit"),
+		m_gradualStopLimit("Gradual Stop Lift Limit"),
+		m_maxAcceleration("Maximum Lift Acceleration"),
         m_leftLiftMotor(LEFT_LIFT_MOTOR_PORT),
         m_rightLiftMotor(RIGHT_LIFT_MOTOR_PORT),
         m_liftBottomLimitSwitch(LIFT_BOTTOM_LIMIT_SWITCH),

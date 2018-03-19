@@ -31,12 +31,13 @@ public:
 private:
 	TalonSRX m_chainBarMotor, m_rotationMotor;
 	COREConstant<double> m_chainBarLowerTopLimit, m_chainBarUpperTopLimit, m_chainBarBottomLimit;
-    COREConstant<double> m_rotationTopLimit, m_rotationBottomLimit;
     COREConstant<double> m_liftChangePoint;
 	COREConstant<double> m_chainBarAngleOffset, m_rotationAngleOffset;
+    COREConstant<double> m_rotationTopLimit, m_rotationBottomLimit;
     COREConstant<double> m_chainBarUpP, m_chainBarUpI, m_chainBarUpD;
     COREConstant<double> m_chainBarDownP, m_chainBarDownI, m_chainBarDownD;
     COREConstant<double> m_rotationP, m_rotationI, m_rotationD;
+    COREConstant<double> m_maxAngularAcceleration;
     COREPID m_chainBarPID, m_rotationPID;
     bool m_firstIteration;
 	double m_requestedChainBarAngle, m_requestedChainBarSpeed;

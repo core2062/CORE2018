@@ -14,8 +14,9 @@ ChainBarSubsystem::ChainBarSubsystem() :
 		m_chainBarBottomLimit("Chain Bar Bottom Limit"),
 		m_liftChangePoint("Lift Change Point"),
 		m_chainBarAngleOffset("Chain Bar Angle Offset"),
-		m_chainBarPID(0, 0, 0),
-		m_rotationPID(0, 0, 0),
+		m_rotationAngleOffset("Rotation Angle Offset"),
+		m_rotationTopLimit("Rotation Top Limit"),
+		m_rotationBottomLimit("Rotation Bottom Limit"),
 		m_chainBarUpP("Chain Bar Up PID P"),
 		m_chainBarUpI("Chain Bar Up PID I"),
 		m_chainBarUpD("Chain Bar Up PID D"),
@@ -25,10 +26,9 @@ ChainBarSubsystem::ChainBarSubsystem() :
 		m_rotationP("Rotation PID P"),
 		m_rotationI("Rotation PID I"),
 		m_rotationD("Rotation PID D"),
-		m_rotationAngleOffset("Rotation Angle Offset"),
-		m_rotationTopLimit("Rotation Top Limit"),
-		m_rotationBottomLimit("Rotation Bottom Limit"),
-		m_firstIteration(true) {
+		m_maxAngularAcceleration("thing"),
+		m_chainBarPID(0, 0, 0),
+		m_rotationPID(0, 0, 0) {
 
 }
 
@@ -48,14 +48,12 @@ void ChainBarSubsystem::teleopInit() {
 	m_chainBarPID.setProportionalConstant(m_chainBarUpP.Get());
 	m_chainBarPID.setIntegralConstant(m_chainBarUpI.Get());
 	m_chainBarPID.setDerivativeConstant(m_chainBarUpD.Get());
-	SetChainBarRequestedAngle(GetChainBarAngle(m_firstIteration));
+	SetChainBarRequestedAngle(GetChainBarAngle());
 
 	m_rotationPID.setProportionalConstant(m_rotationP.Get());
 	m_rotationPID.setIntegralConstant(m_rotationI.Get());
 	m_rotationPID.setDerivativeConstant(m_rotationD.Get());
-	SetRotationRequestedAngle(GetRotationAngle(m_firstIteration));
-
-	m_firstIteration = false;
+	SetRotationRequestedAngle(GetRotationAngle());
 }
 
 void ChainBarSubsystem::teleop() {
@@ -68,21 +66,16 @@ void ChainBarSubsystem::SetChainBarSpeed(double speed) {
 }
 
 void ChainBarSubsystem::SetRotationSpeed(double speed) {
-	m_rotationMotor.Set(ControlMode::PercentOutput, speed);
+	m_rotationMotor.Set(ControlMode::PercentOutput, speed * 0.8);
 }
 
-double ChainBarSubsystem::GetChainBarAngle(bool firstIteration, bool raw) {
-
-	if (!m_firstIteration) {
-	    double rawAngle = 360 - (-m_chainBarMotor.GetSelectedSensorPosition(0) / 4096.0 * 360);
+double ChainBarSubsystem::GetChainBarAngle(bool raw) {
+	double rawAngle = 360 - (-m_chainBarMotor.GetSelectedSensorPosition(0) / 4096.0 * 360);
 //		double rawAngle = 360 - (-m_chainBarMotor.GetSensorCollection().GetQuadraturePosition() / 4096.0 * 360);
-		if (raw) {
-			return rawAngle;
-		} else {
-			return rawAngle - m_chainBarAngleOffset.Get();
-		}
+	if (raw) {
+		return rawAngle;
 	} else {
-		return m_chainBarAngleOffset.Get();
+		return rawAngle - m_chainBarAngleOffset.Get();
 	}
 }
 
@@ -91,26 +84,21 @@ void ChainBarSubsystem::SetChainBarRequestedAngle(double angle) {
 }
 
 double ChainBarSubsystem::GetRotationAngleRelativeToChainBar() {
-	double rawAngle = GetRotationAngle(m_firstIteration);
-	rawAngle -= GetChainBarAngle(m_firstIteration);
+	double rawAngle = GetRotationAngle();
+	rawAngle -= GetChainBarAngle();
 
 	return rawAngle;
 }
 
-double ChainBarSubsystem::GetRotationAngle(bool firstIteration, bool raw) {
-//    double rawAngle = 360 - (-m_rotationMotor.GetSelectedSensorPosition(0) / 4096.0 * 360);
-	double rawAngle = 360 - (-m_rotationMotor.GetSensorCollection().GetQuadraturePosition() / 4096.0 * 360);
-	if (!m_firstIteration) {
+double ChainBarSubsystem::GetRotationAngle(bool raw) {
+    double rawAngle = 360 - (-m_rotationMotor.GetSelectedSensorPosition(0) / 4096.0 * 360);
+//	double rawAngle = 360 - (-m_rotationMotor.GetSensorCollection().GetQuadraturePosition() / 4096.0 * 360);
 		rawAngle *= -1;
 		if (raw) {
 			return rawAngle;
 		} else {
 			return rawAngle - m_rotationAngleOffset.Get();
 		}
-	} else {
-		rawAngle -= GetChainBarAngle(m_firstIteration); //TODO: Check this. Raw angle not used?
-		return m_rotationAngleOffset.Get();
-	}
 }
 
 void ChainBarSubsystem::SetRotationRequestedAngle(double angle) {

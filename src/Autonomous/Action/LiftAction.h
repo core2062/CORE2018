@@ -1,6 +1,7 @@
 #pragma once
 
 #include <CORERobotLib.h>
+#include "COREUtilities/COREConstant.h"
 
 
 enum liftAction {
@@ -13,12 +14,11 @@ enum liftAction {
 class LiftAction: public COREAutonAction {
 public:
 	explicit LiftAction(liftAction action);
-    explicit LiftAction(int newPosition);
 	void actionInit() override;
 	actionStatus action() override;
 	void actionEnd() override;
 
 private:
-	static COREConstant<int> m_bottomHeight, m_topHeight; //TODO: Add more constants
+	COREConstant<int> m_bottomHeight, m_topHeight, m_switchHeight, m_scaleHeight;
 	liftAction m_requestedLiftAction;
 };

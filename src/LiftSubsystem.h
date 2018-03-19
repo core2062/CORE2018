@@ -32,6 +32,8 @@ private:
 	COREConstant<double> m_liftUpP, m_liftUpI, m_liftUpD;
 	COREConstant<double> m_liftDownP, m_liftDownI, m_liftDownD;
 	COREConstant<double> m_liftBottomLimit;
+	COREConstant<double> m_gradualStopLimit;
+	COREConstant<double> m_maxAcceleration;
 	DigitalInput m_liftBottomLimitSwitch;
 	COREPID m_liftPID;
 	double m_requestedPosition, m_requestedSpeed;

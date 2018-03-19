@@ -43,7 +43,8 @@ void ChainBarSubsystem::robotInit() {
 
 void ChainBarSubsystem::teleopInit() {
 	SmartDashboard::PutNumber("Selected Sensor Position", m_chainBarMotor.GetSelectedSensorPosition(0));
-	SmartDashboard::PutNumber("Get Selected Quadrature Position0", m_chainBarMotor.GetSensorCollection().GetQuadraturePosition());
+	SmartDashboard::PutNumber("Get Selected Quadrature Position", 
+                              m_chainBarMotor.GetSensorCollection().GetQuadraturePosition());
 	m_chainBarPID.setProportionalConstant(m_chainBarUpP.Get());
 	m_chainBarPID.setIntegralConstant(m_chainBarUpI.Get());
 	m_chainBarPID.setDerivativeConstant(m_chainBarUpD.Get());
@@ -56,83 +57,8 @@ void ChainBarSubsystem::teleopInit() {
 }
 
 void ChainBarSubsystem::teleop() {
-	double chainBarSpeed = -operatorJoystick->getAxis(COREJoystick::JoystickAxis::RIGHT_STICK_Y);
-	double chainBarAngle = GetChainBarAngle();
-	//TODO figure out this code
-//	if (GetChainBarAngle() > m_rotationTopLimit.Get() || GetChainBarAngle() < m_rotationBottomLimit.Get()) {
-//		SetRotationRequestedAngle(-90 + GetRotationAngleRelativeToChainBar());
-//	}
-
-	//TODO not lose my place
-	if (abs(chainBarSpeed) > 0.01) {
-		/************************* Check Chain Bar Limits *************************/
-		if (chainBarSpeed < 0 && chainBarAngle < m_chainBarBottomLimit.Get()) { //Bottom limit of arm
-			chainBarSpeed = 0;
-		} else if (/*m_liftPosition > m_liftChangePoint.Get() && */chainBarSpeed
-				> 0 && chainBarAngle > m_chainBarLowerTopLimit.Get()) { //Top limit of arm below change point
-			chainBarSpeed = 0;
-		} else if (chainBarSpeed > 0
-				&& chainBarAngle > m_chainBarUpperTopLimit.Get()) { //Top limit of arm above change point
-			chainBarSpeed = 0;
-		} else {
-			SetChainBarRequestedAngle(GetChainBarAngle());
-		}
-	} else {
-		if (m_requestedChainBarAngle > GetChainBarAngle()) {
-			m_chainBarPID.setProportionalConstant(m_chainBarUpP.Get());
-			m_chainBarPID.setIntegralConstant(m_chainBarUpI.Get());
-			m_chainBarPID.setDerivativeConstant(m_chainBarUpD.Get());
-			chainBarSpeed = m_chainBarPID.calculate(m_requestedChainBarAngle - GetChainBarAngle());
-		} else {
-			m_chainBarPID.setProportionalConstant(m_chainBarDownP.Get());
-			m_chainBarPID.setIntegralConstant(m_chainBarDownI.Get());
-			m_chainBarPID.setDerivativeConstant(m_chainBarDownD.Get());
-			chainBarSpeed = m_chainBarPID.calculate(m_requestedChainBarAngle - GetChainBarAngle());
-		}
-	}
-
-	double maxChainBarSpeed = sqrt(2 * ((m_requestedChainBarAngle - GetChainBarAngle()) *
-			m_maxAngularAcceleration.Get()));
-	if (fabs(chainBarSpeed) > maxChainBarSpeed) {
-		chainBarSpeed = maxChainBarSpeed * (chainBarSpeed / fabs(chainBarSpeed));
-	}
-
-	SetChainBarSpeed(chainBarSpeed);
-	m_currentChainBarSpeed = chainBarSpeed;
-
-	SmartDashboard::PutNumber("Chainbar Angle", GetChainBarAngle());
-	SmartDashboard::PutNumber("Chainbar Requested Angle", m_requestedChainBarAngle);
-
-	double rotationSpeed = operatorJoystick->getAxis(
-			COREJoystick::JoystickAxis::RIGHT_STICK_X);
-	double rotationAngleRelative = GetRotationAngleRelativeToChainBar();
-	if (abs(rotationSpeed) > 0.01) {
-		if (rotationSpeed > 0
-				&& rotationAngleRelative > m_rotationTopLimit.Get()) {
-			rotationSpeed = 0;
-		} else if (rotationSpeed < 0
-				&& rotationAngleRelative < m_rotationBottomLimit.Get()) {
-			rotationSpeed = 0;
-		} else {
-			SetRotationRequestedAngle(GetRotationAngle());
-		}
-	} else {
-		if (operatorJoystick->getRisingEdge(
-				COREJoystick::JoystickButton::DPAD_S)) {
-			m_requestedRotationAngle = -180;
-		} else if (operatorJoystick->getRisingEdge(
-				COREJoystick::JoystickButton::DPAD_E)) {
-			m_requestedRotationAngle = -90;
-		}
-		rotationSpeed = m_rotationPID.calculate(
-				m_requestedRotationAngle - GetRotationAngle());
-	}
-
-	SetRotationSpeed(rotationSpeed);
-
-	SmartDashboard::PutNumber("Rotation Angle", GetRotationAngle());
-	SmartDashboard::PutNumber("Rotation Angle Relative To Chain Bar",
-			GetRotationAngleRelativeToChainBar());
+	SetChainBarRequestedSpeed(-operatorJoystick->getAxis(COREJoystick::JoystickAxis::RIGHT_STICK_Y));
+    SetRotationRequestedSpeed(operatorJoystick->getAxis(COREJoystick::JoystickAxis::RIGHT_STICK_X));
 }
 
 void ChainBarSubsystem::SetChainBarSpeed(double speed) {
@@ -177,4 +103,89 @@ double ChainBarSubsystem::GetRotationAngle(bool raw) {
 
 void ChainBarSubsystem::SetRotationRequestedAngle(double angle) {
 	m_requestedRotationAngle = angle;
+}
+void ChainBarSubsystem::postLoopTask() {
+    double chainBarAngle = GetChainBarAngle(m_firstIteration);
+
+    if (abs(m_requestedChainBarSpeed) > 0.01) {
+        SetChainBarRequestedAngle(GetChainBarAngle(m_firstIteration));
+    } else {
+        if (m_requestedChainBarAngle > GetChainBarAngle(m_firstIteration)) {
+            m_chainBarPID.setProportionalConstant(m_chainBarUpP.Get());
+            m_chainBarPID.setIntegralConstant(m_chainBarUpI.Get());
+            m_chainBarPID.setDerivativeConstant(m_chainBarUpD.Get());
+            m_requestedChainBarSpeed = m_chainBarPID.calculate(m_requestedChainBarAngle - GetChainBarAngle(m_firstIteration));
+        } else {
+            m_chainBarPID.setProportionalConstant(m_chainBarDownP.Get());
+            m_chainBarPID.setIntegralConstant(m_chainBarDownI.Get());
+            m_chainBarPID.setDerivativeConstant(m_chainBarDownD.Get());
+            m_requestedChainBarSpeed = m_chainBarPID.calculate(m_requestedChainBarAngle - GetChainBarAngle(m_firstIteration));
+        }
+    }
+    
+    /************************* Check Chain Bar Limits *************************/
+    if (m_requestedChainBarSpeed < 0 && chainBarAngle < m_chainBarBottomLimit.Get()) { //Bottom limit of arm
+        m_requestedChainBarSpeed = 0;
+    } else if (CORE2018::GetInstance()->liftSubsystem.GetLiftPosition() < m_liftChangePoint.Get()
+               && m_requestedChainBarSpeed > 0
+               && chainBarAngle > m_chainBarLowerTopLimit.Get()) { //Top limit of arm below change point
+        m_requestedChainBarSpeed = 0;
+    } else if (m_requestedChainBarSpeed > 0 
+               && chainBarAngle > m_chainBarUpperTopLimit.Get()) { //Top limit of arm above change point
+        m_requestedChainBarSpeed = 0;
+    }
+
+    SetChainBarSpeed(m_requestedChainBarSpeed);
+    m_requestedChainBarSpeed = 0;
+
+    SmartDashboard::PutNumber("Chainbar Angle", GetChainBarAngle(m_firstIteration));
+    SmartDashboard::PutNumber("Chainbar Requested Angle", m_requestedChainBarAngle);
+
+    double rotationAngleRelative = GetRotationAngleRelativeToChainBar();
+    if (abs(m_requestedRotationSpeed) > 0.01) {
+        SetRotationRequestedAngle(GetRotationAngle(m_firstIteration));
+    } else {
+        if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::DPAD_N)) {
+            m_requestedRotationAngle = 0;
+        } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::DPAD_NE)) {
+            m_requestedRotationAngle = -45;
+        } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::DPAD_E)) {
+            m_requestedRotationAngle = -90;
+        } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::DPAD_SE)) {
+            m_requestedRotationAngle = -135;
+        } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::DPAD_S)) {
+            if(GetRotationAngle(false) < 0) {
+                m_requestedRotationAngle = -180;
+            } else {
+                m_requestedRotationAngle = 180;
+            }
+        }  else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::DPAD_SW)) {
+            m_requestedRotationAngle = 135;
+        } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::DPAD_W)) {
+            m_requestedRotationAngle = 90;
+        } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::DPAD_NW)) {
+            m_requestedRotationAngle = 45;
+        }
+        m_requestedRotationSpeed = m_rotationPID.calculate(m_requestedRotationAngle - GetRotationAngle(m_firstIteration));
+    }
+    
+    if (m_requestedRotationSpeed > 0 && rotationAngleRelative > m_rotationTopLimit.Get()) {
+        m_requestedRotationSpeed = 0;
+    } else if (m_requestedRotationSpeed < 0 && rotationAngleRelative < m_rotationBottomLimit.Get()) {
+        m_requestedRotationSpeed = 0;
+    }
+
+    SetRotationSpeed(m_requestedRotationSpeed);
+    m_requestedRotationSpeed = 0;
+
+    SmartDashboard::PutNumber("Rotation Angle", GetRotationAngle(m_firstIteration));
+    SmartDashboard::PutNumber("Rotation Angle Relative To Chain Bar", GetRotationAngleRelativeToChainBar());
+}
+
+void ChainBarSubsystem::SetChainBarRequestedSpeed(double speed) {
+    m_requestedChainBarSpeed = speed;
+}
+
+void ChainBarSubsystem::SetRotationRequestedSpeed(double speed) {
+    m_requestedRotationSpeed = speed;
 }

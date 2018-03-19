@@ -25,28 +25,23 @@ public:
 	bool pathDone();
 	void resetYaw();
 	void zeroMotors();
-	void setLocation(double x, double y);
 
-	void startPath(Path path, Translation2d startPos = Translation2d(0, 0), bool reversed = false, double maxAccel = 50.0, //25
-                   double tolerance = .25, bool gradualStop = true, double lookahead = 0.0);
+	void startPath(Path path, Position2d startPos, bool reversed, double maxAccel, double maxAngAccel,
+                   double tolerance, bool gradualStop, double lookahead);
 	void resetTracker(Position2d initialPos);
 	Path m_path;
-//	SwerveTracker *m_swerveTracker= nullptr;
 	AdaptivePursuit m_pursuit;
-//	RobotFrame *frame = nullptr;
 	COREVector path;
 
 private:
 	double m_wheelbase = 20.8;
 	double m_trackwidth = 25.881;
-	double m_fudgeFactor = 1.0;
 	COREConstant <double> m_steerPID_P, m_steerPID_I, m_steerPID_D;
 	TalonSRX m_rightFrontSteerMotor, m_leftFrontSteerMotor, m_rightBackSteerMotor, m_leftBackSteerMotor,
 			m_rightFrontDriveMotor, m_leftFrontDriveMotor, m_rightBackDriveMotor, m_leftBackDriveMotor;
 	CORESwerve::SwerveModule *m_rightFrontModule, *m_leftFrontModule, *m_rightBackModule, *m_leftBackModule;
 	CORESwerve* m_swerveDrive;
 	AHRS *m_gyro;
-	COREVector m_total;
-	double m_x, m_y, m_gyroOffset;
+	double m_x, m_y, m_theta, m_gyroOffset;
     int count = 0;
 };

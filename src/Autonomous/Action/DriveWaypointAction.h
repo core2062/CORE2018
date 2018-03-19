@@ -7,17 +7,18 @@ using namespace CORE;
 
 class DriveWaypointAction : public COREAutonAction {
 public:
-    DriveWaypointAction(Path path, Translation2d startPos, bool reversed = false, double tolerance = .25,
-                        double maxAccel = 45.0, bool gradualStop = true, double lookahead = 24.0);
+    DriveWaypointAction(Path path, Position2d startPos, bool reverssed = false, double tolerance = .25,
+                        double maxAccel = 100, double maxAngAccel = 0.25, bool gradualStop = true, double lookahead = 16.0);
     void actionInit() override;
     actionStatus action() override;
     void actionEnd() override;
 private:
     Path m_path;
-    bool m_reversed = false;
-    double m_tolerance = .25;
-    double m_maxAccel = 25.0;
-    bool m_gradualStop = true;
+    bool m_reversed;
+    double m_tolerance;
+    double m_maxAccel;
+    double m_maxAngAccel;
+    bool m_gradualStop;
     double m_lookahead;
-    Translation2d m_startPos;
+    Position2d m_startPos;
 };

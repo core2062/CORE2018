@@ -8,21 +8,21 @@
 #include "COREFramework/COREScheduler.h"
 #include "COREControl/COREPID.h"
 
-
 using namespace CORE;
 using namespace frc;
 
-class LiftSubsystem : public CORESubsystem {
+class LiftSubsystem : public CORESubsystem, public CORETask {
 public:
 	LiftSubsystem();
 	void robotInit() override;
 	void teleopInit() override;
 	void teleop() override;
 	void setLift(double speed);
-	void setLiftSwitch(double setPoint);
-	void setLiftScale(double setPoint);
 	void SetRequestedPosition(double position);
+    void postLoopTask() override;
+    void SetRequestedSpeed(double speed);
 	double GetLiftPosition();
+    double GetLiftInches();
 	void resetEncoder();
 
 private:
@@ -36,6 +36,6 @@ private:
 	COREConstant<double> m_maxAcceleration;
 	DigitalInput m_liftBottomLimitSwitch;
 	COREPID m_liftPID;
-	double m_requestedPosition;
-	double m_currentLiftSpeed;
+	double m_requestedPosition, m_requestedSpeed;
+	COREConstant<double> m_liftTicksPerInch;
 };

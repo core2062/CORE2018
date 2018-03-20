@@ -22,5 +22,6 @@ public:
 	TalonSRX m_leftIntakeMotor, m_rightIntakeMotor;
 private:
 	DoubleSolenoid m_intakeSolenoid;
+	DigitalInput m_photoEye;
 	double m_intakeMotorPercentage = 0.0;
 };

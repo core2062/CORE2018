@@ -29,7 +29,7 @@ void CORE2018::teleop() {
         if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::A_BUTTON)) { //Intake Position
             chainBarSubsystem.SetChainBarRequestedAngle(m_chainBarIntakeAngle.Get());
             chainBarSubsystem.SetRotationRequestedAngle(-180);
-            liftSubsystem.SetRequestedPosition(5);
+            liftSubsystem.SetRequestedPosition(10);
         } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::B_BUTTON)) { //Switch Position
             chainBarSubsystem.SetChainBarRequestedAngle(m_chainBarSwitchAngle.Get());
             chainBarSubsystem.SetRotationRequestedAngle(-90);

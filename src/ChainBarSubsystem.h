@@ -29,6 +29,8 @@ public:
     double GetRotationAngleRelativeToChainBar();
 
 private:
+    bool m_chainBarSet;
+    bool m_rotationSet;
 	TalonSRX m_chainBarMotor, m_rotationMotor;
 	COREConstant<double> m_chainBarLowerTopLimit, m_chainBarUpperTopLimit, m_chainBarBottomLimit;
     COREConstant<double> m_liftChangePoint;

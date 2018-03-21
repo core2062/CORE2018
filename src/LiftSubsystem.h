@@ -24,6 +24,7 @@ public:
 	double GetLiftPosition();
     double GetLiftInches();
 	void resetEncoder();
+	bool liftDown();
 
 private:
 	TalonSRX m_leftLiftMotor;

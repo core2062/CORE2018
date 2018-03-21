@@ -35,10 +35,31 @@ ChainBarSubsystem::ChainBarSubsystem() :
 void ChainBarSubsystem::robotInit() {
 	operatorJoystick->registerAxis(COREJoystick::JoystickAxis::RIGHT_STICK_X);
 	operatorJoystick->registerAxis(COREJoystick::JoystickAxis::RIGHT_STICK_Y);
+    operatorJoystick->registerButton(COREJoystick::JoystickButton::DPAD_N);
+    operatorJoystick->registerButton(COREJoystick::JoystickButton::DPAD_NE);
+    operatorJoystick->registerButton(COREJoystick::JoystickButton::DPAD_E);
+    operatorJoystick->registerButton(COREJoystick::JoystickButton::DPAD_SE);
+    operatorJoystick->registerButton(COREJoystick::JoystickButton::DPAD_S);
+    operatorJoystick->registerButton(COREJoystick::JoystickButton::DPAD_SW);
+    operatorJoystick->registerButton(COREJoystick::JoystickButton::DPAD_W);
+    operatorJoystick->registerButton(COREJoystick::JoystickButton::DPAD_NW);
 	m_chainBarMotor.ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Absolute, 0, 0);
 	m_chainBarMotor.SetInverted(true);
 	m_rotationMotor.ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Absolute, 0, 0);
 	m_rotationMotor.SetInverted(true);
+    m_chainBarSet = false;
+    m_rotationSet = false;
+    m_requestedChainBarSpeed = 0;
+    m_requestedRotationSpeed = 0;
+
+    m_chainBarPID.setProportionalConstant(m_chainBarUpP.Get());
+    m_chainBarPID.setIntegralConstant(m_chainBarUpI.Get());
+    m_chainBarPID.setDerivativeConstant(m_chainBarUpD.Get());
+//	SetChainBarRequestedAngle(GetChainBarAngle());
+
+    m_rotationPID.setProportionalConstant(m_rotationP.Get());
+    m_rotationPID.setIntegralConstant(m_rotationI.Get());
+    m_rotationPID.setDerivativeConstant(m_rotationD.Get());
 }
 
 void ChainBarSubsystem::teleopInit() {
@@ -48,12 +69,14 @@ void ChainBarSubsystem::teleopInit() {
 	m_chainBarPID.setProportionalConstant(m_chainBarUpP.Get());
 	m_chainBarPID.setIntegralConstant(m_chainBarUpI.Get());
 	m_chainBarPID.setDerivativeConstant(m_chainBarUpD.Get());
-	SetChainBarRequestedAngle(GetChainBarAngle());
+//	SetChainBarRequestedAngle(GetChainBarAngle());
 
 	m_rotationPID.setProportionalConstant(m_rotationP.Get());
 	m_rotationPID.setIntegralConstant(m_rotationI.Get());
 	m_rotationPID.setDerivativeConstant(m_rotationD.Get());
-	SetRotationRequestedAngle(GetRotationAngle());
+//	SetRotationRequestedAngle(GetRotationAngle());
+    SetChainBarSpeed(0);
+    SetRotationSpeed(0);
 }
 
 void ChainBarSubsystem::teleop() {
@@ -102,24 +125,24 @@ double ChainBarSubsystem::GetRotationAngle(bool raw) {
 }
 
 void ChainBarSubsystem::SetRotationRequestedAngle(double angle) {
-	m_requestedRotationAngle = angle;
+    m_requestedRotationAngle = angle;
 }
 void ChainBarSubsystem::postLoopTask() {
-    double chainBarAngle = GetChainBarAngle(m_firstIteration);
+    double chainBarAngle = GetChainBarAngle();
 
     if (abs(m_requestedChainBarSpeed) > 0.01) {
-        SetChainBarRequestedAngle(GetChainBarAngle(m_firstIteration));
+        SetChainBarRequestedAngle(GetChainBarAngle());
     } else {
-        if (m_requestedChainBarAngle > GetChainBarAngle(m_firstIteration)) {
+        if (m_requestedChainBarAngle > GetChainBarAngle()) {
             m_chainBarPID.setProportionalConstant(m_chainBarUpP.Get());
             m_chainBarPID.setIntegralConstant(m_chainBarUpI.Get());
             m_chainBarPID.setDerivativeConstant(m_chainBarUpD.Get());
-            m_requestedChainBarSpeed = m_chainBarPID.calculate(m_requestedChainBarAngle - GetChainBarAngle(m_firstIteration));
+            m_requestedChainBarSpeed = m_chainBarPID.calculate(m_requestedChainBarAngle - GetChainBarAngle());
         } else {
             m_chainBarPID.setProportionalConstant(m_chainBarDownP.Get());
             m_chainBarPID.setIntegralConstant(m_chainBarDownI.Get());
             m_chainBarPID.setDerivativeConstant(m_chainBarDownD.Get());
-            m_requestedChainBarSpeed = m_chainBarPID.calculate(m_requestedChainBarAngle - GetChainBarAngle(m_firstIteration));
+            m_requestedChainBarSpeed = m_chainBarPID.calculate(m_requestedChainBarAngle - GetChainBarAngle());
         }
     }
     
@@ -138,43 +161,44 @@ void ChainBarSubsystem::postLoopTask() {
     SetChainBarSpeed(m_requestedChainBarSpeed);
     m_requestedChainBarSpeed = 0;
 
-    SmartDashboard::PutNumber("Chainbar Angle", GetChainBarAngle(m_firstIteration));
+    SmartDashboard::PutNumber("Chainbar Angle", GetChainBarAngle());
     SmartDashboard::PutNumber("Chainbar Requested Angle", m_requestedChainBarAngle);
 
     double rotationAngleRelative = GetRotationAngleRelativeToChainBar();
     if (abs(m_requestedRotationSpeed) > 0.01) {
         m_requestedRotationSpeed *= 0.8;
-        SetRotationRequestedAngle(GetRotationAngle(m_firstIteration));
+        SetRotationRequestedAngle(GetRotationAngle());
     } else {
         if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::DPAD_N)) {
-            m_requestedRotationAngle = 0;
+            SetRotationRequestedAngle(0);
         } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::DPAD_NE)) {
-            m_requestedRotationAngle = -45;
+            SetRotationRequestedAngle(-45);
         } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::DPAD_E)) {
-            m_requestedRotationAngle = -90;
+            SetRotationRequestedAngle(-90);
         } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::DPAD_SE)) {
-            m_requestedRotationAngle = -135;
+            SetRotationRequestedAngle(-135);
         } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::DPAD_S)) {
             if(GetChainBarAngle() < 0) {
-                m_requestedRotationAngle = -180;
+                SetRotationRequestedAngle(-180);
             } else {
-                m_requestedRotationAngle = 180;
+                SetRotationRequestedAngle(180);
             }
-        }  else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::DPAD_SW)) {
-            m_requestedRotationAngle = 135;
+        } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::DPAD_SW)) {
+            SetRotationRequestedAngle(135);
         } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::DPAD_W)) {
-            m_requestedRotationAngle = 90;
+            SetRotationRequestedAngle(90);
         } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::DPAD_NW)) {
-            m_requestedRotationAngle = 45;
+            SetRotationRequestedAngle(45);
         }
-        m_requestedRotationSpeed = m_rotationPID.calculate(m_requestedRotationAngle - GetRotationAngle(m_firstIteration));
+        m_requestedRotationSpeed = m_rotationPID.calculate(m_requestedRotationAngle - GetRotationAngle());
+        if (m_requestedRotationSpeed > 0 && rotationAngleRelative > m_rotationTopLimit.Get()) {
+            m_requestedRotationSpeed = 0;
+        } else if (m_requestedRotationSpeed < 0 && rotationAngleRelative < m_rotationBottomLimit.Get()) {
+            m_requestedRotationSpeed = 0;
+        }
     }
     
-    if (m_requestedRotationSpeed > 0 && rotationAngleRelative > m_rotationTopLimit.Get()) {
-        m_requestedRotationSpeed = 0;
-    } else if (m_requestedRotationSpeed < 0 && rotationAngleRelative < m_rotationBottomLimit.Get()) {
-        m_requestedRotationSpeed = 0;
-    }
+     //TODO: Fix the wrapping over zero point
 
 //    if(m_requestedChainBarAngle > GetRotationAngleRelativeToChainBar() - 90) {
 //        SetRotationRequestedAngle(GetRotationAngleRelativeToChainBar() + 90);
@@ -183,7 +207,7 @@ void ChainBarSubsystem::postLoopTask() {
     SetRotationSpeed(m_requestedRotationSpeed);
     m_requestedRotationSpeed = 0;
 
-    SmartDashboard::PutNumber("Rotation Angle", GetRotationAngle(m_firstIteration));
+    SmartDashboard::PutNumber("Rotation Angle", GetRotationAngle());
     SmartDashboard::PutNumber("Rotation Angle Relative To Chain Bar", GetRotationAngleRelativeToChainBar());
 }
 

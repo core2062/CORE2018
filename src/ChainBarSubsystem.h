@@ -39,7 +39,6 @@ private:
     COREConstant<double> m_rotationP, m_rotationI, m_rotationD;
     COREConstant<double> m_maxAngularAcceleration;
     COREPID m_chainBarPID, m_rotationPID;
-    bool m_firstIteration;
 	double m_requestedChainBarAngle, m_requestedChainBarSpeed;
     double m_requestedRotationAngle, m_requestedRotationSpeed;
 };

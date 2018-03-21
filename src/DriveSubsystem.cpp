@@ -176,18 +176,13 @@ double DriveSubsystem::getGyroYaw(bool raw) {
     if(raw) {
         return m_gyro->GetYaw();
     } else {
-        return m_gyro->GetYaw() + m_theta - m_gyroOffset;
+        return m_gyro->GetYaw() + toDegrees(m_theta) - m_gyroOffset;
 
     }
 }
 
 void DriveSubsystem::startPath(Path path, Position2d startPos, bool reversed, double maxAccel, double maxAngAccel,
                                double tolerance, bool gradualStop, double lookahead) {
-    m_x = startPos.getTranslation().getX();
-    m_y = startPos.getTranslation().getY();
-    m_theta = startPos.getRotation().getDegrees();
-    CORELog::logInfo("Theta Angle: " + to_string(m_theta));
-    m_swerveDrive->zeroEncoders();
 	m_pursuit = AdaptivePursuit(lookahead, maxAccel, maxAngAccel, .025, path, reversed, tolerance, gradualStop);
 }
 
@@ -195,14 +190,12 @@ void DriveSubsystem::resetTracker(Position2d initialPos) {
     m_x = initialPos.getTranslation().getX();
     m_y = initialPos.getTranslation().getY();
     m_theta = initialPos.getRotation().getRadians();
+    m_swerveDrive->zeroEncoders();
     CORELog::logWarning("Initial position set to X: " + to_string(m_x) + " Y: " + to_string(m_y)
                         + " Theta: " + to_string(m_theta));
 }
 
 void DriveSubsystem::autonInitTask() {
-	/*Position2d startingPosition;
-	resetTracker(startingPosition);
-	m_swerveTracker->start();*/
     m_gyroOffset = getGyroYaw(true);
 }
 
@@ -240,7 +233,7 @@ void DriveSubsystem::preLoopTask() {
         y = temp;
 
         double theta = -command.dtheta;
-        m_swerveDrive->inverseKinematics(x, y, theta);
+        m_swerveDrive->inverseKinematics(x, y, 0);
     }
 }
 

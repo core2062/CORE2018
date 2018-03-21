@@ -15,7 +15,9 @@ public:
 	void teleop() override;
 	void closeScorer();
 	void openScorer();
+	bool cubeInScorer();
 private:
 	DoubleSolenoid m_scorerSolenoid;
-    bool m_scorerClosed;
+	DigitalInput m_photoEye;
+	bool m_scorerClosed;
 };

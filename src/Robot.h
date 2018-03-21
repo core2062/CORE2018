@@ -37,7 +37,8 @@
 #define INTAKE_OUT_SOLENOID_PORT 2
 
 /************************* Digital Inputs *************************/
-#define LIFT_BOTTOM_LIMIT_SWITCH 0
+#define LIFT_BOTTOM_LIMIT_SWITCH_PORT 0
+#define PHOTOEYE_PORT 1
 
 using namespace CORE;
 using namespace std;
@@ -63,5 +64,9 @@ public:
     COREConstant<double> m_chainBarIntakeAngle, m_chainBarSwitchAngle, m_chainBarUpAngle, m_chainBarFeederAngle,
             m_liftLowScalePosition, m_liftMidScalePosition, m_liftHighScalePosition;
 
+    bool m_intakeState;
+
     TestPathAuton testAuton;
+	SideAuton sideAuton;
+    GameDataParser gameDataParser;
 };

@@ -1,13 +1,10 @@
 #include "ScorerSubsystem.h"
-#include "COREFramework/COREScheduler.h"
-#include "ctre/Phoenix.h"
-#include "CORELogging/CORELog.h"
-#include <WPILib.h>
 
 #include "Robot.h"
 
 ScorerSubsystem::ScorerSubsystem() :
-		m_scorerSolenoid(SCORER_IN_SOLENOID_PORT, SCORER_OUT_SOLENOID_PORT) {
+		m_scorerSolenoid(SCORER_IN_SOLENOID_PORT, SCORER_OUT_SOLENOID_PORT),
+        m_photoEye(PHOTOEYE_PORT) {
     m_scorerClosed = false;
 }
 
@@ -32,12 +29,16 @@ void ScorerSubsystem::teleop() {
 }
 
 void ScorerSubsystem::closeScorer() {
-	m_scorerSolenoid.Set(DoubleSolenoid::kForward);
+	m_scorerSolenoid.Set(DoubleSolenoid::kReverse);
     CORELog::logInfo("Closing");
 }
 
 void ScorerSubsystem::openScorer() {
-	m_scorerSolenoid.Set(DoubleSolenoid::kReverse);
+	m_scorerSolenoid.Set(DoubleSolenoid::kForward);
     CORELog::logInfo("Opening");
 
+}
+
+bool ScorerSubsystem::cubeInScorer() {
+    return !m_photoEye.Get();
 }

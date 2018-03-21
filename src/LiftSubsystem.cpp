@@ -18,7 +18,7 @@ LiftSubsystem::LiftSubsystem() :
 		m_maxAcceleration("Maximum Lift Acceleration"),
         m_leftLiftMotor(LEFT_LIFT_MOTOR_PORT),
         m_rightLiftMotor(RIGHT_LIFT_MOTOR_PORT),
-        m_liftBottomLimitSwitch(LIFT_BOTTOM_LIMIT_SWITCH),
+        m_liftBottomLimitSwitch(LIFT_BOTTOM_LIMIT_SWITCH_PORT),
         m_liftPID(0.0, 0.0, 0.0),
         m_liftTicksPerInch("Lift Ticks Per Inch") {
     m_rightLiftMotor.SetInverted(true);
@@ -114,4 +114,8 @@ void LiftSubsystem::postLoopTask() {
     setLift(m_requestedSpeed);
     m_requestedSpeed = 0;
     SmartDashboard::PutNumber("Lift Position", liftPosition);
+}
+
+bool LiftSubsystem::liftDown() {
+    return m_liftBottomLimitSwitch.Get();
 }

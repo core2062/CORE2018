@@ -17,6 +17,9 @@ CORE2018::CORE2018():
 void CORE2018::robotInit() {
     operatorJoystick->registerButton(COREJoystick::JoystickButton::A_BUTTON);
     operatorJoystick->registerButton(COREJoystick::JoystickButton::B_BUTTON);
+    operatorJoystick->registerButton(COREJoystick::JoystickButton::X_BUTTON);
+    operatorJoystick->registerButton(COREJoystick::JoystickButton::Y_BUTTON);
+    operatorJoystick->registerButton(COREJoystick::JoystickButton::RIGHT_BUTTON);
 }
 
 void CORE2018::teleopInit() {
@@ -26,10 +29,20 @@ void CORE2018::teleopInit() {
 void CORE2018::teleop() {
     if(!operatorJoystick->getButton(COREJoystick::JoystickButton::RIGHT_BUTTON)) {
         //*************** Modifier Button Not Pressed ***************
-        if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::A_BUTTON)) { //Intake Position
-            chainBarSubsystem.SetChainBarRequestedAngle(m_chainBarIntakeAngle.Get());
-            chainBarSubsystem.SetRotationRequestedAngle(-180);
-            liftSubsystem.SetRequestedPosition(10);
+        if (operatorJoystick->getButton(COREJoystick::JoystickButton::A_BUTTON)) { //Intake Position
+//            if(scorerSubsystem.cubeInScorer()) {
+//                if(liftSubsystem.liftDown()) {
+//                    scorerSubsystem.closeScorer();
+//                    liftSubsystem.SetRequestedPosition(12);
+//                } else {
+//                    liftSubsystem.SetRequestedPosition(-0.5);
+//                }
+//            } else {
+                chainBarSubsystem.SetChainBarRequestedAngle(m_chainBarIntakeAngle.Get());
+                chainBarSubsystem.SetRotationRequestedAngle(-180);
+                liftSubsystem.SetRequestedPosition(10);
+                scorerSubsystem.openScorer();
+           // }
         } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::B_BUTTON)) { //Switch Position
             chainBarSubsystem.SetChainBarRequestedAngle(m_chainBarSwitchAngle.Get());
             chainBarSubsystem.SetRotationRequestedAngle(-90);

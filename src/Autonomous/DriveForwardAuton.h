@@ -8,7 +8,8 @@
 using namespace CORE;
 
 class DriveForwardAuton : public COREAuton {
-	DriveForwardAuton(double speedFraction, double distanceInFeet);
+public:
+	DriveForwardAuton();
 	void addNodes() override;
 
 private:

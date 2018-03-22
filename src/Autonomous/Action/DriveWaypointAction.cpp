@@ -19,7 +19,7 @@ void DriveWaypointAction::actionInit() {
         CORELog::logInfo("Start position theta" + to_string(m_startPos.getRotation().getDegrees()));
         CORE2018::GetInstance()->driveSubsystem.resetTracker(m_startPos);
     }
-    CORE2018::GetInstance()->driveSubsystem.startPath(m_path, m_startPos, m_reversed, m_maxAccel, m_maxAngAccel,
+    CORE2018::GetInstance()->driveSubsystem.startPath(m_path, m_reversed, m_maxAccel, m_maxAngAccel,
                                                       m_tolerance, m_gradualStop, m_lookahead);
 }
 

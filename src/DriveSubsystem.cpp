@@ -13,6 +13,7 @@ DriveSubsystem::DriveSubsystem() :
 		m_steerPID_P("Steer PID P"),
 		m_steerPID_I("Steer PID I"),
 		m_steerPID_D("Steer PID D"),
+        m_rotationkP("Rotation P Value"),
 		m_rightFrontSteerMotor(FRONT_RIGHT_STEER_PORT),
 		m_leftFrontSteerMotor(FRONT_LEFT_STEER_PORT),
 		m_rightBackSteerMotor(BACK_RIGHT_STEER_PORT),
@@ -49,13 +50,12 @@ void DriveSubsystem::teleopInit() {
         SmartDashboard::PutBoolean("Zero Modules", false);
         CORELog::logWarning("Zeroing modules");
         m_swerveDrive->zeroOffsets();
-    } else
+    } else {
         m_swerveDrive->updateOffsets();
+    }
 
     m_swerveDrive->inverseKinematics(0, 0, 0);
     m_swerveDrive->setSteerPID(m_steerPID_P.Get(), m_steerPID_I.Get(), m_steerPID_D.Get());
-    m_x = 0;
-    m_y = 0;
 }
 
 void DriveSubsystem::teleop() {
@@ -87,7 +87,7 @@ void DriveSubsystem::teleop() {
 
     m_swerveDrive->inverseKinematics(x, y, theta);
 
-    auto result = m_swerveDrive->forwardKinematics();
+/*    auto result = m_swerveDrive->forwardKinematics();
     SmartDashboard::PutNumber("Returned Vector X", result.first);
     SmartDashboard::PutNumber("Returned Vector Y", result.second);
 
@@ -95,7 +95,7 @@ void DriveSubsystem::teleop() {
     m_y += (-result.first * sin(gyro_radians) + result.second * cos(gyro_radians));
 
     SmartDashboard::PutNumber("Total X", m_x);
-    SmartDashboard::PutNumber("Total Y", m_y);
+    SmartDashboard::PutNumber("Total Y", m_y);*/
 
     if (driverJoystick->getRisingEdge(CORE::COREJoystick::START_BUTTON)) {
 		CORELog::logWarning("Zeroing Yaw!");
@@ -181,9 +181,9 @@ double DriveSubsystem::getGyroYaw(bool raw) {
     }
 }
 
-void DriveSubsystem::startPath(Path path, Position2d startPos, bool reversed, double maxAccel, double maxAngAccel,
+void DriveSubsystem::startPath(Path path, bool reversed, double maxAccel, double maxAngAccel,
                                double tolerance, bool gradualStop, double lookahead) {
-	m_pursuit = AdaptivePursuit(lookahead, maxAccel, maxAngAccel, .025, path, reversed, tolerance, gradualStop);
+	m_pursuit = AdaptivePursuit(lookahead, maxAccel, m_rotationkP.Get(), .025, path, reversed, tolerance, gradualStop);
 }
 
 void DriveSubsystem::resetTracker(Position2d initialPos) {
@@ -233,7 +233,8 @@ void DriveSubsystem::preLoopTask() {
         y = temp;
 
         double theta = -command.dtheta;
-        m_swerveDrive->inverseKinematics(x, y, 0);
+        CORELog::logInfo("Gyro radians: " + to_string(gyro_radians) + " Requested theta: " + to_string(theta));
+        m_swerveDrive->inverseKinematics(x, y, theta);
     }
 }
 

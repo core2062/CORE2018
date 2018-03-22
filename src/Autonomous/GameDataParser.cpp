@@ -67,7 +67,7 @@ Path GameDataParser::loadPath(sidePath pathName, bool flip) {
 			fileName = "sideSwitchToOppositeScale.json";
 			break;
 	}
-	return PathLoader::loadPath(fileName, flip, false);
+	return PathLoader::loadPath(fileName, flip);
 }
 
 Path GameDataParser::loadPath(centerPath pathName, bool flip) {
@@ -81,6 +81,7 @@ Path GameDataParser::loadPath(centerPath pathName, bool flip) {
 			break;
 
 	}
+	return PathLoader::loadPath(fileName, flip);
 }
 
 Path GameDataParser::getWallToSwitchPath() {

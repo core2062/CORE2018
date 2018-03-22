@@ -13,6 +13,7 @@
 
 #include "Autonomous/SideAuton.h"
 #include "Autonomous/TestPathAuton.h"
+#include "Autonomous/DriveForwardAuton.h"
 
 /************************* Motors *************************/
 #define FRONT_RIGHT_STEER_PORT 11
@@ -64,9 +65,9 @@ public:
     COREConstant<double> m_chainBarIntakeAngle, m_chainBarSwitchAngle, m_chainBarUpAngle, m_chainBarFeederAngle,
             m_liftLowScalePosition, m_liftMidScalePosition, m_liftHighScalePosition;
 
-    bool m_intakeState;
-
+    DriveForwardAuton driveForwardAuton;
     TestPathAuton testAuton;
 	SideAuton sideAuton;
+
     GameDataParser gameDataParser;
 };

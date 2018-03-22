@@ -1,12 +1,13 @@
 
 #include "DriveForwardAuton.h"
-#include <CORERobotLib.h>
+#include <Robot.h>
 
-DriveForwardAuton::DriveForwardAuton(double speedInInches, double distanceInFeet) :
+DriveForwardAuton::DriveForwardAuton() :
 	COREAuton("Drive Forward Auton") {
-	m_moveForward = new Node(5, new DriveDistanceAction());
 }
 
 void DriveForwardAuton::addNodes() {
-
+    addFirstNode(m_moveForward);
+    m_moveForward = new Node(5, new DriveWaypointAction(
+            CORE2018::GetInstance()->gameDataParser.loadPath(sidePath::DRIVE_FORWARD, false)));
 }

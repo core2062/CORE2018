@@ -47,8 +47,6 @@ void ChainBarSubsystem::robotInit() {
 	m_chainBarMotor.SetInverted(true);
 	m_rotationMotor.ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Absolute, 0, 0);
 	m_rotationMotor.SetInverted(true);
-    m_chainBarSet = false;
-    m_rotationSet = false;
     m_requestedChainBarSpeed = 0;
     m_requestedRotationSpeed = 0;
 
@@ -69,12 +67,12 @@ void ChainBarSubsystem::teleopInit() {
 	m_chainBarPID.setProportionalConstant(m_chainBarUpP.Get());
 	m_chainBarPID.setIntegralConstant(m_chainBarUpI.Get());
 	m_chainBarPID.setDerivativeConstant(m_chainBarUpD.Get());
-//	SetChainBarRequestedAngle(GetChainBarAngle());
+	SetChainBarRequestedAngle(GetChainBarAngle());
 
 	m_rotationPID.setProportionalConstant(m_rotationP.Get());
 	m_rotationPID.setIntegralConstant(m_rotationI.Get());
 	m_rotationPID.setDerivativeConstant(m_rotationD.Get());
-//	SetRotationRequestedAngle(GetRotationAngle());
+	SetRotationRequestedAngle(GetRotationAngle());
     SetChainBarSpeed(0);
     SetRotationSpeed(0);
 }

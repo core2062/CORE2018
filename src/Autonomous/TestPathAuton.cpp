@@ -11,7 +11,7 @@ void TestPathAuton::addNodes() {
         path1 = COREPathConnectionHandler::path;
     } else {
         CORELog::logError("Valid path not recived from dashboard!");
-        path1 = PathLoader::loadPath("test.json", false, false);
+        path1 = PathLoader::loadPath("test.json", false);
 //        std::vector<Waypoint> waypoints;
 //        waypoints.emplace_back(Waypoint(Translation2d(0, 0), 100));
 //        path1 = Path(waypoints);

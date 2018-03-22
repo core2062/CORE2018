@@ -1,10 +1,11 @@
 #include <CORERobotLib.h>
 #include "CenterAuton.h"
 #include "Actions.h"
+#include "Robot.h"
 
 
 CenterAuton::CenterAuton() :
-	COREAuton("Three cubes in exchange auton", 0.0) {
+	COREAuton("Center Auton") {
 	m_outtakeCubeToExchange = new Node(5, new ScorerAction(scorerAction::OPEN));
 	m_moveToCubeStack = new Node(5, new DriveDistanceAction());
 	m_intakeCube = new Node(5, new IntakeAction());
@@ -18,13 +19,22 @@ CenterAuton::CenterAuton() :
 }
 
 void CenterAuton::addNodes() {
-	m_outtakeCubeToExchange->addNext(m_moveToCubeStack);
-	m_moveToCubeStack->addNext(m_intakeCube);
-	m_intakeCube->addNext(m_moveToExchange);
-	m_moveToExchange->addNext(m_outtakeCubeSecondTime);
-	m_outtakeCubeSecondTime->addNext(m_moveToCubeStackSecondTime);
-	m_moveToCubeStackSecondTime->addNext(m_intakeSecondCube);
-	m_intakeSecondCube->addNext(m_moveToExchangeSecondTime);
-	m_moveToExchangeSecondTime->addNext(m_outtakeCubeThirdTime);
-
+	CORE2018::GetInstance()->driveSubsystem.resetTracker(Position2d(Translation2d(0, 19), Rotation2d::fromRadians(PI / 2)));
+	switch (CORE2018::GetInstance()->gameDataParser.getCubePlacement()) {
+		case SWITCH1:
+			m_moveToSwitch->addAction(new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.getWallToSwitchPath()));
+			addFirstNode(m_moveToSwitch);
+			m_moveToSwitch->addNext(m_outtakeCubeToSwitch);
+			break;
+//        case SWITCH1SCALE1:
+//            m_moveToSwitch->
+//                    addAction(new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.getWallToSwitchPath()));
+//            addFirstNode(m_moveToSwitch);
+//            m_moveToSwitch->addNext(m_outtakeCubeToSwitch);
+//            m_moveToCubeStack =
+//                    new Node(5, new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.loadPath(sidePath::)));
+//            m_outtakeCubeToSwitch->addNext(m_moveToCubeStack);
+//            m_m
+//            break;
+	}
 }

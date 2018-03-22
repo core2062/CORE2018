@@ -26,7 +26,7 @@ public:
 	void resetYaw();
 	void zeroMotors();
 
-	void startPath(Path path, Position2d startPos, bool reversed, double maxAccel, double maxAngAccel,
+	void startPath(Path path, bool reversed, double maxAccel, double maxAngAccel,
                    double tolerance, bool gradualStop, double lookahead);
 	void resetTracker(Position2d initialPos);
 	Path m_path;
@@ -36,7 +36,7 @@ public:
 private:
 	double m_wheelbase = 20.8;
 	double m_trackwidth = 25.881;
-	COREConstant <double> m_steerPID_P, m_steerPID_I, m_steerPID_D;
+	COREConstant <double> m_steerPID_P, m_steerPID_I, m_steerPID_D, m_rotationkP;
 	TalonSRX m_rightFrontSteerMotor, m_leftFrontSteerMotor, m_rightBackSteerMotor, m_leftBackSteerMotor,
 			m_rightFrontDriveMotor, m_leftFrontDriveMotor, m_rightBackDriveMotor, m_leftBackDriveMotor;
 	CORESwerve::SwerveModule *m_rightFrontModule, *m_leftFrontModule, *m_rightBackModule, *m_leftBackModule;

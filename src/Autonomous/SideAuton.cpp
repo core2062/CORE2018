@@ -28,9 +28,10 @@ void SideAuton::addNodes() {
     }
 	switch (CORE2018::GetInstance()->gameDataParser.getCubePlacement()) {
         case SWITCH1:
+            addFirstNode(m_intakeCube);
+            m_intakeCube->addNext(m_moveToSwitch);
             m_moveToSwitch->addAction(
                     new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.getWallToSwitchPath()));
-            addFirstNode(m_moveToSwitch);
             m_moveToSwitch->addNext(m_outtakeCubeToSwitch);
             break;
         case SCALE1:

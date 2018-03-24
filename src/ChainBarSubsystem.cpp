@@ -50,6 +50,13 @@ void ChainBarSubsystem::robotInit() {
     m_requestedChainBarSpeed = 0;
     m_requestedRotationSpeed = 0;
 
+    //int pos = m_rotationMotor.GetSelectedSensorPosition(0);
+
+    //CORELog::logError("Rotation Value: " + to_string(pos));
+
+    //m_rotationMotor.ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, 0, 0);
+    m_rotationMotor.SetSelectedSensorPosition(0, 0, 0);
+
     m_chainBarPID.setProportionalConstant(m_chainBarUpP.Get());
     m_chainBarPID.setIntegralConstant(m_chainBarUpI.Get());
     m_chainBarPID.setDerivativeConstant(m_chainBarUpD.Get());
@@ -112,7 +119,7 @@ double ChainBarSubsystem::GetRotationAngleRelativeToChainBar() {
 }
 
 double ChainBarSubsystem::GetRotationAngle(bool raw) {
-    double rawAngle = 360 - (-m_rotationMotor.GetSelectedSensorPosition(0) / 4096.0 * 360);
+    double rawAngle = (m_rotationMotor.GetSelectedSensorPosition(0) / 4096.0 * 360);
 //	double rawAngle = 360 - (-m_rotationMotor.GetSensorCollection().GetQuadraturePosition() / 4096.0 * 360);
 		rawAngle *= -1;
 		if (raw) {
@@ -125,6 +132,7 @@ double ChainBarSubsystem::GetRotationAngle(bool raw) {
 void ChainBarSubsystem::SetRotationRequestedAngle(double angle) {
     m_requestedRotationAngle = angle;
 }
+
 void ChainBarSubsystem::postLoopTask() {
     double chainBarAngle = GetChainBarAngle();
 

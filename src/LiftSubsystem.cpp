@@ -83,7 +83,7 @@ void LiftSubsystem::postLoopTask() {
     SmartDashboard::PutNumber("Lift Speed", m_requestedSpeed);
     if (abs(m_requestedSpeed) > 0.01) {
         if (m_requestedSpeed < 0) {
-            m_requestedSpeed *= 0.1;
+            m_requestedSpeed *= 0.2;
         } else {
             m_requestedSpeed *= 0.5;
         }

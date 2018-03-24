@@ -12,6 +12,7 @@
 #include "DriveSubsystem.h"
 
 #include "Autonomous/SideAuton.h"
+#include "Autonomous/CenterAuton.h"
 #include "Autonomous/TestPathAuton.h"
 #include "Autonomous/DriveForwardAuton.h"
 
@@ -68,6 +69,7 @@ public:
     DriveForwardAuton driveForwardAuton;
     TestPathAuton testAuton;
 	SideAuton sideAuton;
+    CenterAuton centerAuton;
 
     GameDataParser gameDataParser;
 };

@@ -10,7 +10,6 @@ ScorerSubsystem::ScorerSubsystem() :
 
 void ScorerSubsystem::robotInit() {
 	operatorJoystick->registerButton(CORE::COREJoystick::JoystickButton::RIGHT_TRIGGER);
-	openScorer();
 }
 
 void ScorerSubsystem::teleopInit() {

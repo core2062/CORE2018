@@ -40,7 +40,7 @@ void CORE2018::teleop() {
 //            } else {
                 chainBarSubsystem.SetChainBarRequestedAngle(m_chainBarIntakeAngle.Get());
                 chainBarSubsystem.SetRotationRequestedAngle(-180);
-                liftSubsystem.SetRequestedPosition(10);
+                liftSubsystem.SetRequestedPosition(15);
                 scorerSubsystem.openScorer();
            // }
         } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::B_BUTTON)) { //Switch Position

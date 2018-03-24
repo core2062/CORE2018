@@ -8,6 +8,7 @@
 #include "COREFramework/COREScheduler.h"
 
 #include "WaypointFollower/WaypointFollower.h"
+#include "COREUtilities/CORETimer.h"
 
 
 class DriveSubsystem : public CORESubsystem, public CORETask {
@@ -25,6 +26,7 @@ public:
 	bool pathDone();
 	void resetYaw();
 	void zeroMotors();
+	//void setMotors();
 
 	void startPath(Path path, bool reversed, double maxAccel, double maxAngAccel,
                    double tolerance, bool gradualStop, double lookahead);
@@ -32,6 +34,9 @@ public:
 	Path m_path;
 	AdaptivePursuit m_pursuit;
 	COREVector path;
+	CORESwerve* m_swerveDrive;
+	CORETimer m_timer;
+
 
 private:
 	double m_wheelbase = 20.8;
@@ -40,7 +45,6 @@ private:
 	TalonSRX m_rightFrontSteerMotor, m_leftFrontSteerMotor, m_rightBackSteerMotor, m_leftBackSteerMotor,
 			m_rightFrontDriveMotor, m_leftFrontDriveMotor, m_rightBackDriveMotor, m_leftBackDriveMotor;
 	CORESwerve::SwerveModule *m_rightFrontModule, *m_leftFrontModule, *m_rightBackModule, *m_leftBackModule;
-	CORESwerve* m_swerveDrive;
 	AHRS *m_gyro;
 	double m_x, m_y, m_theta, m_gyroOffset;
     int count = 0;

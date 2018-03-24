@@ -3,7 +3,7 @@
 #include <Robot.h>
 
 DriveForwardAuton::DriveForwardAuton() :
-	COREAuton("Drive Forward Auton") {
+	COREAuton("Drive Forward Autonomus") {
 }
 
 void DriveForwardAuton::addNodes() {

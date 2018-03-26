@@ -32,7 +32,7 @@ COREAutonAction::actionStatus LiftAction::action(){
 		CORE2018::GetInstance()->liftSubsystem.SetRequestedPosition(m_scaleHeight.Get());
 		break;
 	case SWITCH:
-//		CORE2018::GetInstance()->liftSubsystem.SetRequestedPosition(15);
+		CORE2018::GetInstance()->liftSubsystem.SetRequestedPosition(0);
 		CORE2018::GetInstance()->chainBarSubsystem.SetChainBarRequestedAngle(-90);
 		CORE2018::GetInstance()->chainBarSubsystem.SetRotationRequestedAngle(-90);
 		break;

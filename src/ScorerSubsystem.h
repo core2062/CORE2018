@@ -16,6 +16,7 @@ public:
 	void closeScorer();
 	void openScorer();
 	bool cubeInScorer();
+
 private:
 	DoubleSolenoid m_scorerSolenoid;
 	DigitalInput m_photoEye;

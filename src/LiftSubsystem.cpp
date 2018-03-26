@@ -6,41 +6,44 @@
 #include <WPILib.h>
 
 LiftSubsystem::LiftSubsystem() :
-        m_liftTopLimit("Lift Top Limit"),
-        m_liftUpP("Lift Up P"),
-        m_liftUpI("Lift Up I"),
-        m_liftUpD("Lift Up D"),
-		m_liftDownP("Lift Down P"),
-		m_liftDownI("Lift Down I"),
-		m_liftDownD("Lift Down D"),
-        m_liftBottomLimit("LiftBottom Limit"),
-		m_gradualStopLimit("Gradual Stop Lift Limit"),
-		m_maxAcceleration("Maximum Lift Acceleration"),
-        m_leftLiftMotor(LEFT_LIFT_MOTOR_PORT),
-        m_rightLiftMotor(RIGHT_LIFT_MOTOR_PORT),
-        m_liftBottomLimitSwitch(LIFT_BOTTOM_LIMIT_SWITCH_PORT),
-        m_liftPID(0.0, 0.0, 0.0),
-        m_liftTicksPerInch("Lift Ticks Per Inch") {
-    m_rightLiftMotor.SetInverted(true);
+        m_topLimit("Lift Top Limit"),
+        m_upP("Lift Up P"),
+        m_upI("Lift Up I"),
+        m_upD("Lift Up D"),
+		m_downP("Lift Down P"),
+		m_downI("Lift Down I"),
+		m_downD("Lift Down D"),
+        m_bottomLimit("Lift Bottom Limit"),
+        m_leftMotor(LEFT_LIFT_MOTOR_PORT),
+        m_rightMotor(RIGHT_LIFT_MOTOR_PORT),
+        m_bottomLimitSwitch(LIFT_BOTTOM_LIMIT_SWITCH_PORT),
+        m_PID(0.0, 0.0, 0.0),
+        m_ticksPerInch("Lift Ticks Per Inch") {
+    m_rightMotor.SetInverted(true);
 
 }
 
 void LiftSubsystem::robotInit() {
-    m_leftLiftMotor.Set(ControlMode::PercentOutput, 0);
-    m_rightLiftMotor.Set(ControlMode::PercentOutput, 0);
-    m_leftLiftMotor.SetNeutralMode(NeutralMode::Brake);
-    m_rightLiftMotor.SetNeutralMode(NeutralMode::Brake);
-    m_rightLiftMotor.ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, 0, 0);
-    m_rightLiftMotor.SetSelectedSensorPosition(0, 0, 0);
-    m_rightLiftMotor.SetSensorPhase(true);
+    m_leftMotor.Set(ControlMode::PercentOutput, 0);
+    m_rightMotor.Set(ControlMode::PercentOutput, 0);
+
+    m_leftMotor.SetNeutralMode(NeutralMode::Brake);
+    m_rightMotor.SetNeutralMode(NeutralMode::Brake);
+
+    m_leftMotor.Follow(m_rightMotor);
+
+    m_rightMotor.ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, 0, 0);
+    m_rightMotor.SetSelectedSensorPosition(0, 0, 0);
+    m_rightMotor.SetSensorPhase(true);
+
     operatorJoystick->registerAxis(CORE::COREJoystick::JoystickAxis::LEFT_STICK_Y);
     operatorJoystick->registerButton(CORE::COREJoystick::X_BUTTON);
 }
 
 void LiftSubsystem::teleopInit() {
-    m_liftPID.setProportionalConstant(m_liftUpP.Get());
-    m_liftPID.setIntegralConstant(m_liftUpI.Get());
-    m_liftPID.setDerivativeConstant(m_liftUpD.Get());
+    m_PID.setProportionalConstant(m_upP.Get());
+    m_PID.setIntegralConstant(m_upI.Get());
+    m_PID.setDerivativeConstant(m_upD.Get());
     SetRequestedPosition(GetLiftInches());
 }
 
@@ -49,12 +52,11 @@ void LiftSubsystem::teleop() {
 }
 
 void LiftSubsystem::resetEncoder() {
-	m_rightLiftMotor.SetSelectedSensorPosition(0, 0, 0);
+	m_rightMotor.SetSelectedSensorPosition(0, 0, 0);
 }
 
 void LiftSubsystem::setLift(double liftMotorPercentage) {
-    m_leftLiftMotor.Set(ControlMode::PercentOutput, liftMotorPercentage);
-    m_rightLiftMotor.Set(ControlMode::PercentOutput, liftMotorPercentage);
+    m_rightMotor.Set(ControlMode::PercentOutput, liftMotorPercentage);
 }
 
 void LiftSubsystem::SetRequestedPosition(double position) {
@@ -66,15 +68,15 @@ void LiftSubsystem::SetRequestedSpeed(double speed) {
 }
 
 double LiftSubsystem::GetLiftPosition() {
-    return m_rightLiftMotor.GetSelectedSensorPosition(0);
+    return m_rightMotor.GetSelectedSensorPosition(0);
 }
 
 double LiftSubsystem::GetLiftInches() {
-    return GetLiftPosition() / m_liftTicksPerInch.Get();
+    return GetLiftPosition() / m_ticksPerInch.Get();
 }
 
 void LiftSubsystem::postLoopTask() {
-    SmartDashboard::PutNumber("Lift Encoder", m_rightLiftMotor.GetSelectedSensorPosition(0));
+    SmartDashboard::PutNumber("Lift Encoder", m_rightMotor.GetSelectedSensorPosition(0));
     SmartDashboard::PutNumber("Current Lift Ticks", GetLiftPosition());
     SmartDashboard::PutNumber("Current Lift Inches", GetLiftInches());
     SmartDashboard::PutNumber("Requested Lift Position", m_requestedPosition);
@@ -90,20 +92,20 @@ void LiftSubsystem::postLoopTask() {
         SetRequestedPosition(GetLiftInches());
     } else {
         if (m_requestedPosition > liftPosition) {
-            m_liftPID.setProportionalConstant(m_liftUpP.Get());
-            m_liftPID.setIntegralConstant(m_liftUpI.Get());
-            m_liftPID.setDerivativeConstant(m_liftUpD.Get());
-            m_requestedSpeed = m_liftPID.calculate(m_requestedPosition * m_liftTicksPerInch.Get() - GetLiftPosition());
+            m_PID.setProportionalConstant(m_upP.Get());
+            m_PID.setIntegralConstant(m_upI.Get());
+            m_PID.setDerivativeConstant(m_upD.Get());
+            m_requestedSpeed = m_PID.calculate(m_requestedPosition * m_ticksPerInch.Get() - GetLiftPosition());
         } else {
-            m_liftPID.setProportionalConstant(m_liftDownP.Get());
-            m_liftPID.setIntegralConstant(m_liftDownI.Get());
-            m_liftPID.setDerivativeConstant(m_liftDownD.Get());
-            m_requestedSpeed = m_liftPID.calculate(m_requestedPosition * m_liftTicksPerInch.Get() - GetLiftPosition());
+            m_PID.setProportionalConstant(m_downP.Get());
+            m_PID.setIntegralConstant(m_downI.Get());
+            m_PID.setDerivativeConstant(m_downD.Get());
+            m_requestedSpeed = m_PID.calculate(m_requestedPosition * m_ticksPerInch.Get() - GetLiftPosition());
         }
     }
-    if (m_requestedSpeed > 0 && liftPosition > m_liftTopLimit.Get()) {
+    if (m_requestedSpeed > 0 && liftPosition > m_topLimit.Get()) {
         m_requestedSpeed = 0;
-    } else if (m_liftBottomLimitSwitch.Get()) {
+    } else if (m_bottomLimitSwitch.Get()) {
         if(m_requestedSpeed <= 0) {
             m_requestedSpeed = 0;
             SetRequestedPosition(0);
@@ -117,5 +119,5 @@ void LiftSubsystem::postLoopTask() {
 }
 
 bool LiftSubsystem::liftDown() {
-    return m_liftBottomLimitSwitch.Get();
+    return m_bottomLimitSwitch.Get();
 }

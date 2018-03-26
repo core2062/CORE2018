@@ -8,20 +8,20 @@ DriveSubsystem::DriveSubsystem() :
         m_steerPID_I("Steer PID I"),
         m_steerPID_D("Steer PID D"),
         m_rotationkP("Rotation P Value"),
-        m_rightFrontSteerMotor(FRONT_RIGHT_STEER_PORT),
-        m_leftFrontSteerMotor(FRONT_LEFT_STEER_PORT),
-        m_rightBackSteerMotor(BACK_RIGHT_STEER_PORT),
-        m_leftBackSteerMotor(BACK_LEFT_STEER_PORT),
-        m_rightFrontDriveMotor(FRONT_RIGHT_DRIVE_PORT),
-        m_leftFrontDriveMotor(FRONT_LEFT_DRIVE_PORT),
-        m_rightBackDriveMotor(BACK_RIGHT_DRIVE_PORT),
-        m_leftBackDriveMotor(BACK_LEFT_DRIVE_PORT),
-        m_rightFrontModule(new CORESwerve::SwerveModule(&m_rightFrontDriveMotor, &m_rightFrontSteerMotor)),
-        m_leftFrontModule(new CORESwerve::SwerveModule(&m_leftFrontDriveMotor, &m_leftFrontSteerMotor)),
-        m_rightBackModule(new CORESwerve::SwerveModule(&m_rightBackDriveMotor, &m_rightBackSteerMotor)),
-        m_leftBackModule(new CORESwerve::SwerveModule(&m_leftBackDriveMotor, &m_leftBackSteerMotor)) {
-    m_swerveDrive = new CORESwerve(m_wheelbase, m_trackwidth, 3.0, 4915.2, m_leftFrontModule, m_leftBackModule,
-                                   m_rightBackModule, m_rightFrontModule);
+        m_frontRightSteerMotor(FRONT_RIGHT_STEER_PORT),
+        m_frontLeftSteerMotor(FRONT_LEFT_STEER_PORT),
+        m_backRightSteerMotor(BACK_RIGHT_STEER_PORT),
+        m_backLeftSteerMotor(BACK_LEFT_STEER_PORT),
+        m_frontRightDriveMotor(FRONT_RIGHT_DRIVE_PORT),
+        m_frontLeftDriveMotor(FRONT_LEFT_DRIVE_PORT),
+        m_backRightDriveMotor(BACK_RIGHT_DRIVE_PORT),
+        m_backLeftDriveMotor(BACK_LEFT_DRIVE_PORT),
+        m_frontRightModule(new CORESwerve::SwerveModule(&m_frontRightDriveMotor, &m_frontRightSteerMotor)),
+        m_frontLeftModule(new CORESwerve::SwerveModule(&m_frontLeftDriveMotor, &m_frontLeftSteerMotor)),
+        m_backRightModule(new CORESwerve::SwerveModule(&m_backRightDriveMotor, &m_backRightSteerMotor)),
+        m_backLeftModule(new CORESwerve::SwerveModule(&m_backLeftDriveMotor, &m_backLeftSteerMotor)) {
+    m_swerveDrive = new CORESwerve(m_wheelbase, m_trackwidth, 3.0, 4915.2, m_frontLeftModule, m_backLeftModule,
+                                   m_backRightModule, m_frontRightModule);
 
     try {
         m_gyro = new AHRS(SPI::Port::kMXP);
@@ -120,79 +120,68 @@ void DriveSubsystem::teleop() {
     }
 
     SmartDashboard::PutNumber("Right Front Speed",
-                              m_rightFrontDriveMotor.GetSensorCollection().GetQuadratureVelocity());
-    SmartDashboard::PutNumber("Left Front Speed", m_leftFrontDriveMotor.GetSensorCollection().GetQuadratureVelocity());
-    SmartDashboard::PutNumber("Right Back Speed", m_rightBackDriveMotor.GetSensorCollection().GetQuadratureVelocity());
-    SmartDashboard::PutNumber("Left Back Speed", m_leftBackDriveMotor.GetSensorCollection().GetQuadratureVelocity());
+                              m_frontRightDriveMotor.GetSensorCollection().GetQuadratureVelocity());
+    SmartDashboard::PutNumber("Left Front Speed", m_frontLeftDriveMotor.GetSensorCollection().GetQuadratureVelocity());
+    SmartDashboard::PutNumber("Right Back Speed", m_backRightDriveMotor.GetSensorCollection().GetQuadratureVelocity());
+    SmartDashboard::PutNumber("Left Back Speed", m_backLeftDriveMotor.GetSensorCollection().GetQuadratureVelocity());
 
-    SmartDashboard::PutNumber("Right Front Angle", m_rightFrontModule->getAngle());
-    SmartDashboard::PutNumber("Left Front Angle", m_leftFrontModule->getAngle());
-    SmartDashboard::PutNumber("Right Back Angle", m_rightBackModule->getAngle());
-    SmartDashboard::PutNumber("Left Back Angle", m_leftBackModule->getAngle());
+    SmartDashboard::PutNumber("Front Right Angle", m_frontRightModule->getAngle());
+    SmartDashboard::PutNumber("Front Left Angle", m_frontLeftModule->getAngle());
+    SmartDashboard::PutNumber("Back Right Angle", m_backRightModule->getAngle());
+    SmartDashboard::PutNumber("Back Left Angle", m_backLeftModule->getAngle());
 
-}
-
-void DriveSubsystem::resetEncoders() {
-    m_rightFrontSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
-    m_leftFrontSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
-    m_rightBackSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
-    m_leftBackSteerMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
-    m_rightFrontDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
-    m_leftFrontDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
-    m_rightBackDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
-    m_leftBackDriveMotor.GetSensorCollection().SetQuadraturePosition(0, 0);
 }
 
 void DriveSubsystem::initTalons() {
-    m_rightFrontSteerMotor.ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::Analog, 0, 0);
-    m_leftFrontSteerMotor.ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::Analog, 0, 0);
-    m_rightBackSteerMotor.ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::Analog, 0, 0);
-    m_leftBackSteerMotor.ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::Analog, 0, 0);
+    m_frontRightSteerMotor.ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::Analog, 0, 0);
+    m_frontLeftSteerMotor.ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::Analog, 0, 0);
+    m_backRightSteerMotor.ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::Analog, 0, 0);
+    m_backLeftSteerMotor.ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::Analog, 0, 0);
 
-    m_rightFrontDriveMotor.ConfigSelectedFeedbackSensor(
+    m_frontRightDriveMotor.ConfigSelectedFeedbackSensor(
             ctre::phoenix::motorcontrol::FeedbackDevice::CTRE_MagEncoder_Relative, 0, 0);
-    m_leftFrontDriveMotor.ConfigSelectedFeedbackSensor(
+    m_frontLeftDriveMotor.ConfigSelectedFeedbackSensor(
             ctre::phoenix::motorcontrol::FeedbackDevice::CTRE_MagEncoder_Relative, 0, 0);
-    m_rightBackDriveMotor.ConfigSelectedFeedbackSensor(
+    m_backRightDriveMotor.ConfigSelectedFeedbackSensor(
             ctre::phoenix::motorcontrol::FeedbackDevice::CTRE_MagEncoder_Relative, 0, 0);
-    m_leftBackDriveMotor.ConfigSelectedFeedbackSensor(
+    m_backLeftDriveMotor.ConfigSelectedFeedbackSensor(
             ctre::phoenix::motorcontrol::FeedbackDevice::CTRE_MagEncoder_Relative, 0, 0);
 
-    m_rightFrontSteerMotor.SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 10, 0);
-    m_rightFrontDriveMotor.SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 10, 0);
-    m_leftFrontSteerMotor.SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 10, 0);
-    m_leftBackSteerMotor.SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 10, 0);
-    m_rightBackSteerMotor.SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 10, 0);
-    m_rightBackDriveMotor.SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 10, 0);
-    m_leftBackDriveMotor.SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 10, 0);
-    m_leftFrontDriveMotor.SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 10, 0);
+    m_frontRightSteerMotor.SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 10, 0);
+    m_frontRightDriveMotor.SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 10, 0);
+    m_frontLeftSteerMotor.SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 10, 0);
+    m_backLeftSteerMotor.SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 10, 0);
+    m_backRightSteerMotor.SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 10, 0);
+    m_backRightDriveMotor.SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 10, 0);
+    m_backLeftDriveMotor.SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 10, 0);
+    m_frontLeftDriveMotor.SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 10, 0);
 
-    m_leftFrontDriveMotor.Set(ControlMode::PercentOutput, 0);
-    m_rightFrontDriveMotor.Set(ControlMode::PercentOutput, 0);
-    m_leftBackDriveMotor.Set(ControlMode::PercentOutput, 0);
-    m_rightBackDriveMotor.Set(ControlMode::PercentOutput, 0);
-    m_leftFrontSteerMotor.Set(ControlMode::PercentOutput, 0);
-    m_rightFrontSteerMotor.Set(ControlMode::PercentOutput, 0);
-    m_leftBackSteerMotor.Set(ControlMode::PercentOutput, 0);
-    m_rightBackSteerMotor.Set(ControlMode::PercentOutput, 0);
+    m_frontLeftDriveMotor.Set(ControlMode::PercentOutput, 0);
+    m_frontRightDriveMotor.Set(ControlMode::PercentOutput, 0);
+    m_backLeftDriveMotor.Set(ControlMode::PercentOutput, 0);
+    m_backRightDriveMotor.Set(ControlMode::PercentOutput, 0);
+    m_frontLeftSteerMotor.Set(ControlMode::PercentOutput, 0);
+    m_frontRightSteerMotor.Set(ControlMode::PercentOutput, 0);
+    m_backLeftSteerMotor.Set(ControlMode::PercentOutput, 0);
+    m_backRightSteerMotor.Set(ControlMode::PercentOutput, 0);
 
-    m_leftFrontSteerMotor.SetInverted(true);
-    m_rightFrontSteerMotor.SetInverted(true);
-    m_leftBackSteerMotor.SetInverted(true);
-    m_rightBackSteerMotor.SetInverted(true);
-    m_leftFrontDriveMotor.SetInverted(true);
-    m_rightFrontDriveMotor.SetInverted(true);
-    m_leftBackDriveMotor.SetInverted(true);
-    m_rightBackDriveMotor.SetInverted(true);
+    m_frontLeftSteerMotor.SetInverted(true);
+    m_frontRightSteerMotor.SetInverted(true);
+    m_backLeftSteerMotor.SetInverted(true);
+    m_backRightSteerMotor.SetInverted(true);
+    m_frontLeftDriveMotor.SetInverted(true);
+    m_frontRightDriveMotor.SetInverted(true);
+    m_backLeftDriveMotor.SetInverted(true);
+    m_backRightDriveMotor.SetInverted(true);
 
-    m_leftFrontDriveMotor.SetNeutralMode(NeutralMode::Brake);
-    m_rightFrontDriveMotor.SetNeutralMode(NeutralMode::Brake);
-    m_leftBackDriveMotor.SetNeutralMode(NeutralMode::Brake);
-    m_rightBackDriveMotor.SetNeutralMode(NeutralMode::Brake);
+    m_frontLeftDriveMotor.SetNeutralMode(NeutralMode::Brake);
+    m_frontRightDriveMotor.SetNeutralMode(NeutralMode::Brake);
+    m_backLeftDriveMotor.SetNeutralMode(NeutralMode::Brake);
+    m_backRightDriveMotor.SetNeutralMode(NeutralMode::Brake);
 }
 
 void DriveSubsystem::resetYaw() {
-    m_theta = 0;
+    m_thetaOffset = 0;
     m_gyroOffset = 0;
     m_gyro->ZeroYaw();
 }
@@ -201,7 +190,7 @@ double DriveSubsystem::getGyroYaw(bool raw) {
     if (raw) {
         return m_gyro->GetYaw();
     } else {
-        return m_gyro->GetYaw() + toDegrees(m_theta) - m_gyroOffset;
+        return m_gyro->GetYaw() + toDegrees(m_thetaOffset) - m_gyroOffset;
 
     }
 }
@@ -215,9 +204,10 @@ void DriveSubsystem::resetTracker(Position2d initialPos) {
     m_x = initialPos.getTranslation().getX();
     m_y = initialPos.getTranslation().getY();
     m_theta = initialPos.getRotation().getRadians();
+    m_thetaOffset = initialPos.getRotation().getRadians();
     m_swerveDrive->zeroEncoders();
     CORELog::logWarning("Initial position set to X: " + to_string(m_x) + " Y: " + to_string(m_y)
-                        + " Theta: " + to_string(m_theta));
+                        + " Theta: " + to_string(m_thetaOffset));
 }
 
 void DriveSubsystem::autonInitTask() {
@@ -225,14 +215,19 @@ void DriveSubsystem::autonInitTask() {
 }
 
 void DriveSubsystem::preLoopTask() {
-    double gyro_radians = toRadians(getGyroYaw());
+    double gyro_radians = 0;
+    if(m_gyro && m_gyro->IsConnected()) {
+        gyro_radians= toRadians(getGyroYaw());
+    }
     auto result = m_swerveDrive->forwardKinematics();
 
-    m_x += (result.first * cos(gyro_radians) + result.second * sin(gyro_radians));
-    m_y += (-result.first * sin(gyro_radians) + result.second * cos(gyro_radians));
+    m_x += (result.getTranslation().getX() * cos(gyro_radians) + result.getTranslation().getY() * sin(gyro_radians));
+    m_y += (-result.getTranslation().getX() * sin(gyro_radians) + result.getTranslation().getY() * cos(gyro_radians));
+    m_theta += result.getRotation().getRadians();
 
     SmartDashboard::PutNumber("Robot X", m_x);
     SmartDashboard::PutNumber("Robot Y", m_y);
+    SmartDashboard::PutNumber("Robot Theta", m_theta);
 
     if (!m_pursuit.isDone() && CORE::COREDriverstation::getMode() == CORE::COREDriverstation::AUTON) {
         Position2d pos(Translation2d(m_x, m_y), Rotation2d::fromRadians(gyro_radians));
@@ -271,14 +266,14 @@ bool DriveSubsystem::pathDone() {
     return m_pursuit.isDone();
 }
 void DriveSubsystem::zeroMotors() {
-    m_leftFrontDriveMotor.Set(ControlMode::PercentOutput, 0);
-    m_rightFrontDriveMotor.Set(ControlMode::PercentOutput, 0);
-    m_leftBackDriveMotor.Set(ControlMode::PercentOutput, 0);
-    m_rightBackDriveMotor.Set(ControlMode::PercentOutput, 0);
-    m_leftFrontSteerMotor.Set(ControlMode::PercentOutput, 0);
-    m_rightFrontSteerMotor.Set(ControlMode::PercentOutput, 0);
-    m_leftBackSteerMotor.Set(ControlMode::PercentOutput, 0);
-    m_rightBackSteerMotor.Set(ControlMode::PercentOutput, 0);
+    m_frontLeftDriveMotor.Set(ControlMode::PercentOutput, 0);
+    m_frontRightDriveMotor.Set(ControlMode::PercentOutput, 0);
+    m_backLeftDriveMotor.Set(ControlMode::PercentOutput, 0);
+    m_backRightDriveMotor.Set(ControlMode::PercentOutput, 0);
+    m_frontLeftSteerMotor.Set(ControlMode::PercentOutput, 0);
+    m_frontRightSteerMotor.Set(ControlMode::PercentOutput, 0);
+    m_backLeftSteerMotor.Set(ControlMode::PercentOutput, 0);
+    m_backRightSteerMotor.Set(ControlMode::PercentOutput, 0);
 }
 
 //void DriveSubsystem::setMotors() {

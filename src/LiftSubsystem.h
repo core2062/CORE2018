@@ -27,16 +27,14 @@ public:
 	bool liftDown();
 
 private:
-	TalonSRX m_leftLiftMotor;
-	TalonSRX m_rightLiftMotor;
-	COREConstant<double> m_liftTopLimit;
-	COREConstant<double> m_liftUpP, m_liftUpI, m_liftUpD;
-	COREConstant<double> m_liftDownP, m_liftDownI, m_liftDownD;
-	COREConstant<double> m_liftBottomLimit;
-	COREConstant<double> m_gradualStopLimit;
-	COREConstant<double> m_maxAcceleration;
-	DigitalInput m_liftBottomLimitSwitch;
-	COREPID m_liftPID;
+	TalonSRX m_leftMotor;
+	TalonSRX m_rightMotor;
+	COREConstant<double> m_topLimit;
+	COREConstant<double> m_upP, m_upI, m_upD;
+	COREConstant<double> m_downP, m_downI, m_downD;
+	COREConstant<double> m_bottomLimit;
+	DigitalInput m_bottomLimitSwitch;
+	COREPID m_PID;
 	double m_requestedPosition, m_requestedSpeed;
-	COREConstant<double> m_liftTicksPerInch;
+	COREConstant<double> m_ticksPerInch;
 };

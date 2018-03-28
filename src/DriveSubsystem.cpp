@@ -1,7 +1,6 @@
 #include "ctre/Phoenix.h"
 #include "DriveSubsystem.h"
 #include "Robot.h"
-#include <WPILib.h>
 
 DriveSubsystem::DriveSubsystem() :
         m_pursuit(0, 0, 0, .1, m_path, false, 0),

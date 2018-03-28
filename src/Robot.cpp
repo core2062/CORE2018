@@ -1,5 +1,4 @@
 #include <Robot.h>
-#include "COREHardware/COREJoystick.h"
 
 CORE2018* CORE2018::m_instance;
 
@@ -31,27 +30,13 @@ void CORE2018::teleop() {
     if(!operatorJoystick->getButton(COREJoystick::JoystickButton::RIGHT_BUTTON)) {
         //*************** Modifier Button Not Pressed ***************
         if (operatorJoystick->getButton(COREJoystick::JoystickButton::A_BUTTON)) { //Intake Position
-//            if(scorerSubsystem.cubeInScorer()) {
-//                if(liftSubsystem.liftDown()) {
-//                    scorerSubsystem.closeScorer();
-//                    liftSubsystem.SetRequestedPosition(12);
-//                } else {
-//                    liftSubsystem.SetRequestedPosition(-0.5);
-//                }
-//            } else {
-                chainBarSubsystem.SetChainBarRequestedAngle(m_chainBarIntakeAngle.Get());
-                chainBarSubsystem.SetRotationRequestedAngle(-180);
-                liftSubsystem.SetRequestedPosition(15);
-                scorerSubsystem.openScorer();
-           // }
+            superStructure.setWantedState(WantedState::WANT_TO_PICKUP_CUBE);
         } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::B_BUTTON)) { //Switch Position
-            chainBarSubsystem.SetChainBarRequestedAngle(m_chainBarSwitchAngle.Get());
-            chainBarSubsystem.SetRotationRequestedAngle(-90);
+            liftSubsystem.SetRequestedPosition(20);
         } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::Y_BUTTON)) { //Up Position
-            chainBarSubsystem.SetChainBarRequestedAngle(m_chainBarUpAngle.Get());
+            chainBarSubsystem.SetChainBarRequestedAngle(-30);
         } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::X_BUTTON)) { //Feeder Station Position
-            chainBarSubsystem.SetChainBarRequestedAngle(m_chainBarFeederAngle.Get());
-            chainBarSubsystem.SetRotationRequestedAngle(-90);
+            chainBarSubsystem.SetChainBarRequestedAngle(-158);
         }
     } else {
         //*************** Modifier Button Pressed ***************
@@ -78,6 +63,7 @@ void CORE2018::testInit() {
 void CORE2018::test() {
 	CORELog::logInfo("test");
 }
+
 CORE2018* CORE2018::GetInstance() {
 	if(!m_instance) {
 		CORELog::logError("Get instance returning null pointer!");

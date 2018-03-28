@@ -10,6 +10,7 @@
 #include "LiftSubsystem.h"
 #include "ChainBarSubsystem.h"
 #include "DriveSubsystem.h"
+#include "SuperStructure.h"
 
 #include "Autonomous/SideAuton.h"
 #include "Autonomous/CenterAuton.h"
@@ -70,6 +71,7 @@ public:
     TestPathAuton testAuton;
 	SideAuton sideAuton;
     CenterAuton centerAuton;
+    SuperStructure superStructure;
 
     GameDataParser gameDataParser;
 };

@@ -39,5 +39,5 @@ void ScorerSubsystem::openScorer() {
 }
 
 bool ScorerSubsystem::cubeInScorer() {
-    return !m_photoEye.Get();
+    return m_photoEye.Get();
 }

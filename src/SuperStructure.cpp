@@ -1,9 +1,17 @@
 #include "SuperStructure.h"
-
+#include "COREUtilities/COREConstant.h"
 #include "Robot.h"
 
-SuperStructure::SuperStructure():
-        m_liftCubeClearanceHeight("Lift No Cube Safe Height") {
+SuperStructure::SuperStructure() :
+	m_scaleHighHeight("Scale High Height"),
+	m_scaleMediumHeight("Scale Medium Height"),
+	m_scaleLowHeight("Scale Low Height"),
+	m_switchHeight("Switch Height"),
+	m_cubeClearanceHeight("Cube Clearance Height"),
+	m_cubeSafeHeight("Cube Safe Height"),
+	m_forwardRotationScoringAngle("Forward Rotation Scoring Angle"),
+	m_backwardsRotationScoringAngle("Backwards Rotation Scoring Angle"),
+    m_liftCubeClearanceHeight("Lift No Cube Safe Height") {
 }
 
 void SuperStructure::robotInitTask() {
@@ -65,10 +73,10 @@ SuperStructure::SystemState SuperStructure::handleGrabbingCube() {
         case GrabCubeState::MOVING_UP_TO_CUBE_CLEARANCE:
             m_liftSubsystem->SetCubeClearanceHeight();
             if(m_liftSubsystem->IsLiftAboveCubeClearanceHeight()) { //Lift higher than safe height
-                m_grabCubeState = GrabCubeState::CUBE_CLEARANCE_HIEGHT;
+                m_grabCubeState = GrabCubeState::CUBE_CLEARANCE_HEIGHT;
             }
             break;
-        case GrabCubeState::CUBE_CLEARANCE_HIEGHT:
+        case GrabCubeState::CUBE_CLEARANCE_HEIGHT:
             m_liftSubsystem->SetCubeClearanceHeight();
             break;
     }
@@ -78,11 +86,60 @@ SuperStructure::SystemState SuperStructure::handleGrabbingCube() {
             //May want to set state to straight up here if in cube safe hieght with cube
             return SystemState::GRABBING_CUBE;
         default:
-            if(m_grabCubeState == GrabCubeState::CUBE_CLEARANCE_HIEGHT) {
+            if(m_grabCubeState == GrabCubeState::CUBE_CLEARANCE_HEIGHT) {
                 return SystemState::TRANSIT_BELOW_CHANGE_POINT;
             } else {
                 m_grabCubeState = GrabCubeState::MOVING_UP_TO_CUBE_CLEARANCE;
                 return SystemState::GRABBING_CUBE;
             }
     }
+}
+
+SuperStructure::SystemState SuperStructure::scaleScoring() {
+	switch (m_scaleScoreState) {
+	case ScaleScoreState::HIGH_SCALE:
+		//Need to set chainbar to necessary angle
+	    m_liftSubsystem->SetScaleHighHeight();
+	    m_chainBarSubsytem->SetForwardRotation();
+		m_scorerSubsystem->openScorer();
+		break;
+	case ScaleScoreState::MID_SCALE:
+		//Need to set chainbar to necessary angle
+	    m_liftSubsystem->SetScaleMediumHeight();
+	    m_chainBarSubsytem->SetForwardRotation();
+		m_scorerSubsystem->openScorer();
+		break;
+	case ScaleScoreState::LOW_SCALE:
+		//Need to set chainbar to necessary angle
+	    m_liftSubsystem->SetScaleLowHeight();
+	    m_chainBarSubsytem->SetForwardRotation();
+		m_scorerSubsystem->openScorer();
+		break;
+	}
+	return SystemState::SCALE_SCORING;
+}
+
+SuperStructure::SystemState SuperStructure::behindScaleScoring() {
+	switch (m_scaleScoreState) {
+	case ScaleScoreState::HIGH_SCALE:
+		//Need to set chainbar to necessary angle for scoring backwards
+	    m_liftSubsystem->SetScaleHighHeight();
+	    m_chainBarSubsytem->SetBackwardsRotation();
+		m_scorerSubsystem->openScorer();
+		break;
+	case ScaleScoreState::MID_SCALE:
+		//Need to set chainbar to necessary angle for scoring backwards
+		m_liftSubsystem->SetScaleMediumHeight();
+		m_chainBarSubsytem->SetBackwardsRotation();
+		m_scorerSubsystem->openScorer();
+		break;
+	case ScaleScoreState::LOW_SCALE:
+		//Need to set chainbar to necessary angle for scoring backwards
+		m_liftSubsystem->SetScaleLowHeight();
+		m_chainBarSubsytem->SetBackwardsRotation();
+		m_scorerSubsystem->openScorer();
+		break;
+	}
+	return SystemState::SCALE_BEHIND_SCORING;
+
 }

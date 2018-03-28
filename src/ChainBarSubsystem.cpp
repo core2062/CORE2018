@@ -23,7 +23,9 @@ ChainBarSubsystem::ChainBarSubsystem() :
         m_rotationCruiseVel("Rotation Cruise Velocity"),
         m_chainBarIntakePostionAngle("Chain Bar Intake Position Angle"),
         m_rotationIntakePostionAngle("Rotation Intake Position Angle"),
-		m_rotationPID(0, 0, 0) {
+		m_rotationPID(0, 0, 0),
+	    m_forwardRotationScoringAngle("Forward Rotation Scoring Angle"),
+	    m_backwardsRotationScoringAngle("Backward Rotation Scoring Angle"){
 
 }
 
@@ -215,4 +217,14 @@ void ChainBarSubsystem::SetRotationRequestedSpeed(double speed) {
 void ChainBarSubsystem::SetIntakePosition() {
     SetRotationRequestedAngle(m_rotationIntakePostionAngle.Get());
     SetChainBarRequestedAngle(m_chainBarIntakePostionAngle.Get());
+}
+
+void ChainBarSubsystem::SetBackwardsRotation() {
+	SetChainBarRequestedAngle(m_backwardsRotationScoringAngle.Get());
+}
+
+
+
+void ChainBarSubsystem::SetForwardRotation() {
+	SetChainBarRequestedAngle(m_forwardRotationScoringAngle.Get());
 }

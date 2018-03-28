@@ -17,13 +17,21 @@ ChainBarSubsystem::ChainBarSubsystem() :
 		m_rotationAngleOffset("Rotation Angle Offset"),
 		m_rotationTopLimit("Rotation Top Limit"),
 		m_rotationBottomLimit("Rotation Bottom Limit"),
-        m_chainBarMaxAcel("Chain Bar Max Acceleration"),
-        m_chainBarCruiseVel("Chain Bar Cruise Velocity"),
-        m_rotationMaxAcel("Rotation Max Acceleration"),
-        m_rotationCruiseVel("Rotation Cruise Velocity"),
-        m_chainBarIntakePostionAngle("Chain Bar Intake Position Angle"),
-        m_rotationIntakePostionAngle("Rotation Intake Position Angle"),
-		m_rotationPID(0, 0, 0) {
+		m_chainBarUpP("Chain Bar Up PID P"),
+		m_chainBarUpI("Chain Bar Up PID I"),
+		m_chainBarUpD("Chain Bar Up PID D"),
+		m_chainBarDownP("Chain Bar Down PID P"),
+		m_chainBarDownI("Chain Bar Down PID I"),
+		m_chainBarDownD("Chain Bar Down PID D"),
+		m_rotationP("Rotation PID P"),
+		m_rotationI("Rotation PID I"),
+		m_rotationD("Rotation PID D"),
+		m_maxAngularAcceleration("thing"),
+		m_chainBarPID(0, 0, 0),
+		m_rotationPID(0, 0, 0),
+		m_forwardRotationScoringAngle("Forward Rotation Scoring Angle"),
+		m_backwardsRotationScoringAngle("Backward Rotation Scoring Angle"),
+		m_chainBarStraightUpAngle("Chain Bar Straight Up Angle") {
 
 }
 
@@ -215,4 +223,12 @@ void ChainBarSubsystem::SetRotationRequestedSpeed(double speed) {
 void ChainBarSubsystem::SetIntakePosition() {
     SetRotationRequestedAngle(m_rotationIntakePostionAngle.Get());
     SetChainBarRequestedAngle(m_chainBarIntakePostionAngle.Get());
+}
+
+void ChainBarSubsystem::SetForwardRotation() {
+	SetChainBarRequestedAngle(m_forwardRotationScoringAngle.Get());
+}
+
+void ChainBarSubsystem::SetChainBarStraightUp() {
+	SetChainBarRequestedAngle(m_chainBarStraightUpAngle.Get());
 }

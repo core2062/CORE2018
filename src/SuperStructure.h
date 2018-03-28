@@ -30,7 +30,7 @@ private:
         SWITCH_SCORING,
         SCALE_SCORING,
         SCALE_BEHIND_SCORING,
-        STRAIGHT_UP
+        CHAINBAR_STRAIGHT_UP
     };
 
     enum class GrabCubeState {
@@ -51,6 +51,12 @@ private:
     GrabCubeState m_grabCubeState;
     ScaleScoreState m_scaleScoreState;
     SystemState handleGrabbingCube();
+    SystemState switchScoring();
+    SystemState scaleScoring();
+    SystemState behindScaleScoring();
+    SystemState chainBarStraightUp();
+    SystemState transitBelowChangePoint();
+    SystemState transitAboveChangePoint();
 
     LiftSubsystem * m_liftSubsystem;
     ScorerSubsystem * m_scorerSubsystem;

@@ -13,12 +13,14 @@ LiftSubsystem::LiftSubsystem() :
         m_bottomLimitSwitch(LIFT_BOTTOM_LIMIT_SWITCH_PORT),
         m_cruiseVel("Lift Cruise Velocity"),
         m_maxAcel("Lift Max Acceleration"),
-        m_scaleMediumHeight("Lift Medium Height"),
-        m_scaleLowHeight("Lift Scale Low Height"),
-        m_scaleHighHeight("Lift Scale High Height"),
-        m_switchHeight("Lift Switch Height"),
-        m_safeHeight("Lift Safe Height"),
-        m_cubeClearanceHeight("Lift Cube Clearance Height"){
+		m_scaleMediumHeight("Lift Medium Height"),
+		m_scaleLowHeight("Scale Low Height"),
+		m_scaleHighHeight("Scale High Height"),
+		m_switchHeight("Switch Height"),
+		m_cubeSafeHeight("Cube Safe Height"),
+		m_cubeClearanceHeight("Cube Clearance Height"),
+		m_transitAboveChangeHeight("Transit Above Change Height"),
+		m_transitBelowChangeHeight("Transit Below Change Height") {
     m_rightMotor.SetInverted(true);
 
 }
@@ -154,4 +156,12 @@ void LiftSubsystem::SetSafeHeight() {
 
 bool LiftSubsystem::IsLiftAboveCubeClearanceHeight() {
     return GetLiftInches() > m_cubeClearanceHeight.Get() - 0.5;
+}
+
+void LiftSubsystem::SetTransitAboveChangeHeight() {
+	SetRequestedPosition(m_transitAboveChangeHeight.Get());
+}
+
+void LiftSubsystem::SetTransitBelowChangeHeight() {
+	SetRequestedPosition(m_transitBelowChangeHeight.Get());
 }

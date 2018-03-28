@@ -219,12 +219,14 @@ void ChainBarSubsystem::SetIntakePosition() {
     SetChainBarRequestedAngle(m_chainBarIntakePostionAngle.Get());
 }
 
-void ChainBarSubsystem::SetBackwardsRotation() {
-	SetChainBarRequestedAngle(m_backwardsRotationScoringAngle.Get());
-}
-
-
-
 void ChainBarSubsystem::SetForwardRotation() {
 	SetChainBarRequestedAngle(m_forwardRotationScoringAngle.Get());
+}
+
+void ChainBarSubsystem::SetChainBarStraightUp() {
+	SetChainBarRequestedAngle(m_chainBarStraightUpAngle.Get());
+}
+
+void ChainBarSubsystem::SetBackwardsRotation() {
+	SetChainBarRequestedAngle(m_backwardsRotationScoringAngle.Get());
 }

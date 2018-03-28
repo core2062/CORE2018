@@ -27,6 +27,9 @@ public:
     void SetRotationSpeed(double speed);
     void SetRotationRequestedAngle(double angle);
 	void SetRotationRequestedSpeed(double speed);
+	void SetForwardRotation();
+	void SetBackwardsRotation();
+	void SetChainBarStraightUp();
     double GetRotationAngle(bool raw = false);
     double GetRotationAngleRelativeToChainBar();
 
@@ -41,6 +44,12 @@ private:
     COREConstant<double> m_liftChangePoint;
 	COREConstant<double> m_chainBarAngleOffset, m_rotationAngleOffset;
     COREConstant<double> m_rotationTopLimit, m_rotationBottomLimit;
+    COREConstant<double> m_chainBarUpP, m_chainBarUpI, m_chainBarUpD;
+    COREConstant<double> m_chainBarDownP, m_chainBarDownI, m_chainBarDownD;
+    COREConstant<double> m_rotationP, m_rotationI, m_rotationD;
+    COREConstant<double> m_maxAngularAcceleration;
+    COREConstant<double> m_forwardRotationScoringAngle, m_backwardsRotationScoringAngle;
+    COREConstant<double> m_chainBarStraightUpAngle;
     COREConstant<double> m_chainBarIntakePostionAngle, m_rotationIntakePostionAngle;
     COREConstant<double> m_forwardRotationScoringAngle, m_backwardsRotationScoringAngle;
 

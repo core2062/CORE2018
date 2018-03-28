@@ -28,7 +28,9 @@ ChainBarSubsystem::ChainBarSubsystem() :
 		m_rotationD("Rotation PID D"),
 		m_maxAngularAcceleration("thing"),
 		m_chainBarPID(0, 0, 0),
-		m_rotationPID(0, 0, 0) {
+		m_rotationPID(0, 0, 0),
+		m_forwardRotationScoringAngle("Forward Rotation Scoring Angle"),
+		m_backwardsRotationScoringAngle("Backward Rotation Scoring Angle") {
 
 }
 
@@ -223,4 +225,12 @@ void ChainBarSubsystem::SetChainBarRequestedSpeed(double speed) {
 
 void ChainBarSubsystem::SetRotationRequestedSpeed(double speed) {
     m_requestedRotationSpeed = speed;
+}
+
+void ChainBarSubsystem::SetBackwardsRotation() {
+	SetChainBarRequestedAngle(m_backwardsRotationScoringAngle.Get());
+}
+
+void ChainBarSubsystem::SetForwardRotation() {
+	SetChainBarRequestedAngle(m_forwardRotationScoringAngle.Get());
 }

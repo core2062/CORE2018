@@ -61,8 +61,4 @@ private:
     LiftSubsystem * m_liftSubsystem;
     ScorerSubsystem * m_scorerSubsystem;
     ChainBarSubsystem * m_chainBarSubsystem;
-
-    COREConstant<double> m_scaleHighHeight, m_scaleMediumHeight, m_scaleLowHeight,
-		m_switchHeight, m_cubeClearanceHeight, m_cubeSafeHeight, m_forwardRotationScoringAngle,
-		m_backwardsRotationScoringAngle;
 };

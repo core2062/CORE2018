@@ -21,6 +21,13 @@ public:
 	void SetRequestedPosition(double position);
     void postLoopTask() override;
     void SetRequestedSpeed(double speed);
+    void SetScaleHighHeight();
+    void SetScaleMediumHeight();
+    void SetScaleLowHeight();
+    void SetSwitchHeight();
+    void SetCubeClearanceHeight();
+    void SetCubeSafeHeight();
+    void SetCubeAboveSafeHeight();
 	double GetLiftPosition();
     double GetLiftInches();
 	void resetEncoder();
@@ -36,5 +43,7 @@ private:
 	DigitalInput m_bottomLimitSwitch;
 	COREPID m_PID;
 	double m_requestedPosition, m_requestedSpeed;
+	COREConstant<double> m_switchHeight, m_scaleHighHeight, m_scaleLowHeight,
+		m_cubeClearanceHeight, m_cubeSafeHeight, m_scaleMediumHeight;
 	COREConstant<double> m_ticksPerInch;
 };

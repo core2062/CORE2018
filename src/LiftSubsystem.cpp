@@ -18,7 +18,13 @@ LiftSubsystem::LiftSubsystem() :
         m_rightMotor(RIGHT_LIFT_MOTOR_PORT),
         m_bottomLimitSwitch(LIFT_BOTTOM_LIMIT_SWITCH_PORT),
         m_PID(0.0, 0.0, 0.0),
-        m_ticksPerInch("Lift Ticks Per Inch") {
+        m_ticksPerInch("Lift Ticks Per Inch"),
+		m_scaleMediumHeight("Lift Medium Height"),
+		m_scaleLowHeight("Scale Low Height"),
+		m_scaleHighHeight("Scale High Height"),
+		m_switchHeight("Switch Height"),
+		m_cubeSafeHeight("Cube Safe Height"),
+		m_cubeClearanceHeight("Cube Clearance Height") {
     m_rightMotor.SetInverted(true);
 
 }
@@ -120,4 +126,32 @@ void LiftSubsystem::postLoopTask() {
 
 bool LiftSubsystem::liftDown() {
     return m_bottomLimitSwitch.Get();
+}
+
+void LiftSubsystem::SetScaleHighHeight() {
+	SetRequestedPosition(m_scaleHighHeight.Get());
+}
+
+void LiftSubsystem::SetScaleLowHeight() {
+	SetRequestedPosition(m_scaleLowHeight.Get());
+}
+
+void LiftSubsystem::SetScaleMediumHeight() {
+	SetRequestedPosition(m_scaleMediumHeight.Get());
+}
+
+void LiftSubsystem::SetSwitchHeight() {
+	SetRequestedPosition(m_switchHeight.Get());
+}
+
+void LiftSubsystem::SetCubeClearanceHeight() {
+	SetRequestedPosition(m_cubeClearanceHeight.Get());
+}
+
+void LiftSubsystem::SetCubeSafeHeight() {
+	SetRequestedPosition(m_cubeSafeHeight.Get());
+}
+
+void LiftSubsystem::SetCubeAboveSafeHeight() {
+	SetRequestedPosition(m_cubeSafeHeight.Get() + 5.0);
 }

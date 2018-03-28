@@ -1,4 +1,5 @@
 #include <Robot.h>
+#include "COREHardware/COREJoystick.h"
 
 CORE2018* CORE2018::m_instance;
 

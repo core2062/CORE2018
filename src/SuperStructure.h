@@ -4,6 +4,8 @@
 #include "LiftSubsystem.h"
 #include "ScorerSubsystem.h"
 #include "ChainBarSubsystem.h"
+#include "COREUtilities/COREConstant.h"
+#include "COREFramework/COREScheduler.h"
 
 using namespace CORE;
 
@@ -22,6 +24,7 @@ public:
 
     void setWantedState(WantedState wantedState);
 
+
 private:
     enum class SystemState {
         TRANSIT_BELOW_CHANGE_POINT,
@@ -37,7 +40,7 @@ private:
         WAITING_FOR_CUBE,
         MOVING_DOWN_TO_CUBE,
         MOVING_UP_TO_SAFE,
-        CUBE_SAFE_HIEGHT
+        CUBE_SAFE_HEIGHT
     };
 
     enum class ScaleScoreState {
@@ -51,8 +54,15 @@ private:
     GrabCubeState m_grabCubeState;
     ScaleScoreState m_scaleScoreState;
     SystemState handleGrabbingCube();
+    SystemState switchScoring();
+    SystemState scaleScoring();
+    SystemState behindScaleScoring();
 
     LiftSubsystem * m_liftSubsystem;
     ScorerSubsystem * m_scorerSubsystem;
-    ChainBarSubsystem * m_chainBarSubsytem;
+    ChainBarSubsystem * m_chainBarSubsystem;
+
+    COREConstant<double> m_scaleHighHeight, m_scaleMediumHeight, m_scaleLowHeight,
+		m_switchHeight, m_cubeClearanceHeight, m_cubeSafeHeight, m_forwardRotationScoringAngle,
+		m_backwardsRotationScoringAngle;
 };

@@ -19,18 +19,20 @@ class SuperStructure : public CORETask {
 public:
     SuperStructure();
     void robotInitTask() override;
+    void teleopInitTask() override;
     void postLoopTask() override;
 
     void setWantedState(WantedState wantedState);
 
 private:
+
     enum class SystemState {
         TRANSIT,
         GRABBING_CUBE,
         SWITCH_SCORING,
         SCALE_SCORING,
         SCALE_BEHIND_SCORING,
-        CHAINBAR_STRAIGHT_UP
+        STRAIGHT_UP
     };
 
     enum class GrabCubeState {
@@ -53,13 +55,6 @@ private:
     SystemState m_systemState;
     GrabCubeState m_grabCubeState;
     ScaleScoreState m_scaleScoreState;
-    SystemState handleGrabbingCube();
-    SystemState switchScoring();
-    SystemState scaleScoring();
-    SystemState behindScaleScoring();
-    SystemState chainBarStraightUp();
-    SystemState transitBelowChangePoint();
-    SystemState transitAboveChangePoint();
 
     LiftSubsystem * m_liftSubsystem;
     ScorerSubsystem * m_scorerSubsystem;

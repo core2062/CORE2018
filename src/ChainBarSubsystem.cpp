@@ -13,25 +13,15 @@ ChainBarSubsystem::ChainBarSubsystem() :
 		m_chainBarUpperTopLimit("Chain Bar Upper Top Limit"),
 		m_chainBarBottomLimit("Chain Bar Bottom Limit"),
 		m_liftChangePoint("Lift Change Point"),
-		m_chainBarAngleOffset("Chain Bar Angle Offset"),
-		m_rotationAngleOffset("Rotation Angle Offset"),
 		m_rotationTopLimit("Rotation Top Limit"),
 		m_rotationBottomLimit("Rotation Bottom Limit"),
-		m_chainBarUpP("Chain Bar Up PID P"),
-		m_chainBarUpI("Chain Bar Up PID I"),
-		m_chainBarUpD("Chain Bar Up PID D"),
-		m_chainBarDownP("Chain Bar Down PID P"),
-		m_chainBarDownI("Chain Bar Down PID I"),
-		m_chainBarDownD("Chain Bar Down PID D"),
-		m_rotationP("Rotation PID P"),
-		m_rotationI("Rotation PID I"),
-		m_rotationD("Rotation PID D"),
-		m_maxAngularAcceleration("thing"),
-		m_chainBarPID(0, 0, 0),
-		m_rotationPID(0, 0, 0),
-		m_forwardRotationScoringAngle("Forward Rotation Scoring Angle"),
-		m_backwardsRotationScoringAngle("Backward Rotation Scoring Angle"),
-		m_chainBarStraightUpAngle("Chain Bar Straight Up Angle") {
+        m_chainBarMaxAcel("Chain Bar Max Acceleration"),
+        m_chainBarCruiseVel("Chain Bar Cruise Velocity"),
+        m_rotationMaxAcel("Rotation Max Acceleration"),
+        m_rotationCruiseVel("Rotation Cruise Velocity"),
+        m_chainBarIntakePostionAngle("Chain Bar Intake Position Angle"),
+        m_rotationIntakePostionAngle("Rotation Intake Position Angle"),
+		m_rotationPID(0, 0, 0) {
 
 }
 
@@ -57,6 +47,10 @@ void ChainBarSubsystem::robotInit() {
     m_requestedChainBarSpeed = 0;
     m_requestedRotationSpeed = 0;
 
+    SmartDashboard::PutBoolean("Zero Rotation", false);
+
+    SmartDashboard::PutBoolean("Zero Chain Bar", false);
+
     //int pos = m_rotationMotor.GetSelectedSensorPosition(0);
 
     //CORELog::logError("Rotation Value: " + to_string(pos));
@@ -79,6 +73,16 @@ void ChainBarSubsystem::teleopInit() {
 
 	SetRotationRequestedAngle(GetRotationAngle());
     SetRotationSpeed(0);
+
+    if(SmartDashboard::GetBoolean("Zero Rotation", false)) {
+        SmartDashboard::PutBoolean("Zero Rotation", false);
+        m_rotationMotor.SetSelectedSensorPosition(0, 0, 0);
+    }
+
+    if(SmartDashboard::GetBoolean("Zero Chain Bar", false)) {
+        SmartDashboard::PutBoolean("Zero Chain Bar", false);
+        m_chainBarMotor.SetSelectedSensorPosition(0, 0, 0);
+    }
 }
 
 void ChainBarSubsystem::teleop() {
@@ -96,11 +100,7 @@ void ChainBarSubsystem::SetRotationSpeed(double speed) {
 double ChainBarSubsystem::GetChainBarAngle(bool raw) {
 	double rawAngle = (m_chainBarMotor.GetSelectedSensorPosition(0) / 4096.0 * 360);
 //		double rawAngle = 360 - (-m_chainBarMotor.GetSensorCollection().GetQuadraturePosition() / 4096.0 * 360);
-	if (raw) {
-		return rawAngle;
-	} else {
-		return rawAngle - m_chainBarAngleOffset.Get();
-	}
+	return rawAngle;
 }
 
 void ChainBarSubsystem::SetChainBarRequestedAngle(double angle) {
@@ -117,11 +117,7 @@ double ChainBarSubsystem::GetRotationAngleRelativeToChainBar() {
 double ChainBarSubsystem::GetRotationAngle(bool raw) {
     double rawAngle = (m_rotationMotor.GetSelectedSensorPosition(0) / 4096.0 * 360);
 //	double rawAngle = 360 - (-m_rotationMotor.GetSensorCollection().GetQuadraturePosition() / 4096.0 * 360);
-		if (raw) {
-			return rawAngle;
-		} else {
-			return rawAngle - m_rotationAngleOffset.Get();
-		}
+    return rawAngle;
 }
 
 void ChainBarSubsystem::SetRotationRequestedAngle(double angle) {
@@ -142,7 +138,7 @@ void ChainBarSubsystem::postLoopTask() {
     if (abs(m_requestedChainBarSpeed) > 0.01) {
         SetChainBarRequestedAngle(chainBarAngle);
     } else {
-        m_chainBarMotor.Set(ControlMode::MotionMagic, (m_requestedChainBarAngle + m_chainBarAngleOffset.Get()) * 4096.0 / 360);
+        m_chainBarMotor.Set(ControlMode::MotionMagic, m_requestedChainBarAngle * 4096.0 / 360);
     }
 
     /************************* Check Chain Bar Limits *************************/
@@ -223,12 +219,4 @@ void ChainBarSubsystem::SetRotationRequestedSpeed(double speed) {
 void ChainBarSubsystem::SetIntakePosition() {
     SetRotationRequestedAngle(m_rotationIntakePostionAngle.Get());
     SetChainBarRequestedAngle(m_chainBarIntakePostionAngle.Get());
-}
-
-void ChainBarSubsystem::SetForwardRotation() {
-	SetChainBarRequestedAngle(m_forwardRotationScoringAngle.Get());
-}
-
-void ChainBarSubsystem::SetChainBarStraightUp() {
-	SetChainBarRequestedAngle(m_chainBarStraightUpAngle.Get());
 }

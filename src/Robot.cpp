@@ -47,18 +47,18 @@ void CORE2018::teleop() {
         //*************** Modifier Button Pressed ***************
         if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::A_BUTTON)) { //Low Scale Position
             superStructure.setWantedState(WantedState::TRANSIT);
-            liftSubsystem.SetRequestedPosition(45);
+            liftSubsystem.SetRequestedPosition(25);
         } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::B_BUTTON)) { //Mid Scale Forward Position
             superStructure.setWantedState(WantedState::TRANSIT);
-            liftSubsystem.SetRequestedPosition(55);
+            liftSubsystem.SetRequestedPosition(33);
             chainBarSubsystem.SetChainBarRequestedAngle(-90);
             chainBarSubsystem.SetRotationRequestedAngle(-90);
         } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::Y_BUTTON)) { //High Scale Position
             superStructure.setWantedState(WantedState::TRANSIT);
-            liftSubsystem.SetRequestedPosition(64);
+            liftSubsystem.SetRequestedPosition(33);
         } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::X_BUTTON)) { //Mid Scale Backward Position
             superStructure.setWantedState(WantedState::TRANSIT);
-            liftSubsystem.SetRequestedPosition(55);
+            liftSubsystem.SetRequestedPosition(33);
             chainBarSubsystem.SetChainBarRequestedAngle(90);
             chainBarSubsystem.SetRotationRequestedAngle(90);
         }

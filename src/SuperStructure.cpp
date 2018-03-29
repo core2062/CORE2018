@@ -11,16 +11,17 @@ void SuperStructure::robotInitTask() {
     m_chainBarSubsytem = &CORE2018::GetInstance()->chainBarSubsystem;
     m_scorerSubsystem = &CORE2018::GetInstance()->scorerSubsystem;
     m_grabCubeState = GrabCubeState::WAITING_FOR_CUBE;
+    m_wantedState = WantedState::TRANSIT;
 }
 
 void SuperStructure::postLoopTask() {
     SystemState newState = m_systemState;
     switch (m_systemState) {
-        case SystemState::TRANSIT_BELOW_CHANGE_POINT:
-        	newState = transitBelowChangePoint();
-            break;
-        case SystemState::TRANSIT_ABOVE_CHANGE_POINT:
-        	newState = transitAboveChangePoint;
+        case SystemState::TRANSIT:
+            if(m_wantedState == WantedState::WANT_TO_PICKUP_CUBE) {
+                newState = SystemState::GRABBING_CUBE;
+                m_grabCubeState = GrabCubeState::WAITING_FOR_CUBE;
+            }
             break;
         case SystemState::GRABBING_CUBE:
             newState = handleGrabbingCube();
@@ -31,8 +32,7 @@ void SuperStructure::postLoopTask() {
             break;
         case SystemState::SCALE_BEHIND_SCORING:
             break;
-        case SystemState::CHAINBAR_STRAIGHT_UP:
-        	newState = chainBarStraightUp();
+        case SystemState::STRAIGHT_UP:
             break;
     }
 
@@ -46,78 +46,6 @@ void SuperStructure::setWantedState(WantedState wantedState) {
     m_wantedState = wantedState;
 }
 
-SuperStructure::SystemState SuperStructure::scaleScoring() {
-	switch(m_scaleScoreState) {
-	case ScaleScoreState::HIGH_SCALE:
-		//Need to set chainbar to necessary angle
-		m_liftSubsystem->SetScaleHighHeight();
-		m_chainBarSubsystem->SetForwardRotation();
-		m_scorerSubsystem->openScorer();
-		break;
-	case ScaleScoreState::MID_SCALE:
-		//Need to set chainbar to necessary angle
-		m_liftSubsystem->SetScaleMediumHeight();
-		m_chainBarSubsystem->SetForwardRotation();
-		m_scorerSubsystem->openScorer();
-		break;
-	case ScaleScoreState::LOW_SCALE:
-		//Need to set chainbar to necessary angle
-		m_liftSubsystem->SetScaleLowHeight();
-		m_chainBarSubsystem->SetForwardRotation();
-		m_scorerSubsystem->openScorer();
-		break;
-	}
-	return SystemState::SCALE_SCORING;
-}
-
-SuperStructure::SystemState SuperStructure::behindScaleScoring() {
-	switch(m_scaleScoreState) {
-	case ScaleScoreState::HIGH_SCALE:
-		//Need to set chainbar to necessary angle for scoring backwards
-		m_liftSubsystem->SetScaleHighHeight();
-		m_chainBarSubsystem->SetBackwardsRotation();
-		m_scorerSubsystem->openScorer();
-		break;
-	case ScaleScoreState::MID_SCALE:
-		//Need to set chainbar to necessary angle for scoring backwards
-		m_liftSubsystem->SetScaleMediumHeight();
-		m_chainBarSubsystem->SetBackwardsRotation();
-		m_scorerSubsystem->openScorer();
-		break;
-	case ScaleScoreState::LOW_SCALE:
-		//Need to set chainbar to necessary angle for scoring backwards
-		m_liftSubsystem->SetScaleLowHeight();
-		m_chainBarSubsystem->SetBackwardsRotation();
-		m_scorerSubsystem->openScorer();
-		break;
-	}
-	switch (m_wantedState) {
-
-	}
-	return SystemState::SCALE_BEHIND_SCORING;
-
-}
-SuperStructure::SystemState SuperStructure::switchScoring() {
-	m_liftSubsystem->SetSwitchHeight();
-	m_chainBarSubsystem->SetForwardRotation();
-	m_scorerSubsystem->openScorer();
-	switch (m_wantedState) {
-	}
-	return SystemState::SWITCH_SCORING;
-}
-
-SuperStructure::SystemState SuperStructure::transitAboveChangePoint() {
-	m_liftSubsystem->SetTransitAboveChangeHeight();
-}
-
-SuperStructure::SystemState SuperStructure::transitBelowChangePoint() {
-	m_liftSubsystem->SetTransitBelowChangeHeight();
-}
-
-SuperStructure::SystemState SuperStructure::chainBarStraightUp() {
-	m_chainBarSubsystem->SetChainBarStraightUp();
-}
-
 SuperStructure::SystemState SuperStructure::handleGrabbingCube() {
     m_chainBarSubsytem->SetIntakePosition(); //Set chain bar + rotation to correct angles
     switch (m_grabCubeState) {
@@ -129,7 +57,7 @@ SuperStructure::SystemState SuperStructure::handleGrabbingCube() {
             }
             break;
         case GrabCubeState::MOVING_DOWN_TO_CUBE:
-            m_liftSubsystem->SetRequestedPosition(0); //Set lift position to 0
+            m_liftSubsystem->SetRequestedPosition(-1); //Set lift position to 0
             if(m_liftSubsystem->liftDown()) {
                 m_scorerSubsystem->closeScorer();
                 m_grabCubeState = GrabCubeState::MOVING_UP_TO_CUBE_CLEARANCE;
@@ -159,6 +87,11 @@ SuperStructure::SystemState SuperStructure::handleGrabbingCube() {
                 return SystemState::GRABBING_CUBE;
             }
     }
+}
+
+void SuperStructure::teleopInitTask() {
+    m_grabCubeState = GrabCubeState::WAITING_FOR_CUBE;
+    m_wantedState = WantedState::TRANSIT;
 }
 
 /*SuperStructure::SystemState SuperStructure::handleTransit() {

@@ -20,8 +20,6 @@ LiftSubsystem::LiftSubsystem() :
         m_safeHeight("Lift Safe Height"),
         m_cubeClearanceHeight("Lift Cube Clearance Height"),
         m_changePoint("Lift Change Point") {
-		m_transitAboveChangeHeight("Transit Above Change Height"),
-		m_transitBelowChangeHeight("Transit Below Change Height") {
     m_rightMotor.SetInverted(true);
 
 }
@@ -67,7 +65,7 @@ void LiftSubsystem::resetEncoder() {
  */
 void LiftSubsystem::SetRequestedPosition(double positionInInches) {
     auto position = (int)(positionInInches * m_ticksPerInch.Get());
-    position = max(position, 0);
+    position = max(position, -1);
     position = min(position, m_topLimit.Get());
     m_requestedPosition = position;
 }
@@ -101,6 +99,7 @@ void LiftSubsystem::postLoopTask() {
             m_requestedSpeed *= 0.5;
         }
         SetRequestedPosition(liftPosition);
+        CORE2018::GetInstance()->superStructure.setWantedState(WantedState::TRANSIT);
     } else {
         m_rightMotor.Set(ControlMode::MotionMagic, m_requestedPosition);
         //m_rightMotor.Set(ControlMode::PercentOutput, 0);
@@ -159,10 +158,6 @@ bool LiftSubsystem::IsAboveCubeClearanceHeight() {
     return GetLiftInches() > m_cubeClearanceHeight.Get() - 0.5;
 }
 
-void LiftSubsystem::SetTransitAboveChangeHeight() {
-	SetRequestedPosition(m_transitAboveChangeHeight.Get());
-}
-
-void LiftSubsystem::SetTransitBelowChangeHeight() {
-	SetRequestedPosition(m_transitBelowChangeHeight.Get());
+bool LiftSubsystem::IsAboveChangePoint() {
+    return GetLiftInches() > m_changePoint.Get();
 }

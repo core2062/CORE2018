@@ -25,7 +25,8 @@ ChainBarSubsystem::ChainBarSubsystem() :
         m_rotationIntakePostionAngle("Rotation Intake Position Angle"),
 		m_rotationPID(0, 0, 0),
 	    m_forwardRotationScoringAngle("Forward Rotation Scoring Angle"),
-	    m_backwardsRotationScoringAngle("Backward Rotation Scoring Angle"){
+	    m_backwardsRotationScoringAngle("Backward Rotation Scoring Angle"),
+		m_chainBarStraightUpAngle("Chain Bar Straight Up Angle") {
 
 }
 
@@ -66,7 +67,7 @@ void ChainBarSubsystem::teleopInit() {
     m_chainBarMotor.ConfigMotionAcceleration(m_chainBarMaxAcel.Get(), 0);
 
 	SetChainBarRequestedAngle(GetChainBarAngle());
-    SetChainBarSpeed(0);
+    SetChainBarRequestedSpeed(0);
 
     m_rotationMotor.ConfigMotionCruiseVelocity(m_rotationCruiseVel.Get(), 0);
     m_rotationMotor.ConfigMotionAcceleration(m_rotationMaxAcel.Get(), 0);
@@ -79,7 +80,7 @@ void ChainBarSubsystem::teleop() {
 
 }
 
-void ChainBarSubsystem::SetChainBarSpeed(double speed) {
+void ChainBarSubsystem::SetChainBarRequestedSpeed(double speed) {
 	m_chainBarMotor.Set(ControlMode::PercentOutput, speed);
 }
 
@@ -206,10 +207,6 @@ void ChainBarSubsystem::postLoopTask() {
     SmartDashboard::PutNumber("Rotation Angle Relative To Chain Bar", GetRotationAngleRelativeToChainBar());
 }
 
-void ChainBarSubsystem::SetChainBarRequestedSpeed(double speed) {
-    m_requestedChainBarSpeed = speed;
-}
-
 void ChainBarSubsystem::SetRotationRequestedSpeed(double speed) {
     m_requestedRotationSpeed = speed;
 }
@@ -219,14 +216,12 @@ void ChainBarSubsystem::SetIntakePosition() {
     SetChainBarRequestedAngle(m_chainBarIntakePostionAngle.Get());
 }
 
-void ChainBarSubsystem::SetForwardRotation() {
-	SetChainBarRequestedAngle(m_forwardRotationScoringAngle.Get());
-}
-
-void ChainBarSubsystem::SetChainBarStraightUp() {
-	SetChainBarRequestedAngle(m_chainBarStraightUpAngle.Get());
-}
-
 void ChainBarSubsystem::SetBackwardsRotation() {
 	SetChainBarRequestedAngle(m_backwardsRotationScoringAngle.Get());
+}
+
+
+
+void ChainBarSubsystem::SetForwardRotation() {
+	SetChainBarRequestedAngle(m_forwardRotationScoringAngle.Get());
 }

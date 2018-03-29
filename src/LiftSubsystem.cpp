@@ -20,7 +20,8 @@ LiftSubsystem::LiftSubsystem() :
 		m_cubeSafeHeight("Cube Safe Height"),
 		m_cubeClearanceHeight("Cube Clearance Height"),
 		m_transitAboveChangeHeight("Transit Above Change Height"),
-		m_transitBelowChangeHeight("Transit Below Change Height") {
+		m_transitBelowChangeHeight("Transit Below Change Height"),
+		m_bottomLimit("Lift Bottom Limit") {
     m_rightMotor.SetInverted(true);
 
 }
@@ -151,7 +152,7 @@ void LiftSubsystem::SetCubeClearanceHeight() {
 }
 
 void LiftSubsystem::SetSafeHeight() {
-    SetRequestedPosition(m_safeHeight.Get());
+    SetRequestedPosition(m_cubeSafeHeight.Get());
 }
 
 bool LiftSubsystem::IsLiftAboveCubeClearanceHeight() {

@@ -31,7 +31,7 @@ void SuperStructure::postLoopTask() {
         	newState = transitBelowChangePoint();
             break;
         case SystemState::TRANSIT_ABOVE_CHANGE_POINT:
-        	newState = transitAboveChangePoint;
+        	newState = transitAboveChangePoint();
             break;
         case SystemState::GRABBING_CUBE:
             newState = handleGrabbingCube();
@@ -57,60 +57,9 @@ void SuperStructure::setWantedState(WantedState wantedState) {
     m_wantedState = wantedState;
 }
 
-SuperStructure::SystemState SuperStructure::scaleScoring() {
-	switch(m_scaleScoreState) {
-	case ScaleScoreState::HIGH_SCALE:
-		//Need to set chainbar to necessary angle
-		m_liftSubsystem->SetScaleHighHeight();
-		m_chainBarSubsystem->SetForwardRotation();
-		m_scorerSubsystem->openScorer();
-		break;
-	case ScaleScoreState::MID_SCALE:
-		//Need to set chainbar to necessary angle
-		m_liftSubsystem->SetScaleMediumHeight();
-		m_chainBarSubsystem->SetForwardRotation();
-		m_scorerSubsystem->openScorer();
-		break;
-	case ScaleScoreState::LOW_SCALE:
-		//Need to set chainbar to necessary angle
-		m_liftSubsystem->SetScaleLowHeight();
-		m_chainBarSubsystem->SetForwardRotation();
-		m_scorerSubsystem->openScorer();
-		break;
-	}
-	return SystemState::SCALE_SCORING;
-}
-
-SuperStructure::SystemState SuperStructure::behindScaleScoring() {
-	switch(m_scaleScoreState) {
-	case ScaleScoreState::HIGH_SCALE:
-		//Need to set chainbar to necessary angle for scoring backwards
-		m_liftSubsystem->SetScaleHighHeight();
-		m_chainBarSubsystem->SetBackwardsRotation();
-		m_scorerSubsystem->openScorer();
-		break;
-	case ScaleScoreState::MID_SCALE:
-		//Need to set chainbar to necessary angle for scoring backwards
-		m_liftSubsystem->SetScaleMediumHeight();
-		m_chainBarSubsystem->SetBackwardsRotation();
-		m_scorerSubsystem->openScorer();
-		break;
-	case ScaleScoreState::LOW_SCALE:
-		//Need to set chainbar to necessary angle for scoring backwards
-		m_liftSubsystem->SetScaleLowHeight();
-		m_chainBarSubsystem->SetBackwardsRotation();
-		m_scorerSubsystem->openScorer();
-		break;
-	}
-	switch (m_wantedState) {
-
-	}
-	return SystemState::SCALE_BEHIND_SCORING;
-
-}
 SuperStructure::SystemState SuperStructure::switchScoring() {
 	m_liftSubsystem->SetSwitchHeight();
-	m_chainBarSubsystem->SetForwardRotation();
+	m_chainBarSubsytem->SetForwardRotation();
 	m_scorerSubsystem->openScorer();
 	switch (m_wantedState) {
 	}
@@ -126,7 +75,7 @@ SuperStructure::SystemState SuperStructure::transitBelowChangePoint() {
 }
 
 SuperStructure::SystemState SuperStructure::chainBarStraightUp() {
-	m_chainBarSubsystem->SetChainBarStraightUp();
+	m_chainBarSubsytem->SetChainBarStraightUp();
 }
 
 SuperStructure::SystemState SuperStructure::handleGrabbingCube() {

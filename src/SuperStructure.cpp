@@ -15,9 +15,6 @@ void SuperStructure::robotInitTask() {
 
 void SuperStructure::postLoopTask() {
     SystemState newState = m_systemState;
-    if(m_wantedState == WantedState::WANT_TO_PICKUP_CUBE)
-        newState = handleGrabbingCube();
-
     switch (m_systemState) {
         case SystemState::TRANSIT_BELOW_CHANGE_POINT:
         	newState = transitBelowChangePoint();
@@ -126,6 +123,7 @@ SuperStructure::SystemState SuperStructure::handleGrabbingCube() {
     switch (m_grabCubeState) {
         case GrabCubeState::WAITING_FOR_CUBE:
             m_liftSubsystem->SetSafeHeight(); //Set lift position to clearance height above cube
+            m_scorerSubsystem->openScorer();
             if(m_scorerSubsystem->cubeInScorer()) {
                 m_grabCubeState = GrabCubeState::MOVING_DOWN_TO_CUBE;
             }
@@ -139,7 +137,7 @@ SuperStructure::SystemState SuperStructure::handleGrabbingCube() {
             break;
         case GrabCubeState::MOVING_UP_TO_CUBE_CLEARANCE:
             m_liftSubsystem->SetCubeClearanceHeight();
-            if(m_liftSubsystem->IsLiftAboveCubeClearanceHeight()) { //Lift higher than safe height
+            if(m_liftSubsystem->IsAboveCubeClearanceHeight()) { //Lift higher than safe height
                 m_grabCubeState = GrabCubeState::CUBE_CLEARANCE_HIEGHT;
             }
             break;
@@ -153,11 +151,22 @@ SuperStructure::SystemState SuperStructure::handleGrabbingCube() {
             //May want to set state to straight up here if in cube safe hieght with cube
             return SystemState::GRABBING_CUBE;
         default:
-            if(m_grabCubeState == GrabCubeState::CUBE_CLEARANCE_HIEGHT) {
-                return SystemState::TRANSIT_BELOW_CHANGE_POINT;
+            if(m_grabCubeState == GrabCubeState::CUBE_CLEARANCE_HIEGHT
+               || m_grabCubeState == GrabCubeState::WAITING_FOR_CUBE) {
+                return SystemState::TRANSIT;
             } else {
                 m_grabCubeState = GrabCubeState::MOVING_UP_TO_CUBE_CLEARANCE;
                 return SystemState::GRABBING_CUBE;
             }
     }
 }
+
+/*SuperStructure::SystemState SuperStructure::handleTransit() {
+    switch (m_wantedState) {
+        case WantedState::WANT_TO_PICKUP_CUBE:
+            return SystemState::GRABBING_CUBE;
+        default:
+            return SystemState::TRANSIT;
+    }
+}*/
+

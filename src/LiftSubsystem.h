@@ -41,7 +41,8 @@ public:
     void SetSafeHeight();
     void SetScaleHighHeight();
 
-    bool IsLiftAboveCubeClearanceHeight();
+    bool IsAboveCubeClearanceHeight();
+    bool IsAboveChangePoint ();
 
 private:
 	TalonSRX m_leftMotor;
@@ -57,6 +58,7 @@ private:
 	COREConstant<double> m_transitAboveChangeHeight, m_transitBelowChangeHeight;
 	COREConstant<int> m_topLimit;
 	COREConstant<double> m_ticksPerInch;
+    COREConstant<double> m_changePoint;
     COREConstant<int> m_cruiseVel, m_maxAcel;
 	DigitalInput m_bottomLimitSwitch;
 	int m_requestedPosition;

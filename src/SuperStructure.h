@@ -11,7 +11,8 @@ enum class WantedState {
     WANT_TO_PICKUP_CUBE, //We want to pickup a cube
     WANT_TO_SCORE_ON_SCALE, //We want to score on the scale
     WANT_TO_SCORE_ON_SCALE_BEHIND, //We want to score on the scale, but behind us
-    WANT_TO_SCORE_ON_SWITCH //We want to score on the switch
+    WANT_TO_SCORE_ON_SWITCH, //We want to score on the switch
+    TRANSIT
 };
 
 class SuperStructure : public CORETask {
@@ -24,8 +25,7 @@ public:
 
 private:
     enum class SystemState {
-        TRANSIT_BELOW_CHANGE_POINT,
-        TRANSIT_ABOVE_CHANGE_POINT,
+        TRANSIT,
         GRABBING_CUBE,
         SWITCH_SCORING,
         SCALE_SCORING,
@@ -45,6 +45,9 @@ private:
         MID_SCALE,
         LOW_SCALE
     };
+
+    SystemState handleGrabbingCube();
+
 
     WantedState m_wantedState;
     SystemState m_systemState;

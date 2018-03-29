@@ -32,23 +32,32 @@ void CORE2018::teleop() {
         if (operatorJoystick->getButton(COREJoystick::JoystickButton::A_BUTTON)) { //Intake Position
             superStructure.setWantedState(WantedState::WANT_TO_PICKUP_CUBE);
         } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::B_BUTTON)) { //Switch Position
-            liftSubsystem.SetRequestedPosition(20);
+            superStructure.setWantedState(WantedState::TRANSIT);
+            chainBarSubsystem.SetChainBarRequestedAngle(m_chainBarSwitchAngle.Get());
+            chainBarSubsystem.SetRotationRequestedAngle(-90);
         } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::Y_BUTTON)) { //Up Position
-            chainBarSubsystem.SetChainBarRequestedAngle(-30);
+            superStructure.setWantedState(WantedState::TRANSIT);
+            chainBarSubsystem.SetChainBarRequestedAngle(m_chainBarUpAngle.Get());
         } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::X_BUTTON)) { //Feeder Station Position
-            chainBarSubsystem.SetChainBarRequestedAngle(-158);
+            superStructure.setWantedState(WantedState::TRANSIT);
+            chainBarSubsystem.SetChainBarRequestedAngle(m_chainBarFeederAngle.Get());
+            chainBarSubsystem.SetRotationRequestedAngle(-90);
         }
     } else {
         //*************** Modifier Button Pressed ***************
         if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::A_BUTTON)) { //Low Scale Position
+            superStructure.setWantedState(WantedState::TRANSIT);
             liftSubsystem.SetRequestedPosition(45);
         } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::B_BUTTON)) { //Mid Scale Forward Position
+            superStructure.setWantedState(WantedState::TRANSIT);
             liftSubsystem.SetRequestedPosition(55);
             chainBarSubsystem.SetChainBarRequestedAngle(-90);
             chainBarSubsystem.SetRotationRequestedAngle(-90);
         } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::Y_BUTTON)) { //High Scale Position
+            superStructure.setWantedState(WantedState::TRANSIT);
             liftSubsystem.SetRequestedPosition(64);
         } else if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::X_BUTTON)) { //Mid Scale Backward Position
+            superStructure.setWantedState(WantedState::TRANSIT);
             liftSubsystem.SetRequestedPosition(55);
             chainBarSubsystem.SetChainBarRequestedAngle(90);
             chainBarSubsystem.SetRotationRequestedAngle(90);
@@ -63,7 +72,6 @@ void CORE2018::testInit() {
 void CORE2018::test() {
 	CORELog::logInfo("test");
 }
-
 CORE2018* CORE2018::GetInstance() {
 	if(!m_instance) {
 		CORELog::logError("Get instance returning null pointer!");

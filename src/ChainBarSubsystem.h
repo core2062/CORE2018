@@ -22,30 +22,34 @@ public:
     void SetRotationSpeed(double speed);
     void SetRotationRequestedAngle(double angle);
 	void SetRotationRequestedSpeed(double speed);
-	void SetForwardRotation();
-	void SetBackwardsRotation();
-	void SetChainBarStraightUp();
     double GetRotationAngle(bool raw = false);
     double GetRotationAngleRelativeToChainBar();
 
     void SetIntakePosition();
+    void SetBehindScore();
+    void SetForwardScore();
+    void SetStraightUp();
+    void SetFeeder();
 
-    void SetRotationBackwardScore();
-    void SetRotationForwardScore();
+    bool IsIntakePosition();
 
 private:
 	TalonSRX m_chainBarMotor, m_rotationMotor;
 	COREConstant<double> m_chainBarLowerTopLimit, m_chainBarUpperTopLimit, m_chainBarBottomLimit;
     COREConstant<double> m_liftChangePoint;
-	COREConstant<double> m_chainBarAngleOffset, m_rotationAngleOffset;
     COREConstant<double> m_rotationTopLimit, m_rotationBottomLimit;
-    COREConstant<double> m_forwardRotationScoringAngle, m_backwardsRotationScoringAngle;
+    COREConstant<double> m_forwardChainBarScoringAngle, m_backwardChainBarScoringAngle;
+    COREConstant<double> m_forwardRotationScoringAngle, m_backwardRotationScoringAngle;
     COREConstant<double> m_chainBarStraightUpAngle;
+    COREConstant<double> m_rotationStraightUpAngle;
     COREConstant<double> m_chainBarIntakePostionAngle, m_rotationIntakePostionAngle;
+    COREConstant<double> m_chainBarFeederAngle, m_rotationFeederAngle;
+    COREConstant<double> m_rotationMaxRelativePosition;
 
     COREConstant<int> m_chainBarCruiseVel, m_chainBarMaxAcel;
 	COREConstant<int> m_rotationCruiseVel, m_rotationMaxAcel;
 	COREPID m_rotationPID;
 	double m_requestedChainBarAngle, m_requestedChainBarSpeed;
     double m_requestedRotationAngle, m_requestedRotationSpeed;
+
 };

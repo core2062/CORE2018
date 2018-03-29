@@ -86,6 +86,8 @@ void DriveSubsystem::teleop() {
         theta = 0;
     }
 
+    theta *= 0.0602; //TODO: Someone should figure out what this value is/means
+
     if (m_gyro) {
         try {
             SmartDashboard::PutNumber("Gyro Yaw", getGyroYaw());

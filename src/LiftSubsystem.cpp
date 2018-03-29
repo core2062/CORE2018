@@ -13,15 +13,13 @@ LiftSubsystem::LiftSubsystem() :
         m_bottomLimitSwitch(LIFT_BOTTOM_LIMIT_SWITCH_PORT),
         m_cruiseVel("Lift Cruise Velocity"),
         m_maxAcel("Lift Max Acceleration"),
-		m_scaleMediumHeight("Lift Medium Height"),
-		m_scaleLowHeight("Scale Low Height"),
-		m_scaleHighHeight("Scale High Height"),
-		m_switchHeight("Switch Height"),
-		m_cubeSafeHeight("Cube Safe Height"),
-		m_cubeClearanceHeight("Cube Clearance Height"),
-		m_transitAboveChangeHeight("Transit Above Change Height"),
-		m_transitBelowChangeHeight("Transit Below Change Height"),
-		m_bottomLimit("Lift Bottom Limit") {
+		m_bottomLimit("Lift Bottom Limit"),
+        m_scaleMediumHeight("Lift Scale Medium Height"),
+        m_scaleHighHeight("Lift Scale High Height"),
+        m_switchHeight("Lift Switch Height"),
+        m_cubeClearanceHeight("Lift Cube Clearance Height"),
+        m_changePoint("Lift Change Point"),
+        m_cubeSafeHeight("Lift Safe Height") {
     m_rightMotor.SetInverted(true);
 
 }
@@ -55,6 +53,7 @@ void LiftSubsystem::teleopInit() {
 }
 
 void LiftSubsystem::teleop() {
+
 }
 
 void LiftSubsystem::resetEncoder() {
@@ -101,6 +100,7 @@ void LiftSubsystem::postLoopTask() {
             m_requestedSpeed *= 0.5;
         }
         SetRequestedPosition(liftPosition);
+        CORE2018::GetInstance()->superStructure.setWantedState(WantedState::MANUAL);
     } else {
         m_rightMotor.Set(ControlMode::MotionMagic, m_requestedPosition);
         //m_rightMotor.Set(ControlMode::PercentOutput, 0);
@@ -110,7 +110,7 @@ void LiftSubsystem::postLoopTask() {
         m_requestedSpeed = 0;
         m_rightMotor.Set(ControlMode::PercentOutput, 0);
         SetRequestedPosition(m_topLimit.Get());
-    } else if (m_bottomLimitSwitch.Get()) {
+    } else if (liftDown()) {
         if(m_requestedSpeed < 0) {
             m_requestedSpeed = 0;
             m_rightMotor.Set(ControlMode::PercentOutput, 0);
@@ -135,10 +135,6 @@ void LiftSubsystem::SetScaleHighHeight() {
     SetRequestedPosition(m_scaleHighHeight.Get());
 }
 
-void LiftSubsystem::SetScaleLowHeight() {
-    SetRequestedPosition(m_scaleLowHeight.Get());
-}
-
 void LiftSubsystem::SetScaleMediumHeight() {
     SetRequestedPosition(m_scaleMediumHeight.Get());
 }
@@ -155,14 +151,22 @@ void LiftSubsystem::SetSafeHeight() {
     SetRequestedPosition(m_cubeSafeHeight.Get());
 }
 
-bool LiftSubsystem::IsLiftAboveCubeClearanceHeight() {
+bool LiftSubsystem::IsAboveCubeClearanceHeight() {
     return GetLiftInches() > m_cubeClearanceHeight.Get() - 0.5;
 }
 
-void LiftSubsystem::SetTransitAboveChangeHeight() {
-	SetRequestedPosition(m_transitAboveChangeHeight.Get());
+bool LiftSubsystem::IsAboveChangePoint() {
+    return GetLiftInches() > m_changePoint.Get();
 }
 
-void LiftSubsystem::SetTransitBelowChangeHeight() {
-	SetRequestedPosition(m_transitBelowChangeHeight.Get());
+bool LiftSubsystem::IsScaleMediumHeight() {
+    return abs(GetLiftInches() - m_scaleMediumHeight.Get()) < 0.5;
+}
+
+bool LiftSubsystem::IsScaleHighHeight() {
+    return abs(GetLiftInches() - m_scaleHighHeight.Get()) < 0.5;
+}
+
+bool LiftSubsystem::IsSwitchHeight() {
+    return abs(GetLiftInches() - m_switchHeight.Get()) < 0.5;
 }

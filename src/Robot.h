@@ -64,14 +64,13 @@ public:
 	LiftSubsystem liftSubsystem;
 	IntakeSubsystem intakeSystem;
 	ScorerSubsystem scorerSubsystem;
-    COREConstant<double> m_chainBarIntakeAngle, m_chainBarSwitchAngle, m_chainBarUpAngle, m_chainBarFeederAngle,
-            m_liftLowScalePosition, m_liftMidScalePosition, m_liftHighScalePosition;
+
+    SuperStructure superStructure;
 
     DriveForwardAuton driveForwardAuton;
     TestPathAuton testAuton;
 	SideAuton sideAuton;
     CenterAuton centerAuton;
-    SuperStructure superStructure;
 
     GameDataParser gameDataParser;
 };

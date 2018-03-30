@@ -16,12 +16,12 @@ void SuperStructure::robotInitTask() {
 
 void SuperStructure::teleopInitTask() {
     m_grabCubeState = GrabCubeState::WAITING_FOR_CUBE;
+    m_cubeTimerStarted = false;
     m_wantedState = WantedState::MANUAL;
     m_systemState = SystemState::TRANSIT;
 }
 
 void SuperStructure::postLoopTask() {
-    CORELog::logInfo("System State: " + to_string((int)m_systemState));
     SystemState newState = m_systemState;
     switch (m_systemState) {
         case SystemState::TRANSIT:
@@ -106,7 +106,9 @@ SuperStructure::SystemState SuperStructure::handleTransit() {
         case WantedState::WANT_TO_SCORE_ON_SWITCH:
             m_chainBarSubsytem->SetForwardScore();
             m_liftSubsystem->SetSwitchHeight();
-            m_scorerSubsystem->closeScorer();
+            if(m_scorerSubsystem->cubeInScorer()) {
+                m_scorerSubsystem->closeScorer();
+            }
             reachedTarget = m_liftSubsystem->IsSwitchHeight();
             break;
         case WantedState::WANT_TO_GET_FROM_FEEDER: //TODO: I'm lazy. Make this more like above cases
@@ -130,6 +132,7 @@ SuperStructure::SystemState SuperStructure::handleTransit() {
         case WantedState::WANT_TO_PICKUP_CUBE:
             if(reachedTarget) {
                 m_grabCubeState = GrabCubeState::WAITING_FOR_CUBE;
+                m_cubeTimerStarted = false;
                 return SystemState::GRABBING_CUBE;
             } else {
                 return SystemState::TRANSIT;
@@ -176,7 +179,13 @@ SuperStructure::SystemState SuperStructure::handleGrabbingCube() {
         case GrabCubeState::WAITING_FOR_CUBE:
             m_liftSubsystem->SetSafeHeight(); //Set lift position to clearance height above cube
             m_scorerSubsystem->openScorer();
-            if (m_scorerSubsystem->cubeInScorer()) {
+            if (m_scorerSubsystem->cubeInScorer() && !m_cubeTimerStarted) {
+                m_cubeTimer.Reset();
+                m_cubeTimer.Start();
+                m_cubeTimerStarted = true;
+            }
+            if(m_cubeTimerStarted && m_cubeTimer.Get() > 0.5) {
+                m_cubeTimerStarted = false;
                 m_timeoutTimer.Reset();
                 m_timeoutTimer.Start();
                 m_grabCubeState = GrabCubeState::MOVING_DOWN_TO_CUBE;
@@ -227,7 +236,7 @@ SuperStructure::SystemState SuperStructure::handleSwitchScoring() {
         case WantedState::WANT_TO_SCORE_ON_SWITCH:
             return SystemState::SWITCH_SCORING;
         default:
-            SystemState::TRANSIT;
+            return SystemState::TRANSIT;
     }
 }
 
@@ -245,7 +254,7 @@ SuperStructure::SystemState SuperStructure::handleScaleScoring() {
         case WantedState::WANT_TO_SCORE_ON_SCALE:
             return SystemState::SCALE_SCORING;
         default:
-            SystemState::TRANSIT;
+            return SystemState::TRANSIT;
     }
 }
 
@@ -263,7 +272,7 @@ SuperStructure::SystemState SuperStructure::handleBehindScaleScoring() {
         case WantedState::WANT_TO_SCORE_ON_SCALE_BEHIND:
             return SystemState::SCALE_BEHIND_SCORING;
         default:
-            SystemState::TRANSIT;
+            return SystemState::TRANSIT;
     }
 }
 
@@ -274,7 +283,7 @@ SuperStructure::SystemState SuperStructure::handleFeeder() {
         case WantedState::WANT_TO_GET_FROM_FEEDER:
             return SystemState::FEEDER;
         default:
-            SystemState::TRANSIT;
+            return SystemState::TRANSIT;
     }
 }
 
@@ -284,6 +293,6 @@ SuperStructure::SystemState SuperStructure::handleStraightUp(){
         case WantedState::WANT_TO_BE_STRAIGHT_UP:
             return SystemState::STRAIGHT_UP;
         default:
-            SystemState::TRANSIT;
+            return SystemState::TRANSIT;
     }
 }

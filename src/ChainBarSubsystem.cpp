@@ -221,7 +221,7 @@ void ChainBarSubsystem::postLoopTask() {
         m_rotationMotor.Set(ControlMode::PercentOutput, m_requestedRotationSpeed);
     } else {
         double rotationAngle = min(max(m_requestedRotationAngle, maxDown), maxUp);
-        m_rotationMotor.Set(ControlMode::MotionMagic, rotationAngle * 4096.0 / 360);
+        m_rotationMotor.Set(ControlMode::MotionMagic, (rotationAngle) * 4096.0 / 360);
 
     }
 

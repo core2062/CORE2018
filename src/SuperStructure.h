@@ -73,4 +73,6 @@ private:
     COREConstant<double> m_transitTransitionTimeout, m_grabCubeTimeout;
 
     CORETimer m_timeoutTimer;
+    CORETimer m_cubeTimer;
+    bool m_cubeTimerStarted;
 };

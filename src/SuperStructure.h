@@ -68,7 +68,7 @@ private:
 
     LiftSubsystem * m_liftSubsystem;
     ScorerSubsystem * m_scorerSubsystem;
-    ChainBarSubsystem * m_chainBarSubsytem;
+    ChainBarSubsystem * m_chainBarSubsystem;
 
     COREConstant<double> m_transitTransitionTimeout, m_grabCubeTimeout;
 

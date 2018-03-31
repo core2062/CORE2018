@@ -101,10 +101,9 @@ void LiftSubsystem::postLoopTask() {
         }
         SetRequestedPosition(liftPosition);
         CORE2018::GetInstance()->superStructure.setWantedState(WantedState::MANUAL);
-    } else {
-        m_rightMotor.Set(ControlMode::MotionMagic, m_requestedPosition);
-        //m_rightMotor.Set(ControlMode::PercentOutput, 0);
     }
+
+    double liftRequestedPosition = m_requestedPosition;
 
     if (m_requestedSpeed > 0 && liftPosition > m_topLimit.Get()) {
         m_requestedSpeed = 0;
@@ -117,11 +116,22 @@ void LiftSubsystem::postLoopTask() {
             SetRequestedPosition(0);
         }
         resetEncoder();
+    } else if (m_requestedPosition < m_changePoint.Get()
+               && CORE2018::GetInstance()->chainBarSubsystem.IsChainBarAboveUpperTopLimit()) {
+        if(GetLiftInches() < m_changePoint.Get()) {
+            m_requestedSpeed = 0;
+            m_rightMotor.Set(ControlMode::PercentOutput, 0);
+        }
+        liftRequestedPosition = m_changePoint.Get() * m_ticksPerInch.Get();
+        CORE2018::GetInstance()->chainBarSubsystem.SetChainBarRequestedAngle(-10);
     }
 
     if (m_requestedSpeed < -0.01 || m_requestedSpeed > 0.1) {
         m_rightMotor.Set(ControlMode::PercentOutput, m_requestedSpeed);
+    } else {
+        m_rightMotor.Set(ControlMode::MotionMagic, liftRequestedPosition);
     }
+
 
     m_requestedSpeed = 0;
     SmartDashboard::PutNumber("Lift Inches", liftPosition);

@@ -32,11 +32,12 @@ public:
     void SetFeeder();
 
     bool IsIntakePosition();
+    bool IsStraightUp();
+    bool IsChainBarAboveUpperTopLimit();
 
 private:
 	TalonSRX m_chainBarMotor, m_rotationMotor;
 	COREConstant<double> m_chainBarLowerTopLimit, m_chainBarUpperTopLimit, m_chainBarBottomLimit;
-    COREConstant<double> m_liftChangePoint;
     COREConstant<double> m_rotationTopLimit, m_rotationBottomLimit;
     COREConstant<double> m_forwardChainBarScoringAngle, m_backwardChainBarScoringAngle;
     COREConstant<double> m_forwardRotationScoringAngle, m_backwardRotationScoringAngle;
@@ -48,7 +49,6 @@ private:
 
     COREConstant<int> m_chainBarCruiseVel, m_chainBarMaxAcel;
 	COREConstant<int> m_rotationCruiseVel, m_rotationMaxAcel;
-	COREPID m_rotationPID;
 	double m_requestedChainBarAngle, m_requestedChainBarSpeed;
     double m_requestedRotationAngle, m_requestedRotationSpeed;
 

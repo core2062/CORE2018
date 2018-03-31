@@ -23,7 +23,6 @@ public:
 
     void SetScaleHighHeight();
     void SetScaleMediumHeight();
-    void SetScaleLowHeight();
     void SetSwitchHeight();
     void SetCubeClearanceHeight();
     void SetSafeHeight();
@@ -35,7 +34,6 @@ public:
 
     bool IsAboveCubeClearanceHeight();
     bool IsAboveChangePoint();
-    bool IsScaleLowHeight();
     bool IsScaleMediumHeight();
     bool IsScaleHighHeight();
     bool IsSwitchHeight();

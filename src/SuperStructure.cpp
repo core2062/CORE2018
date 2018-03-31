@@ -10,7 +10,7 @@ SuperStructure::SuperStructure():
 
 void SuperStructure::robotInitTask() {
     m_liftSubsystem = &CORE2018::GetInstance()->liftSubsystem;
-    m_chainBarSubsytem = &CORE2018::GetInstance()->chainBarSubsystem;
+    m_chainBarSubsystem = &CORE2018::GetInstance()->chainBarSubsystem;
     m_scorerSubsystem = &CORE2018::GetInstance()->scorerSubsystem;
 }
 
@@ -19,6 +19,8 @@ void SuperStructure::teleopInitTask() {
     m_cubeTimerStarted = false;
     m_wantedState = WantedState::MANUAL;
     m_systemState = SystemState::TRANSIT;
+    m_timeoutTimer.Reset();
+    m_timeoutTimer.Start();
 }
 
 void SuperStructure::postLoopTask() {
@@ -70,13 +72,13 @@ SuperStructure::SystemState SuperStructure::handleTransit() {
     bool reachedTarget = false;
     switch (m_wantedState) {
         case WantedState::WANT_TO_PICKUP_CUBE:
-            m_chainBarSubsytem->SetIntakePosition();
+            m_chainBarSubsystem->SetIntakePosition();
             m_liftSubsystem->SetSafeHeight();
             m_scorerSubsystem->openScorer();
-            reachedTarget = m_chainBarSubsytem->IsIntakePosition();
+            reachedTarget = m_chainBarSubsystem->IsIntakePosition();
             break;
         case WantedState::WANT_TO_SCORE_ON_SCALE:
-            m_chainBarSubsytem->SetForwardScore();
+            m_chainBarSubsystem->SetForwardScore();
             m_scorerSubsystem->closeScorer();
             switch (m_wantedScaleScoreHeight) {
                 case WantedScaleScoreHeight::HIGH_SCALE:
@@ -90,7 +92,7 @@ SuperStructure::SystemState SuperStructure::handleTransit() {
             }
             break;
         case WantedState::WANT_TO_SCORE_ON_SCALE_BEHIND:
-            m_chainBarSubsytem->SetBehindScore();
+            m_chainBarSubsystem->SetBehindScore();
             m_scorerSubsystem->closeScorer();
             switch (m_wantedScaleScoreHeight) {
                 case WantedScaleScoreHeight::HIGH_SCALE:
@@ -104,7 +106,7 @@ SuperStructure::SystemState SuperStructure::handleTransit() {
             }
             break;
         case WantedState::WANT_TO_SCORE_ON_SWITCH:
-            m_chainBarSubsytem->SetForwardScore();
+            m_chainBarSubsystem->SetForwardScore();
             m_liftSubsystem->SetSwitchHeight();
             if(m_scorerSubsystem->cubeInScorer()) {
                 m_scorerSubsystem->closeScorer();
@@ -112,14 +114,14 @@ SuperStructure::SystemState SuperStructure::handleTransit() {
             reachedTarget = m_liftSubsystem->IsSwitchHeight();
             break;
         case WantedState::WANT_TO_GET_FROM_FEEDER: //TODO: I'm lazy. Make this more like above cases
-            m_chainBarSubsytem->SetFeeder();
+            m_chainBarSubsystem->SetFeeder();
             m_liftSubsystem->SetRequestedPosition(0);
             m_scorerSubsystem->openScorer();
             reachedTarget = m_liftSubsystem->liftDown();
             break;
         case WantedState::WANT_TO_BE_STRAIGHT_UP:
-            m_chainBarSubsytem->SetStraightUp();
-            reachedTarget = true; //TODO: There should probably be a condition here
+            m_chainBarSubsystem->SetStraightUp();
+            reachedTarget = m_chainBarSubsystem->IsStraightUp();; //TODO: There should probably be a condition here
             break;
         case WantedState::MANUAL:
             break;
@@ -174,7 +176,7 @@ SuperStructure::SystemState SuperStructure::handleTransit() {
 }
 
 SuperStructure::SystemState SuperStructure::handleGrabbingCube() {
-    m_chainBarSubsytem->SetIntakePosition(); //Set chain bar + rotation to correct angles
+    m_chainBarSubsystem->SetIntakePosition(); //Set chain bar + rotation to correct angles
     switch (m_grabCubeState) {
         case GrabCubeState::WAITING_FOR_CUBE:
             m_liftSubsystem->SetSafeHeight(); //Set lift position to clearance height above cube
@@ -231,7 +233,7 @@ SuperStructure::SystemState SuperStructure::handleGrabbingCube() {
 
 SuperStructure::SystemState SuperStructure::handleSwitchScoring() {
     m_liftSubsystem->SetSwitchHeight();
-    m_chainBarSubsytem->SetForwardScore();
+    m_chainBarSubsystem->SetForwardScore();
     switch (m_wantedState) {
         case WantedState::WANT_TO_SCORE_ON_SWITCH:
             return SystemState::SWITCH_SCORING;
@@ -249,7 +251,7 @@ SuperStructure::SystemState SuperStructure::handleScaleScoring() {
             m_liftSubsystem->SetScaleMediumHeight();
             break;
     }
-    m_chainBarSubsytem->SetForwardScore();
+    m_chainBarSubsystem->SetForwardScore();
     switch (m_wantedState) {
         case WantedState::WANT_TO_SCORE_ON_SCALE:
             return SystemState::SCALE_SCORING;
@@ -267,7 +269,7 @@ SuperStructure::SystemState SuperStructure::handleBehindScaleScoring() {
             m_liftSubsystem->SetScaleMediumHeight();
             break;
     }
-    m_chainBarSubsytem->SetBehindScore();
+    m_chainBarSubsystem->SetBehindScore();
     switch (m_wantedState) {
         case WantedState::WANT_TO_SCORE_ON_SCALE_BEHIND:
             return SystemState::SCALE_BEHIND_SCORING;
@@ -278,7 +280,7 @@ SuperStructure::SystemState SuperStructure::handleBehindScaleScoring() {
 
 SuperStructure::SystemState SuperStructure::handleFeeder() {
     m_liftSubsystem->SetRequestedPosition(0); //TODO: I'm still lazy. Make this more like above cases
-    m_chainBarSubsytem->SetFeeder();
+    m_chainBarSubsystem->SetFeeder();
     switch (m_wantedState) {
         case WantedState::WANT_TO_GET_FROM_FEEDER:
             return SystemState::FEEDER;
@@ -288,7 +290,7 @@ SuperStructure::SystemState SuperStructure::handleFeeder() {
 }
 
 SuperStructure::SystemState SuperStructure::handleStraightUp(){
-    m_chainBarSubsytem->SetStraightUp();
+    m_chainBarSubsystem->SetStraightUp();
     switch (m_wantedState) {
         case WantedState::WANT_TO_BE_STRAIGHT_UP:
             return SystemState::STRAIGHT_UP;

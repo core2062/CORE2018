@@ -67,7 +67,7 @@ void LiftSubsystem::resetEncoder() {
 void LiftSubsystem::SetRequestedPosition(double positionInInches) {
     auto position = (int)(positionInInches * m_ticksPerInch.Get());
     position = max(position, 0);
-    position = min(position, m_topLimit.Get());
+    position = min(position, (int)(m_topLimit.Get() * m_ticksPerInch.Get()));
     m_requestedPosition = position;
 }
 
@@ -107,23 +107,25 @@ void LiftSubsystem::postLoopTask() {
 
     if (m_requestedSpeed > 0 && liftPosition > m_topLimit.Get()) {
         m_requestedSpeed = 0;
-        m_rightMotor.Set(ControlMode::PercentOutput, 0);
         SetRequestedPosition(m_topLimit.Get());
     } else if (liftDown()) {
         if(m_requestedSpeed < 0) {
             m_requestedSpeed = 0;
-            m_rightMotor.Set(ControlMode::PercentOutput, 0);
             SetRequestedPosition(0);
         }
         resetEncoder();
-    } else if (m_requestedPosition < m_changePoint.Get()
-               && CORE2018::GetInstance()->chainBarSubsystem.IsChainBarAboveUpperTopLimit()) {
-        if(GetLiftInches() < m_changePoint.Get()) {
-            m_requestedSpeed = 0;
-            m_rightMotor.Set(ControlMode::PercentOutput, 0);
+    }
+
+    if ((m_requestedPosition / m_ticksPerInch.Get()) < m_changePoint.Get() && GetLiftInches() >  m_changePoint.Get()) {
+        if (CORE2018::GetInstance()->chainBarSubsystem.IsChainBarAboveLowerTopLimit()) {
+            if (GetLiftInches() < m_changePoint.Get()) {
+                m_requestedSpeed = 0;
+            }
+            liftRequestedPosition = m_changePoint.Get() * m_ticksPerInch.Get();
+            CORE2018::GetInstance()->chainBarSubsystem.SetChainBarRequestedAngle(-10);
+            CORELog::logInfo("Lift waiting for chain bar");
         }
-        liftRequestedPosition = m_changePoint.Get() * m_ticksPerInch.Get();
-        CORE2018::GetInstance()->chainBarSubsystem.SetChainBarRequestedAngle(-10);
+        CORELog::logInfo("Lift less than change point");
     }
 
     if (m_requestedSpeed < -0.01 || m_requestedSpeed > 0.1) {

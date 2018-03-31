@@ -145,6 +145,7 @@ void ChainBarSubsystem::postLoopTask() {
 
     if(CORE2018::GetInstance()->liftSubsystem.IsAboveChangePoint()) {
         maxUpChainBar = m_chainBarUpperTopLimit.Get();
+        CORELog::logInfo("Above Change Point!");
     }
 
     if (m_requestedChainBarSpeed > 0.01 && GetChainBarAngle() > maxUpChainBar) {
@@ -278,6 +279,10 @@ bool ChainBarSubsystem::IsStraightUp() {
     return abs(GetChainBarAngle() - m_chainBarStraightUpAngle.Get()) < 5;
 }
 
-bool ChainBarSubsystem::IsChainBarAboveUpperTopLimit() {
-    return GetChainBarAngle() > m_chainBarUpperTopLimit.Get();
+bool ChainBarSubsystem::IsChainBarAboveLowerTopLimit() {
+    return GetChainBarAngle() > m_chainBarLowerTopLimit.Get();
+}
+
+bool ChainBarSubsystem::IsForwardScore() {
+    return abs(GetChainBarAngle() - m_forwardChainBarScoringAngle.Get()) < 5;
 }

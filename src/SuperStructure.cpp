@@ -107,11 +107,10 @@ SuperStructure::SystemState SuperStructure::handleTransit() {
             break;
         case WantedState::WANT_TO_SCORE_ON_SWITCH:
             m_chainBarSubsystem->SetForwardScore();
-            m_liftSubsystem->SetSwitchHeight();
             if(m_scorerSubsystem->cubeInScorer()) {
                 m_scorerSubsystem->closeScorer();
             }
-            reachedTarget = m_liftSubsystem->IsSwitchHeight();
+            reachedTarget = m_chainBarSubsystem->IsForwardScore();
             break;
         case WantedState::WANT_TO_GET_FROM_FEEDER: //TODO: I'm lazy. Make this more like above cases
             m_chainBarSubsystem->SetFeeder();
@@ -128,6 +127,9 @@ SuperStructure::SystemState SuperStructure::handleTransit() {
     }
 
     reachedTarget = reachedTarget || m_timeoutTimer.Get() > m_transitTransitionTimeout.Get();
+
+    CORELog::logInfo("Wanted State: " + to_string((int)m_wantedState) + " System State: " +
+                             to_string((int)m_systemState) + " Target Reached: " + to_string(reachedTarget));
 
     //State transition
     switch (m_wantedState) {
@@ -221,8 +223,7 @@ SuperStructure::SystemState SuperStructure::handleGrabbingCube() {
             //May want to set state to straight up here if in cube safe hieght with cube
             return SystemState::GRABBING_CUBE;
         default:
-            if (m_grabCubeState == GrabCubeState::CUBE_CLEARANCE_HEIGHT
-                || m_grabCubeState == GrabCubeState::WAITING_FOR_CUBE) {
+            if (m_grabCubeState == GrabCubeState::CUBE_CLEARANCE_HEIGHT) {
                 return SystemState::TRANSIT;
             } else {
                 m_grabCubeState = GrabCubeState::MOVING_UP_TO_CUBE_CLEARANCE;

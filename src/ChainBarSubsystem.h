@@ -33,7 +33,8 @@ public:
 
     bool IsIntakePosition();
     bool IsStraightUp();
-    bool IsChainBarAboveUpperTopLimit();
+    bool IsChainBarAboveLowerTopLimit();
+    bool IsForwardScore();
 
 private:
 	TalonSRX m_chainBarMotor, m_rotationMotor;

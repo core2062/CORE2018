@@ -214,8 +214,6 @@ double DriveSubsystem::getGyroYaw(bool raw) {
 	        return toDegrees(m_theta - m_thetaOffset);
 	    }
 	}
-
-    }
 }
 
 void DriveSubsystem::startPath(Path path, bool reversed, double maxAccel, double maxAngAccel,

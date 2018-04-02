@@ -82,13 +82,13 @@ void ChainBarSubsystem::teleopInit() {
         m_rotationOffset.Set(GetRotationAngle(true));
     }
 
+    SetChainBarRequestedAngle(GetChainBarAngle());
+    SetChainBarRequestedSpeed(0);
+
     if(SmartDashboard::GetBoolean("Zero Chain Bar", false)) {
         SmartDashboard::PutBoolean("Zero Chain Bar", false);
         m_chainBarOffset.Set(GetChainBarAngle(true));
     }
-
-    SetChainBarRequestedAngle(GetChainBarAngle());
-    SetChainBarRequestedSpeed(0);
 
     SetRotationRequestedAngle(GetRotationAngle());
     SetRotationSpeed(0);
@@ -169,8 +169,8 @@ void ChainBarSubsystem::postLoopTask() {
     if (abs(m_requestedChainBarSpeed) > 0.01) {
         SetChainBarRequestedAngle(GetChainBarAngle());
     } else {
-        double chainBarAngle = min(max(m_requestedChainBarAngle, maxDownChainBar), maxUpChainBar);
-        m_chainBarMotor.Set(ControlMode::MotionMagic, chainBarAngle * 4096.0 / 360);
+        double chainBarAngle = min(max(m_requestedChainBarAngle - m_chainBarOffset.Get(), maxDownChainBar), maxUpChainBar);
+        m_chainBarMotor.Set(ControlMode::MotionMagic, (chainBarAngle * 4096.0 / 360));
     }
 
     if (abs(m_requestedChainBarSpeed) > 0.01) {
@@ -239,7 +239,7 @@ void ChainBarSubsystem::postLoopTask() {
     if (abs(m_requestedRotationSpeed) > 0.01) {
         m_rotationMotor.Set(ControlMode::PercentOutput, m_requestedRotationSpeed);
     } else {
-        double rotationAngle = min(max(m_requestedRotationAngle, maxDownRotation), maxUpRotation);
+        double rotationAngle = min(max(m_requestedRotationAngle - m_rotationOffset.Get(), maxDownRotation), maxUpRotation);
         m_rotationMotor.Set(ControlMode::MotionMagic, rotationAngle * 4096.0 / 360);
 
     }

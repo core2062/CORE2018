@@ -189,10 +189,31 @@ void DriveSubsystem::resetYaw() {
 }
 
 double DriveSubsystem::getGyroYaw(bool raw) {
-    if (raw) {
-        return m_gyro->GetYaw();
-    } else {
-        return m_gyro->GetYaw() + toDegrees(m_thetaOffset) - m_gyroOffset;
+	try {
+        if (m_gyro->IsConnected()) {
+            if (raw) {
+            	if (m_theta > M_PI) {
+            		m_theta -= M_PI;
+            		m_theta = -m_theta;
+            	}
+            	double trueAngle = (m_gyro->GetYaw() + toDegrees(m_theta)) * 0.5;
+                return trueAngle;
+            } else {
+                return (m_gyro->GetYaw() + toDegrees(m_theta - m_thetaOffset) - m_gyroOffset) * 0.5;
+            }
+        }
+	} catch (std::exception ex) {
+		CORELog::logError("Error initializing gyro: " + string(ex.what()));
+	    if (raw) {
+	    	if (m_theta > M_PI) {
+	    		m_theta -= M_PI;
+	    		m_theta = -m_theta;
+	    		return toDegrees(m_theta);
+	    	}
+	    } else {
+	        return toDegrees(m_theta - m_thetaOffset);
+	    }
+	}
 
     }
 }

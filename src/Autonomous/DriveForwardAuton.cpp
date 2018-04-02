@@ -1,6 +1,7 @@
 
 #include "DriveForwardAuton.h"
 #include <Robot.h>
+#include "DriveDistanceAction.h"
 
 DriveForwardAuton::DriveForwardAuton() :
 	COREAuton("Drive Forward No Encoders") {
@@ -8,6 +9,5 @@ DriveForwardAuton::DriveForwardAuton() :
 
 void DriveForwardAuton::addNodes() {
     addFirstNode(m_moveForward);
-    m_moveForward = new Node(5, new DriveWaypointAction(
-            CORE2018::GetInstance()->gameDataParser.LoadPath(sidePath::DRIVE_FORWARD, false)));
+    m_moveForward = new Node(5, new DriveDistanceAction());
 }

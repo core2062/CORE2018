@@ -8,4 +8,7 @@ public:
 	void actionInit() override;
 	actionStatus action() override;
 	void actionEnd() override;
+private:
+	CORETimer timer;
+
 };

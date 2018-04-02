@@ -29,7 +29,6 @@ public:
 	void startPath(Path path, bool reversed, double maxAccel, double maxAngAccel,
                    double tolerance, bool gradualStop, double lookahead);
 	void resetTracker(Position2d initialPos);
-	Path m_path;
 	AdaptivePursuit m_pursuit;
 	COREVector path;
 	CORESwerve* m_swerveDrive;

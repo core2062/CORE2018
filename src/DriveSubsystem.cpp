@@ -3,7 +3,7 @@
 #include "Robot.h"
 
 DriveSubsystem::DriveSubsystem() :
-        m_pursuit(0, 0, 0, .1, m_path, false, 0),
+        m_pursuit(0, 0, 0, .1, Path(), false, 0),
         m_steerPID_P("Steer PID P"),
         m_steerPID_I("Steer PID I"),
         m_steerPID_D("Steer PID D"),

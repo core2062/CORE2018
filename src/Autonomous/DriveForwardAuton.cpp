@@ -1,7 +1,7 @@
 
 #include "DriveForwardAuton.h"
 #include <Robot.h>
-#include "DriveDistanceAction.h"
+#include "Action/DriveDistanceAction.h"
 
 DriveForwardAuton::DriveForwardAuton() :
 	COREAuton("Drive Forward No Encoders") {

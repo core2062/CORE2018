@@ -25,13 +25,13 @@ void GameDataParser::robotInitTask() {
 	m_cubePlacementChooser->AddObject("1 Scale", SCALE1);
 	m_cubePlacementChooser->AddObject("1 Switch, 1 Scale", SWITCH1SCALE1);
 	m_cubePlacementChooser->AddObject("1 Switch, 2 Scale", SWITCH1SCALE2);
-	SmartDashboard::PutData(m_cubePlacementChooser);
+	SmartDashboard::PutData("Cube Placement", m_cubePlacementChooser);
 
 	m_startingPositonChooser = new SendableChooser<startingPosition>();
 	m_startingPositonChooser->AddDefault("Right Side", RIGHT_SIDE);
 	m_startingPositonChooser->AddObject("Center", CENTER);
 	m_startingPositonChooser->AddObject("Left Side", LEFT_SIDE);
-	SmartDashboard::PutData(m_startingPositonChooser);
+	SmartDashboard::PutData("Starting Position", m_startingPositonChooser);
 }
 
 startingPosition GameDataParser::GetStartingPosition() {

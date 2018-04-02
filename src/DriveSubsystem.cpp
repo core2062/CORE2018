@@ -20,7 +20,7 @@ DriveSubsystem::DriveSubsystem() :
         m_frontLeftModule(new CORESwerve::SwerveModule(&m_frontLeftDriveMotor, &m_frontLeftSteerMotor)),
         m_backRightModule(new CORESwerve::SwerveModule(&m_backRightDriveMotor, &m_backRightSteerMotor)),
         m_backLeftModule(new CORESwerve::SwerveModule(&m_backLeftDriveMotor, &m_backLeftSteerMotor)) {
-    m_swerveDrive = new CORESwerve(m_wheelbase, m_trackwidth, 3.0, 4915.2, m_frontLeftModule, m_backLeftModule,
+    m_swerveDrive = new CORESwerve(m_wheelbase, m_trackwidth, 2.95, 4915.2, m_frontLeftModule, m_backLeftModule,
                                    m_backRightModule, m_frontRightModule);
 
     try {
@@ -189,31 +189,12 @@ void DriveSubsystem::resetYaw() {
 }
 
 double DriveSubsystem::getGyroYaw(bool raw) {
-	try {
-        if (m_gyro->IsConnected()) {
-            if (raw) {
-            	if (m_theta > M_PI) {
-            		m_theta -= M_PI;
-            		m_theta = -m_theta;
-            	}
-            	double trueAngle = (m_gyro->GetYaw() + m_theta) * 0.5;
-                return trueAngle;
-            } else {
-                return (m_gyro->GetYaw() + m_theta - m_thetaOffset - m_gyroOffset) * 0.5;
-            }
-        }
-	} catch (std::exception ex) {
-		CORELog::logError("Error initializing gyro: " + string(ex.what()));
-	    if (raw) {
-	    	if (m_theta > M_PI) {
-	    		m_theta -= M_PI;
-	    		m_theta = -m_theta;
-	    	}
-	    } else {
-	        return m_theta - m_thetaOffset;
-	    }
-	}
+    if (raw) {
+        return m_gyro->GetYaw();
+    } else {
+        return m_gyro->GetYaw() + toDegrees(m_thetaOffset) - m_gyroOffset;
 
+    }
 }
 
 void DriveSubsystem::startPath(Path path, bool reversed, double maxAccel, double maxAngAccel,

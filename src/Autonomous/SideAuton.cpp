@@ -2,15 +2,17 @@
 #include "Robot.h"
 
 SideAuton::SideAuton() : COREAuton("Side Auton") {
-    m_moveToSwitch = new Node(5, new StateAction(WantedState::WANT_TO_SCORE_ON_SWITCH));
-	m_dropCube = new Node(1, new ScorerAction(scorerAction::OPEN));
-	m_moveToScale = new Node(5, new StateAction(WantedState::WANT_TO_SCORE_ON_SCALE_BEHIND));
-    m_raiseToScale = new Node(1, new StateAction(WantedState::WANT_TO_SCORE_ON_SCALE_BEHIND));
-    m_intakeCube = new Node(5, new StateAction(WantedState::WANT_TO_PICKUP_CUBE), new IntakeAction(intakeAction::WIDE_RANGE_INTAKE));
-    m_driveForward = new Node(5);
+
 }
 
 void SideAuton::addNodes() {
+    m_moveToSwitch = new Node(14, new StateAction(WantedState::WANT_TO_SCORE_ON_SWITCH));
+    m_dropCube = new Node(2, new ScorerAction(scorerAction::OPEN));
+    m_moveToScale = new Node(5, new StateAction(WantedState::WANT_TO_SCORE_ON_SCALE_BEHIND));
+    m_raiseToScale = new Node(1, new StateAction(WantedState::WANT_TO_SCORE_ON_SCALE_BEHIND));
+    m_intakeCube = new Node(5, new StateAction(WantedState::WANT_TO_PICKUP_CUBE), new IntakeAction(intakeAction::WIDE_RANGE_INTAKE));
+    m_driveForward = new Node(5);
+
     if(CORE2018::GetInstance()->gameDataParser.GetStartingPosition() == RIGHT_SIDE) {
         CORE2018::GetInstance()->driveSubsystem.resetTracker(Position2d(Translation2d(97, 19),
                                                                         Rotation2d::fromRadians(-PI / 2)));
@@ -29,6 +31,7 @@ void SideAuton::addNodes() {
             driveAction = new DriveWaypointAction(CORE2018::GetInstance()->
                     gameDataParser.LoadPath(sidePath::DRIVE_FORWARD, flip));
             m_driveForward->addAction(driveAction);
+            m_driveForward->addNext(m_dropCube);
         }
             break;
         case SWITCH1: {

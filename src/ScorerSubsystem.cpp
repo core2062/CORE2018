@@ -16,6 +16,10 @@ void ScorerSubsystem::teleopInit() {
 
 }
 
+void ScorerSubsystem::autonInitTask() {
+    closeScorer();
+}
+
 void ScorerSubsystem::teleop() {
 	if (operatorJoystick->getRisingEdge(COREJoystick::JoystickButton::RIGHT_TRIGGER)) {
         if(m_scorerClosed) {
@@ -29,13 +33,10 @@ void ScorerSubsystem::teleop() {
 
 void ScorerSubsystem::closeScorer() {
 	m_scorerSolenoid.Set(DoubleSolenoid::kReverse);
-    CORELog::logInfo("Closing");
 }
 
 void ScorerSubsystem::openScorer() {
 	m_scorerSolenoid.Set(DoubleSolenoid::kForward);
-    CORELog::logInfo("Opening");
-
 }
 
 bool ScorerSubsystem::cubeInScorer() {

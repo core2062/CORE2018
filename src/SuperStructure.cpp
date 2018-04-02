@@ -292,6 +292,7 @@ SuperStructure::SystemState SuperStructure::handleFeeder() {
 
 SuperStructure::SystemState SuperStructure::handleStraightUp(){
     m_chainBarSubsystem->SetStraightUp();
+    m_liftSubsystem->SetRequestedPosition(0);
     switch (m_wantedState) {
         case WantedState::WANT_TO_BE_STRAIGHT_UP:
             return SystemState::STRAIGHT_UP;

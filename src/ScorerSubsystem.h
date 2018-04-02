@@ -7,12 +7,13 @@
 
 using namespace CORE;
 
-class ScorerSubsystem  : public CORESubsystem {
+class ScorerSubsystem : public CORESubsystem, public CORETask {
 public:
 	ScorerSubsystem();
 	void robotInit() override;
 	void teleopInit() override;
 	void teleop() override;
+	void autonInitTask() override;
 	void closeScorer();
 	void openScorer();
 	bool cubeInScorer();

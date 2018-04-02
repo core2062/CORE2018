@@ -15,7 +15,7 @@ void GameDataParser::autonInitTask() {
 	CORELog::logInfo("Game Orientation: " + gameOrientation);
 }
 
-side GameDataParser::getGameOrientation() {
+orientation GameDataParser::getGameOrientation() {
 	return m_parsedGameOrientation;
 }
 
@@ -34,15 +34,15 @@ void GameDataParser::robotInitTask() {
 	SmartDashboard::PutData(m_startingPositonChooser);
 }
 
-startingPosition GameDataParser::getStartingPosition() {
+startingPosition GameDataParser::GetStartingPosition() {
 	return m_startingPositonChooser->GetSelected();
 }
 
-cubePlacement GameDataParser::getCubePlacement() {
+cubePlacement GameDataParser::GetCubePlacement() {
 	return m_cubePlacementChooser->GetSelected();
 }
 
-Path GameDataParser::loadPath(sidePath pathName, bool flip) {
+Path GameDataParser::LoadPath(sidePath pathName, bool flip) {
 	string fileName;
 	switch(pathName) {
 		case sidePath::DRIVE_FORWARD:
@@ -67,60 +67,88 @@ Path GameDataParser::loadPath(sidePath pathName, bool flip) {
 			fileName = "sideSwitchToOppositeScale.json";
 			break;
 	}
-	return PathLoader::loadPath(fileName, flip);
+	return Path::fromFile(fileName, flip);
 }
 
-Path GameDataParser::loadPath(centerPath pathName, bool flip) {
+Path GameDataParser::LoadPath(centerPath pathName, bool flip) {
 	string fileName;
 	switch(pathName) {
 		case centerPath::DRIVE_FORWARD:
 			fileName = "centerDriveForward.json";
 			break;
-		case centerPath::WALL_TO_SWITCH:
-			fileName = "centerWallToSwitch.json";
+		case centerPath::WALL_TO_LEFT_SWITCH:
+			fileName = "centerWallToLeftSwitch.json";
 			break;
-
-	}
-	return PathLoader::loadPath(fileName, flip);
+        case centerPath::WALL_TO_RIGHT_SWITCH:
+            fileName = "centerWallToRightSwitch.json";
+            break;
+    }
+	return Path::fromFile(fileName, flip);
 }
 
-Path GameDataParser::getWallToSwitchPath() {
+Path GameDataParser::GetWallToSwitchPath() {
 	Path path;
-	if(getStartingPosition() == RIGHT_SIDE) {
-		if(getGameOrientation() == RR || getGameOrientation() == RL) {
-			path = loadPath(sidePath::WALL_TO_SWITCH, false);
-		} else {
-			path = loadPath(sidePath::WALL_TO_OPPOSITE_SWITCH, false);
-		}
-	} else if(getStartingPosition() == LEFT_SIDE) {
-		if(getGameOrientation() == LL || getGameOrientation() == LR) {
-			path = loadPath(sidePath::WALL_TO_SWITCH, true);
-		} else {
-			path = loadPath(sidePath::WALL_TO_OPPOSITE_SWITCH, true);
-		}
-	} else {
-		path = loadPath(centerPath::WALL_TO_SWITCH, !(getGameOrientation() == RR || getGameOrientation() == RL));
-	}
+    switch (GetStartingPosition()) {
+        case RIGHT_SIDE:
+            if(IsSwitchRight()) {
+                path = LoadPath(sidePath::WALL_TO_SWITCH, false);
+            } else {
+                path = LoadPath(sidePath::WALL_TO_OPPOSITE_SWITCH, false);
+            }
+            break;
+        case LEFT_SIDE:
+            if(IsSwitchLeft()) {
+                path = LoadPath(sidePath::WALL_TO_SWITCH, true);
+            } else {
+                path = LoadPath(sidePath::WALL_TO_OPPOSITE_SWITCH, true);
+            }
+            break;
+        case CENTER:
+            if(IsSwitchRight()) {
+                path = LoadPath(centerPath::WALL_TO_RIGHT_SWITCH, false);
+            } else {
+                path = LoadPath(centerPath::WALL_TO_LEFT_SWITCH, false);
+            }
+
+            break;
+    }
 	return path;
 }
-Path GameDataParser::getWallToScalePath() {
+
+Path GameDataParser::GetWallToScalePath() {
     Path path;
-    if(getStartingPosition() == RIGHT_SIDE) {
-        if(getGameOrientation() == RR || getGameOrientation() == RL) {
-            path = loadPath(sidePath::WALL_TO_SCALE, false);
+    if(GetStartingPosition() == RIGHT_SIDE) {
+        if(IsScaleRight()) {
+            path = LoadPath(sidePath::WALL_TO_SCALE, false);
         } else {
-            path = loadPath(sidePath::WALL_TO_OPPOSITE_SCALE, false);
+            path = LoadPath(sidePath::WALL_TO_OPPOSITE_SCALE, false);
         }
-    } else if(getStartingPosition() == LEFT_SIDE) {
-        if(getGameOrientation() == LL || getGameOrientation() == LR) {
-            path = loadPath(sidePath::WALL_TO_SCALE, true);
+    } else if(GetStartingPosition() == LEFT_SIDE) {
+        if(IsScaleLeft()) {
+            path = LoadPath(sidePath::WALL_TO_SCALE, true);
         } else {
-            path = loadPath(sidePath::WALL_TO_OPPOSITE_SCALE, true);
+            path = LoadPath(sidePath::WALL_TO_OPPOSITE_SCALE, true);
         }
     } else {
         //path = loadPath(centerPath::WALL_TO_SWITCH, !(getGameOrientation() == RR || getGameOrientation() == RL));
     }
     return path;
+}
+
+bool GameDataParser::IsSwitchRight() {
+    return (getGameOrientation() == RR || getGameOrientation() == RL);
+}
+
+bool GameDataParser::IsScaleRight() {
+    return (getGameOrientation() == RR || getGameOrientation() == LR);
+}
+
+bool GameDataParser::IsSwitchLeft() {
+    return !IsSwitchRight();
+}
+
+bool GameDataParser::IsScaleLeft() {
+    return !IsScaleRight();
 }
 
 

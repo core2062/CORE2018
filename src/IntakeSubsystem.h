@@ -12,10 +12,12 @@ class IntakeSubsystem : public CORESubsystem {
 
 public:
 	IntakeSubsystem();
-	void robotInit();
-	void teleopInit();
-	void teleop();
-	bool isIntaking();
+	void robotInit() override;
+	void teleopInit() override;
+	void teleop() override;
+	void wideRangeIntake();
+	void smallRangeIntake();
+	void outtakeCube();
 	void setIntakeSpeed(double);
 	void openIntake();
 	void closeIntake();

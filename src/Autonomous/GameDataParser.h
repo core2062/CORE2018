@@ -5,14 +5,20 @@
 
 using namespace CORE;
 
-enum side {
+enum orientation {
 	LL,
 	LR,
 	RL,
 	RR
 };
 
+enum side {
+    LEFT,
+    RIGHT
+};
+
 enum cubePlacement {
+    DRIVE_FORWARD,
     SWITCH1,
     SCALE1,
     SWITCH1SCALE1,
@@ -31,7 +37,8 @@ enum class sidePath {
 
 enum class centerPath {
     DRIVE_FORWARD,
-    WALL_TO_SWITCH
+    WALL_TO_LEFT_SWITCH,
+	WALL_TO_RIGHT_SWITCH
 };
 
 enum startingPosition {
@@ -44,17 +51,20 @@ class GameDataParser : public CORETask {
 public:
     void robotInitTask() override;
     void autonInitTask() override;
-	side getGameOrientation();
-	Path loadPath(sidePath pathName, bool flip);
-    Path loadPath(centerPath pathName, bool flip);
-    startingPosition getStartingPosition();
-    cubePlacement getCubePlacement();
-
-    Path getWallToSwitchPath();
-    Path getWallToScalePath();
+	orientation getGameOrientation();
+    bool IsSwitchRight();
+    bool IsSwitchLeft();
+    bool IsScaleRight();
+    bool IsScaleLeft();
+	Path LoadPath(sidePath pathName, bool flip);
+    Path LoadPath(centerPath pathName, bool flip);
+    startingPosition GetStartingPosition();
+    cubePlacement GetCubePlacement();
+    Path GetWallToSwitchPath();
+    Path GetWallToScalePath();
 
 private:
-	side m_parsedGameOrientation;
+	orientation m_parsedGameOrientation;
     SendableChooser<cubePlacement> *m_cubePlacementChooser;
     SendableChooser<startingPosition> *m_startingPositonChooser;
 };

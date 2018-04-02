@@ -23,14 +23,11 @@ void IntakeSubsystem::teleopInit() {
 
 void IntakeSubsystem::teleop() {
 	if (driverJoystick->getButton(CORE::COREJoystick::JoystickButton::RIGHT_TRIGGER)) { //Wide Range Intake
-		openIntake();
-		setIntakeSpeed(-0.5);
+		wideRangeIntake();
 	} else if (driverJoystick->getButton(CORE::COREJoystick::JoystickButton::RIGHT_BUTTON)) { //Small Range Intake
-		closeIntake();
-		setIntakeSpeed(-0.5);
+		smallRangeIntake();
 	} else if (driverJoystick->getButton(CORE::COREJoystick::JoystickButton::LEFT_BUTTON)) { //Small Range Outtake
-		closeIntake();
-		setIntakeSpeed(1);
+		outtakeCube();
 	} else {
 		setIntakeSpeed(0);
 	}
@@ -47,4 +44,19 @@ void IntakeSubsystem::closeIntake() {
 void IntakeSubsystem::setIntakeSpeed(double intakeMotorPercent) {
 	m_leftIntakeMotor.Set(ControlMode::PercentOutput, intakeMotorPercent);
 	m_rightIntakeMotor.Set(ControlMode::PercentOutput, intakeMotorPercent);
+}
+
+void IntakeSubsystem::wideRangeIntake() {
+	openIntake();
+	setIntakeSpeed(-0.5);
+}
+
+void IntakeSubsystem::smallRangeIntake() {
+	closeIntake();
+	setIntakeSpeed(-0.5);
+}
+
+void IntakeSubsystem::outtakeCube() {
+	closeIntake();
+	setIntakeSpeed(1);
 }

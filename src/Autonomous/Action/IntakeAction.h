@@ -5,23 +5,19 @@
 #include <ScorerSubsystem.h>
 #include "COREUtilities/COREConstant.h"
 
-enum intake {
-	INTAKE,
-	OUTTAKE,
-	CLOSE,
-	OPENINTAKE,
+enum intakeAction {
+	WIDE_RANGE_INTAKE,
+	SMALL_RANGE_INTAKE,
+	OUTTAKE_CUBE,
 	STOP
 };
 class IntakeAction : public COREAutonAction {
 public:
-	IntakeAction();
+	IntakeAction(intakeAction intakeRequestedAction);
 	void actionInit();
 	actionStatus action() override;
 	void actionEnd();
-	bool cubeInScorer();
-	IntakeSubsystem intakeSubsystem;
-	ScorerSubsystem scorerSubsystem;
+
 private:
-	COREConstant<double> m_outtakeSpeed, m_intakeSpeed;
-	intake m_intakeRequestedAction;
+	intakeAction m_intakeRequestedAction;
 };

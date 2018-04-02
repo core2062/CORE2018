@@ -1,53 +1,64 @@
 #include "SideAuton.h"
 #include "Robot.h"
 
-SideAuton::SideAuton() :
-        COREAuton("Side Auton") {
-    m_moveToSwitch = new Node(5, new LiftAction(liftAction::SWITCH));
-	m_outtakeCubeToSwitch = new Node(5, new ScorerAction(scorerAction::OPEN));
-	m_intakeCube = new Node(5, new ScorerAction(scorerAction::CLOSED));
-	m_moveToScale = new Node(5, new LiftAction(liftAction::SCALE));
-//	m_liftUpToScale = new Node(5, new LiftAction(liftAction::SCALE));
-	m_outtakeCubeToScale = new Node(5, new ScorerAction(scorerAction::OPEN));
-	m_driveToCubes = new Node(5, new DriveDistanceAction());
-	m_intakeSecondCube = new Node(5, new ScorerAction(scorerAction::CLOSED));
-	m_driveToScaleSecondTime = new Node(5, new DriveDistanceAction(), new LiftAction(liftAction::SCALE));
-//	m_liftUpToScaleSecondTime = new Node(5, new LiftAction(liftAction::SCALE));
-	m_outtakeSecondCube = new Node(5, new ScorerAction(scorerAction::OPEN));
+SideAuton::SideAuton() : COREAuton("Side Auton") {
+    m_moveToSwitch = new Node(5, new StateAction(WantedState::WANT_TO_SCORE_ON_SWITCH));
+	m_dropCube = new Node(1, new ScorerAction(scorerAction::OPEN));
+	m_moveToScale = new Node(5, new StateAction(WantedState::WANT_TO_SCORE_ON_SCALE_BEHIND));
+    m_raiseToScale = new Node(1, new StateAction(WantedState::WANT_TO_SCORE_ON_SCALE_BEHIND));
+    m_intakeCube = new Node(5, new StateAction(WantedState::WANT_TO_PICKUP_CUBE), new IntakeAction(intakeAction::WIDE_RANGE_INTAKE));
+    m_driveForward = new Node(5);
 }
 
 void SideAuton::addNodes() {
-    if(CORE2018::GetInstance()->gameDataParser.getStartingPosition() == RIGHT_SIDE) {
+    if(CORE2018::GetInstance()->gameDataParser.GetStartingPosition() == RIGHT_SIDE) {
         CORE2018::GetInstance()->driveSubsystem.resetTracker(Position2d(Translation2d(97, 19),
                                                                         Rotation2d::fromRadians(-PI / 2)));
-        CORELog::logInfo("Setting to right side");
+        CORELog::logInfo("Setting robot position to right side");
     } else {
         CORE2018::GetInstance()->driveSubsystem.resetTracker(Position2d(Translation2d(-97, 19),
                                                                         Rotation2d::fromRadians(PI / 2)));
-        CORELog::logInfo("Setting to left side");
+        CORELog::logInfo("Setting robot position to left side");
     }
-	switch (CORE2018::GetInstance()->gameDataParser.getCubePlacement()) {
+
+    DriveWaypointAction* driveAction;
+	switch (CORE2018::GetInstance()->gameDataParser.GetCubePlacement()) {
+        case DRIVE_FORWARD:
+            addFirstNode(m_driveForward);
+            bool flip = CORE2018::GetInstance()->gameDataParser.GetStartingPosition() == LEFT_SIDE;
+            driveAction = new DriveWaypointAction(CORE2018::GetInstance()->
+                    gameDataParser.LoadPath(sidePath::DRIVE_FORWARD, flip));
+            m_driveForward->addAction(driveAction);
         case SWITCH1:
-            addFirstNode(m_intakeCube);
-            m_intakeCube->addNext(m_moveToSwitch);
-            m_moveToSwitch->addAction(
-                    new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.getWallToSwitchPath()));
-            m_moveToSwitch->addNext(m_outtakeCubeToSwitch);
+            addFirstNode(m_moveToSwitch);
+            driveAction = new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.GetWallToSwitchPath());
+            m_moveToSwitch->addAction(driveAction);
+            m_moveToSwitch->addNext(m_dropCube);
             break;
         case SCALE1:
-            m_moveToScale
-                    ->addAction(new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.getWallToScalePath()));
             addFirstNode(m_moveToScale);
-            m_moveToScale->addNext(m_outtakeCubeToScale);
+            driveAction = new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.GetWallToScalePath());
+            m_moveToScale->addAction(driveAction);
+            m_moveToScale->addNext(m_dropCube);
+            break;
+        case SWITCH1SCALE1:
+            addFirstNode(m_moveToScale);
+            driveAction = new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.GetWallToScalePath());
+            m_moveToScale->addAction(driveAction);
+            m_moveToScale->addNext(m_dropCube);
+            m_dropCube->addCondition([]{
+                return CORE2018::GetInstance()->gameDataParser.GetWallToScalePath().eventPassed("switchWaypoint");
+            });
+            m_dropCube->addNext(m_intakeCube);
             break;
 //        case SWITCH1SCALE1:
 //            m_moveToSwitch->
 //                    addAction(new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.getWallToSwitchPath()));
 //            addFirstNode(m_moveToSwitch);
-//            m_moveToSwitch->addNext(m_outtakeCubeToSwitch);
+//            m_moveToSwitch->addNext(m_dropCube);
 //            m_moveToCubeStack =
 //                    new Node(5, new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.loadPath(sidePath::)));
-//            m_outtakeCubeToSwitch->addNext(m_moveToCubeStack);
+//            m_dropCube->addNext(m_moveToCubeStack);
 //            m_m
 //            break;
 	}

@@ -47,6 +47,8 @@ private:
     COREConstant<double> m_chainBarIntakePostionAngle, m_rotationIntakePostionAngle;
     COREConstant<double> m_chainBarFeederAngle, m_rotationFeederAngle;
     COREConstant<double> m_rotationMaxRelativePosition;
+    COREConstant<double> m_rotationOffset, m_chainBarOffset;
+
 
     COREConstant<int> m_chainBarCruiseVel, m_chainBarMaxAcel;
 	COREConstant<int> m_rotationCruiseVel, m_rotationMaxAcel;

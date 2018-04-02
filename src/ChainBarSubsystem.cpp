@@ -28,7 +28,9 @@ ChainBarSubsystem::ChainBarSubsystem() :
         m_chainBarStraightUpAngle("Chain Bar Straight Up Angle"),
         m_rotationFeederAngle("Rotation Feeder Angle"),
         m_chainBarFeederAngle("Chain Bar Feeder Angle"),
-        m_rotationMaxRelativePosition("Rotation Max Relative Position") {
+        m_rotationMaxRelativePosition("Rotation Max Relative Position"),
+		m_rotationOffset("Rotation Angle Offset"),
+		m_chainBarOffset("Chain Bar Offset") {
 
 }
 
@@ -83,12 +85,12 @@ void ChainBarSubsystem::teleopInit() {
 
     if(SmartDashboard::GetBoolean("Zero Rotation", false)) {
         SmartDashboard::PutBoolean("Zero Rotation", false);
-        m_rotationMotor.SetSelectedSensorPosition(0, 0, 0);
+        m_rotationOffset.Set(GetRotationAngle(true));
     }
 
     if(SmartDashboard::GetBoolean("Zero Chain Bar", false)) {
         SmartDashboard::PutBoolean("Zero Chain Bar", false);
-        m_chainBarMotor.SetSelectedSensorPosition(0, 0, 0);
+        m_chainBarOffset.Set(GetChainBarAngle(true));
     }
 }
 

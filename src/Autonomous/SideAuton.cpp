@@ -23,26 +23,31 @@ void SideAuton::addNodes() {
 
     DriveWaypointAction* driveAction;
 	switch (CORE2018::GetInstance()->gameDataParser.GetCubePlacement()) {
-        case DRIVE_FORWARD:
+        case DRIVE_FORWARD: {
             addFirstNode(m_driveForward);
             bool flip = CORE2018::GetInstance()->gameDataParser.GetStartingPosition() == LEFT_SIDE;
             driveAction = new DriveWaypointAction(CORE2018::GetInstance()->
                     gameDataParser.LoadPath(sidePath::DRIVE_FORWARD, flip));
             m_driveForward->addAction(driveAction);
-        case SWITCH1:
+        }
+            break;
+        case SWITCH1: {
             addFirstNode(m_moveToSwitch);
             driveAction = new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.GetWallToSwitchPath());
             m_moveToSwitch->addAction(driveAction);
             m_moveToSwitch->addNext(m_dropCube);
+        }
             break;
-        case SCALE1:
+        case SCALE1: {
             addFirstNode(m_moveToScale);
             driveAction = new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.GetWallToScalePath());
             m_moveToScale->addAction(driveAction);
             m_moveToScale->addNext(m_dropCube);
+        }
             break;
-        case SWITCH1SCALE1:
+        case SWITCH1SCALE1: {
             addFirstNode(m_moveToScale);
+            driveAction = new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.GetWallToSwitchPath());
             driveAction = new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.GetWallToScalePath());
             m_moveToScale->addAction(driveAction);
             m_moveToScale->addNext(m_dropCube);
@@ -50,6 +55,7 @@ void SideAuton::addNodes() {
                 return CORE2018::GetInstance()->gameDataParser.GetWallToScalePath().eventPassed("switchWaypoint");
             });
             m_dropCube->addNext(m_intakeCube);
+        }
             break;
 //        case SWITCH1SCALE1:
 //            m_moveToSwitch->

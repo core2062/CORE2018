@@ -37,7 +37,7 @@ public:
 private:
 	double m_wheelbase = 20.8;
 	double m_trackwidth = 25.881;
-	COREConstant <double> m_steerPID_P, m_steerPID_I, m_steerPID_D, m_rotationkP;
+	COREConstant <double> m_steerPID_P, m_steerPID_I, m_steerPID_D, m_rotationkP, m_lookAhead;
 	TalonSRX m_frontRightSteerMotor, m_frontLeftSteerMotor, m_backRightSteerMotor, m_backLeftSteerMotor,
 			m_frontRightDriveMotor, m_frontLeftDriveMotor, m_backRightDriveMotor, m_backLeftDriveMotor;
 	CORESwerve::SwerveModule *m_frontRightModule, *m_frontLeftModule, *m_backRightModule, *m_backLeftModule;

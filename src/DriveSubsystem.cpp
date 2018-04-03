@@ -19,7 +19,8 @@ DriveSubsystem::DriveSubsystem() :
         m_frontRightModule(new CORESwerve::SwerveModule(&m_frontRightDriveMotor, &m_frontRightSteerMotor)),
         m_frontLeftModule(new CORESwerve::SwerveModule(&m_frontLeftDriveMotor, &m_frontLeftSteerMotor)),
         m_backRightModule(new CORESwerve::SwerveModule(&m_backRightDriveMotor, &m_backRightSteerMotor)),
-        m_backLeftModule(new CORESwerve::SwerveModule(&m_backLeftDriveMotor, &m_backLeftSteerMotor)) {
+        m_backLeftModule(new CORESwerve::SwerveModule(&m_backLeftDriveMotor, &m_backLeftSteerMotor)),
+        m_lookAhead("Path Lookahead") {
     m_swerveDrive = new CORESwerve(m_wheelbase, m_trackwidth, 2.95, 4915.2, m_frontLeftModule, m_backLeftModule,
                                    m_backRightModule, m_frontRightModule);
 
@@ -189,7 +190,7 @@ void DriveSubsystem::resetYaw() {
 }
 
 double DriveSubsystem::getGyroYaw(bool raw) {
-	try {
+	/*try {
         if (m_gyro->IsConnected()) {
             if (raw) {
             	if (m_theta > M_PI) {
@@ -213,12 +214,18 @@ double DriveSubsystem::getGyroYaw(bool raw) {
 	    } else {
 	        return toDegrees(m_theta - m_thetaOffset);
 	    }
-	}
+	}*/
+    if (raw) {
+        return m_gyro->GetYaw();
+    } else {
+        return m_gyro->GetYaw() + toDegrees(m_thetaOffset) - m_gyroOffset;
+
+    }
 }
 
 void DriveSubsystem::startPath(Path path, bool reversed, double maxAccel, double maxAngAccel,
                                double tolerance, bool gradualStop, double lookahead) {
-    m_pursuit = AdaptivePursuit(lookahead, maxAccel, m_rotationkP.Get(), .025, path, reversed, tolerance, gradualStop);
+    m_pursuit = AdaptivePursuit(m_lookAhead.Get(), maxAccel, m_rotationkP.Get(), .025, path, reversed, tolerance, gradualStop);
 }
 
 void DriveSubsystem::resetTracker(Position2d initialPos) {

@@ -274,8 +274,8 @@ void ChainBarSubsystem::SetStraightUp() {
 }
 
 bool ChainBarSubsystem::IsIntakePosition() {
-    bool rotationCorrect = abs(GetRotationAngle() - m_rotationIntakePostionAngle.Get()) < 5;
-    bool chainBarCorrect = abs(GetChainBarAngle() - m_chainBarIntakePostionAngle.Get()) < 5;
+    bool rotationCorrect = abs(GetRotationAngle() - m_rotationIntakePostionAngle.Get()) < 10;
+    bool chainBarCorrect = abs(GetChainBarAngle() - m_chainBarIntakePostionAngle.Get()) < 10;
     return (rotationCorrect && chainBarCorrect);
 }
 
@@ -285,7 +285,7 @@ void ChainBarSubsystem::SetFeeder() {
 }
 
 bool ChainBarSubsystem::IsStraightUp() {
-    return abs(GetChainBarAngle() - m_chainBarStraightUpAngle.Get()) < 5;
+    return abs(GetChainBarAngle() - m_chainBarStraightUpAngle.Get()) < 10;
 }
 
 bool ChainBarSubsystem::IsChainBarAboveLowerTopLimit() {
@@ -293,5 +293,5 @@ bool ChainBarSubsystem::IsChainBarAboveLowerTopLimit() {
 }
 
 bool ChainBarSubsystem::IsForwardScore() {
-    return abs(GetChainBarAngle() - m_forwardChainBarScoringAngle.Get()) < 5;
+    return abs(GetChainBarAngle() - m_forwardChainBarScoringAngle.Get()) < 10;
 }

@@ -18,13 +18,19 @@ public:
 	void teleopInit() override;
 	void teleop() override;
 	void teleopEnd() override;
-	void preLoopTask();
+	void preLoopTask() override;
+
+    void disabledTask() override;
+
+    void runTracker();
 	void initTalons();
 	void autonInitTask() override;
 	double getGyroYaw(bool raw = false);
 	bool pathDone();
 	void resetYaw();
 	void zeroMotors();
+
+    void brake();
 
 	void startPath(Path path, bool reversed, double maxAccel, double maxAngAccel,
                    double tolerance, bool gradualStop, double lookahead);

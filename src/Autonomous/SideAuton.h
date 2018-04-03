@@ -22,4 +22,5 @@ private:
 	Node * m_moveToScale = nullptr;
 	Node * m_raiseToScale = nullptr;
 	Node * m_driveForward = nullptr;
+	Node * m_waitingToBringLiftUp = nullptr;
 };

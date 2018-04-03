@@ -66,6 +66,12 @@ Path GameDataParser::LoadPath(sidePath pathName, bool flip) {
 		case sidePath::SWITCH_TO_OPPOSITE_SCALE:
 			fileName = "sideSwitchToOppositeScale.json";
 			break;
+		case sidePath::SCALE_TO_CUBE:
+			fileName = "sideScaleToCube.json";
+			break;
+		case sidePath::SCALE_TO_OPPOSITE_CUBE:
+			fileName = "sideScaleToOppositeCube.json";
+			break;
 	}
 	return Path::fromFile(fileName, flip);
 }
@@ -133,6 +139,24 @@ Path GameDataParser::GetWallToScalePath() {
         //path = loadPath(centerPath::WALL_TO_SWITCH, !(getGameOrientation() == RR || getGameOrientation() == RL));
     }
     return path;
+}
+
+Path GameDataParser::GetScaleToCubePath() {
+	Path path;
+		if(IsScaleRight()) {
+			if(IsSwitchRight()) {
+				path = LoadPath(sidePath::SCALE_TO_CUBE, false);
+			} else {
+				path = LoadPath(sidePath::SCALE_TO_OPPOSITE_CUBE, false);
+			}
+		} else {
+			if(IsSwitchRight()) {
+				path = LoadPath(sidePath::SCALE_TO_OPPOSITE_CUBE, true);
+			} else {
+				path = LoadPath(sidePath::SCALE_TO_CUBE, true);
+			}
+		}
+	return path;
 }
 
 bool GameDataParser::IsSwitchRight() {

@@ -48,12 +48,12 @@ void IntakeSubsystem::setIntakeSpeed(double intakeMotorPercent) {
 
 void IntakeSubsystem::wideRangeIntake() {
 	openIntake();
-	setIntakeSpeed(-0.5);
+	setIntakeSpeed(-0.8);
 }
 
 void IntakeSubsystem::smallRangeIntake() {
 	closeIntake();
-	setIntakeSpeed(-0.5);
+	setIntakeSpeed(-0.8);
 }
 
 void IntakeSubsystem::outtakeCube() {

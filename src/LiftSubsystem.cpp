@@ -164,7 +164,7 @@ void LiftSubsystem::SetSafeHeight() {
 }
 
 bool LiftSubsystem::IsAboveCubeClearanceHeight() {
-    return GetLiftInches() > m_cubeClearanceHeight.Get() - 0.5;
+    return GetLiftInches() > m_cubeClearanceHeight.Get() - 1;
 }
 
 bool LiftSubsystem::IsAboveChangePoint() {
@@ -172,13 +172,13 @@ bool LiftSubsystem::IsAboveChangePoint() {
 }
 
 bool LiftSubsystem::IsScaleMediumHeight() {
-    return abs(GetLiftInches() - m_scaleMediumHeight.Get()) < 0.5;
+    return abs(GetLiftInches() - m_scaleMediumHeight.Get()) < 2;
 }
 
 bool LiftSubsystem::IsScaleHighHeight() {
-    return abs(GetLiftInches() - m_scaleHighHeight.Get()) < 0.5;
+    return abs(GetLiftInches() - m_scaleHighHeight.Get()) < 2;
 }
 
 bool LiftSubsystem::IsSwitchHeight() {
-    return abs(GetLiftInches() - m_switchHeight.Get()) < 0.5;
+    return abs(GetLiftInches() - m_switchHeight.Get()) < 2;
 }

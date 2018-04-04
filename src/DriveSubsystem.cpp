@@ -44,10 +44,12 @@ void DriveSubsystem::robotInit() {
     resetYaw();
     initTalons();
     m_swerveDrive->updateOffsets();
-
+    resetTracker(Position2d(Translation2d(), Rotation2d()));
 }
 
 void DriveSubsystem::teleopInit() {
+    resetTracker(Position2d(Translation2d(), Rotation2d()));
+
     if (SmartDashboard::GetBoolean("Zero Modules", false)) {
         SmartDashboard::PutBoolean("Zero Modules", false);
         CORELog::logWarning("Zeroing modules");
@@ -186,40 +188,37 @@ void DriveSubsystem::initTalons() {
 void DriveSubsystem::resetYaw() {
     m_thetaOffset = 0;
     m_gyroOffset = 0;
+    m_theta = 0;
     m_gyro->ZeroYaw();
 }
 
 double DriveSubsystem::getGyroYaw(bool raw) {
-	/*try {
-        if (m_gyro->IsConnected()) {
-            if (raw) {
-            	if (m_theta > M_PI) {
-            		m_theta -= M_PI;
-            		m_theta = -m_theta;
-            	}
-            	double trueAngle = (m_gyro->GetYaw() + toDegrees(m_theta)) * 0.5;
-                return trueAngle;
-            } else {
-                return (m_gyro->GetYaw() + toDegrees(m_theta - m_thetaOffset) - m_gyroOffset) * 0.5;
-            }
-        }
-	} catch (std::exception ex) {
-		CORELog::logError("Error initializing gyro: " + string(ex.what()));
-	    if (raw) {
-	    	if (m_theta > M_PI) {
-	    		m_theta -= M_PI;
-	    		m_theta = -m_theta;
-	    		return toDegrees(m_theta);
-	    	}
-	    } else {
-	        return toDegrees(m_theta - m_thetaOffset);
-	    }
-	}*/
+//	try {
+//        if (m_gyro->IsConnected()) {
+//            if (raw) {
+//                return m_gyro->GetYaw();
+//            } else {
+//                double encoderTheta = m_theta;
+//                encoderTheta = encoderTheta > PI ? -1 * (encoderTheta - PI) : encoderTheta;
+//                return /*(m_gyro->GetYaw() + toDegrees(encoderTheta) - m_gyroOffset) * 0.5*/toDegrees(encoderTheta);
+//            }
+//        }
+//	} catch (std::exception ex) {
+//		CORELog::logError("Error initializing gyro: " + string(ex.what()));
+//	    if (raw) {
+//	    	if (m_theta > M_PI) {
+//	    		m_theta -= M_PI;
+//	    		m_theta = -m_theta;
+//	    		return toDegrees(m_theta);
+//	    	}
+//	    } else {
+//	        return toDegrees(m_theta - m_thetaOffset);
+//	    }
+//	}
     if (raw) {
         return m_gyro->GetYaw();
     } else {
         return m_gyro->GetYaw() + toDegrees(m_thetaOffset) - m_gyroOffset;
-
     }
 }
 
@@ -242,7 +241,7 @@ void DriveSubsystem::autonInitTask() {
     m_gyroOffset = getGyroYaw(true);
 }
 
-void DriveSubsystem::preLoopTask() {
+void DriveSubsystem::runTracker() {
     double gyro_radians = 0;
     if(m_gyro && m_gyro->IsConnected()) {
         gyro_radians= toRadians(getGyroYaw());
@@ -256,33 +255,42 @@ void DriveSubsystem::preLoopTask() {
     SmartDashboard::PutNumber("Robot X", m_x);
     SmartDashboard::PutNumber("Robot Y", m_y);
     SmartDashboard::PutNumber("Robot Theta", m_theta);
+}
 
-    if (!m_pursuit.isDone() && CORE::COREDriverstation::getMode() == CORE::COREDriverstation::AUTON) {
-        Position2d pos(Translation2d(m_x, m_y), Rotation2d::fromRadians(gyro_radians));
-        Position2d::Delta command = m_pursuit.update(pos, Timer::GetFPGATimestamp());
+void DriveSubsystem::preLoopTask() {
+    runTracker();
+    double gyro_radians = 0;
+    if(m_gyro && m_gyro->IsConnected()) {
+        gyro_radians= toRadians(getGyroYaw());
+    }
+    if (CORE::COREDriverstation::getMode() == CORE::COREDriverstation::AUTON) {
+        if(!m_pursuit.isDone()) {
+            Position2d pos(Translation2d(m_x, m_y), Rotation2d::fromRadians(gyro_radians));
+            Position2d::Delta command = m_pursuit.update(pos, Timer::GetFPGATimestamp());
 
-        double maxVel = 0.0;
-        maxVel = max(maxVel, command.dx);
-        if (maxVel > 1) {
-            double scaling = 1 / maxVel;
-            command.dx *= scaling;
+            double maxVel = 0.0;
+            maxVel = max(maxVel, command.dx);
+            if (maxVel > 1) {
+                double scaling = 1 / maxVel;
+                command.dx *= scaling;
+            }
+            maxVel = 0.0;
+            maxVel = max(maxVel, command.dy);
+            if (maxVel > 1) {
+                double scaling = 1 / maxVel;
+                command.dy *= scaling;
+            }
+
+            double y = -command.dy;
+            double x = -command.dx;
+            double temp = y * cos(gyro_radians) + x * sin(gyro_radians);
+            x = -y * sin(gyro_radians) + x * cos(gyro_radians);
+            y = temp;
+
+            double theta = command.dtheta;
+            CORELog::logInfo("Gyro radians: " + to_string(gyro_radians) + " Requested theta: " + to_string(theta));
+            m_swerveDrive->inverseKinematics(x, y, theta);
         }
-        maxVel = 0.0;
-        maxVel = max(maxVel, command.dy);
-        if (maxVel > 1) {
-            double scaling = 1 / maxVel;
-            command.dy *= scaling;
-        }
-
-        double y = -command.dy;
-        double x = -command.dx;
-        double temp = y * cos(gyro_radians) + x * sin(gyro_radians);
-        x = -y * sin(gyro_radians) + x * cos(gyro_radians);
-        y = temp;
-
-        double theta = -command.dtheta;
-        CORELog::logInfo("Gyro radians: " + to_string(gyro_radians) + " Requested theta: " + to_string(theta));
-        m_swerveDrive->inverseKinematics(x, y, theta);
     }
 }
 
@@ -293,6 +301,7 @@ void DriveSubsystem::teleopEnd() {
 bool DriveSubsystem::pathDone() {
     return m_pursuit.isDone();
 }
+
 void DriveSubsystem::zeroMotors() {
     m_frontLeftDriveMotor.Set(ControlMode::PercentOutput, 0);
     m_frontRightDriveMotor.Set(ControlMode::PercentOutput, 0);
@@ -302,6 +311,14 @@ void DriveSubsystem::zeroMotors() {
     m_frontRightSteerMotor.Set(ControlMode::PercentOutput, 0);
     m_backLeftSteerMotor.Set(ControlMode::PercentOutput, 0);
     m_backRightSteerMotor.Set(ControlMode::PercentOutput, 0);
+}
+
+void DriveSubsystem::brake() {
+    m_swerveDrive->inverseKinematics(0, 0, 0.00001);
+}
+
+void DriveSubsystem::disabledTask() {
+    runTracker();
 }
 
 //void DriveSubsystem::setMotors() {

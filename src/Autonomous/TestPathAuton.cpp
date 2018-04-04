@@ -7,8 +7,8 @@ TestPathAuton::TestPathAuton() : COREAuton("Test Path Auton") {
 
 void TestPathAuton::addNodes() {
     Path path1;
-    if(COREPathConnectionHandler::path.getRemainingLength() != 0) {
-        path1 = COREPathConnectionHandler::path;
+    if(PositionConnectionHandler::path.getRemainingLength() != 0) {
+        path1 = PositionConnectionHandler::path;
     } else {
         CORELog::logError("Valid path not recived from dashboard!");
         path1 = Path::fromFile("test.json", false);

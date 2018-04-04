@@ -33,6 +33,8 @@ enum class sidePath {
     WALL_TO_OPPOSITE_SCALE,
     SWITCH_TO_SCALE,
     SWITCH_TO_OPPOSITE_SCALE,
+	SCALE_TO_CUBE,
+	SCALE_TO_OPPOSITE_CUBE
 };
 
 enum class centerPath {
@@ -62,6 +64,7 @@ public:
     cubePlacement GetCubePlacement();
     Path GetWallToSwitchPath();
     Path GetWallToScalePath();
+	Path GetScaleToCubePath();
 
 private:
 	orientation m_parsedGameOrientation;

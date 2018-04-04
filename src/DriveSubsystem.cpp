@@ -193,33 +193,33 @@ void DriveSubsystem::resetYaw() {
 }
 
 double DriveSubsystem::getGyroYaw(bool raw) {
-//	try {
-//        if (m_gyro->IsConnected()) {
-//            if (raw) {
-//                return m_gyro->GetYaw();
-//            } else {
-//                double encoderTheta = m_theta;
-//                encoderTheta = encoderTheta > PI ? -1 * (encoderTheta - PI) : encoderTheta;
-//                return /*(m_gyro->GetYaw() + toDegrees(encoderTheta) - m_gyroOffset) * 0.5*/toDegrees(encoderTheta);
-//            }
-//        }
-//	} catch (std::exception ex) {
-//		CORELog::logError("Error initializing gyro: " + string(ex.what()));
-//	    if (raw) {
-//	    	if (m_theta > M_PI) {
-//	    		m_theta -= M_PI;
-//	    		m_theta = -m_theta;
-//	    		return toDegrees(m_theta);
-//	    	}
-//	    } else {
-//	        return toDegrees(m_theta - m_thetaOffset);
-//	    }
-//	}
-    if (raw) {
+	try {
+        if (m_gyro->IsConnected()) {
+            if (raw) {
+                return m_gyro->GetYaw();
+            } else {
+                double encoderTheta = fmod(m_theta, 2*PI);
+                encoderTheta = encoderTheta > PI ? -1 * (encoderTheta - PI) : encoderTheta;
+                return /*(m_gyro->GetYaw() + toDegrees(encoderTheta) - m_gyroOffset) * 0.5*/toDegrees(encoderTheta);
+            }
+        }
+	} catch (std::exception ex) {
+		CORELog::logError("Error initializing gyro: " + string(ex.what()));
+	    if (raw) {
+	    	if (m_theta > M_PI) {
+	    		m_theta -= M_PI;
+	    		m_theta = -m_theta;
+	    		return toDegrees(m_theta);
+	    	}
+	    } else {
+	        return toDegrees(m_theta - m_thetaOffset);
+	    }
+	}
+   /* if (raw) {
         return m_gyro->GetYaw();
     } else {
         return m_gyro->GetYaw() + toDegrees(m_thetaOffset) - m_gyroOffset;
-    }
+    }*/
 }
 
 void DriveSubsystem::startPath(Path path, bool reversed, double maxAccel, double maxAngAccel,

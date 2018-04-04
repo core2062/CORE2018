@@ -19,7 +19,23 @@ enum class WantedState {
     MANUAL //We want manual control
 };
 
-enum class SystemState {
+enum class WantedScaleScoreHeight {
+    HIGH_SCALE,
+    MID_SCALE
+};
+
+class SuperStructure : public CORETask {
+public:SuperStructure();
+    void robotInitTask() override;
+    void teleopInitTask() override;
+    void postLoopTask() override;
+
+    void setWantedState(WantedState wantedState);
+    void setWantedScaleScoreHeight(WantedScaleScoreHeight wantedHeight);
+
+private:
+
+    enum class SystemState {
         TRANSIT,
         GRABBING_CUBE,
         SWITCH_SCORING,
@@ -29,32 +45,14 @@ enum class SystemState {
         FEEDER
     };
 
-enum class WantedScaleScoreHeight {
-    HIGH_SCALE,
-    MID_SCALE
-};
-
-class SuperStructure : public CORETask {
-public:
-    SystemState m_actualSystemState;
-    SuperStructure();
-    void robotInitTask() override;
-    void teleopInitTask() override;
-    void postLoopTask() override;
-
-    void setWantedState(WantedState wantedState);
-    void setWantedScaleScoreHeight(WantedScaleScoreHeight wantedHeight);
-    WantedState getWantedState();
-    SystemState getSystemState();
-
-private:
-
     enum class GrabCubeState {
         WAITING_FOR_CUBE,
         MOVING_DOWN_TO_CUBE,
         MOVING_UP_TO_CUBE_CLEARANCE,
         CUBE_CLEARANCE_HEIGHT
     };
+
+    SystemState m_actualSystemState;
 
     SystemState handleTransit();
     SystemState handleGrabbingCube();

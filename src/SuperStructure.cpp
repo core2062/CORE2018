@@ -67,12 +67,7 @@ void SuperStructure::setWantedState(WantedState wantedState) {
 void SuperStructure::setWantedScaleScoreHeight(WantedScaleScoreHeight wantedHeight) {
     m_wantedScaleScoreHeight = wantedHeight;
 }
-SuperStructure::SystemState SuperStructure::getSystemState() {
-	return m_actualSystemState;
-}
-SuperStructure::WantedState SuperStructure::getWantedState() {
-	return m_wantedState;
-}
+
 SuperStructure::SystemState SuperStructure::handleTransit() {
     bool reachedTarget = false;
     switch (m_wantedState) {

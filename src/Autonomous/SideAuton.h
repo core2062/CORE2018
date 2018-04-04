@@ -19,8 +19,12 @@ private:
 	Node * m_dropCube = nullptr;
 	Node * m_intakeCube = nullptr;
 	Node * m_dropCubeSecondTime = nullptr;
+	Node * m_moveToCubeStack = nullptr;
 	Node * m_moveToScale = nullptr;
+	Node * m_moveToScaleSecondTime = nullptr;
 	Node * m_raiseToScale = nullptr;
 	Node * m_driveForward = nullptr;
 	Node * m_waitingToBringLiftUp = nullptr;
+	Node * m_moveToCubeStackSecondTime = nullptr;
+	Node * m_moveToScaleFromCube = nullptr;
 };

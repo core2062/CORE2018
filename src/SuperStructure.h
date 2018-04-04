@@ -27,6 +27,7 @@ enum class WantedScaleScoreHeight {
 class SuperStructure : public CORETask {
 public:SuperStructure();
     void robotInitTask() override;
+    void autonInitTask() override;
     void teleopInitTask() override;
     void postLoopTask() override;
 

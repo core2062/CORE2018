@@ -48,7 +48,7 @@ void DriveSubsystem::robotInit() {
 }
 
 void DriveSubsystem::teleopInit() {
-    resetTracker(Position2d(Translation2d(), Rotation2d()));
+//    resetTracker(Position2d(Translation2d(), Rotation2d()));
 
     if (SmartDashboard::GetBoolean("Zero Modules", false)) {
         SmartDashboard::PutBoolean("Zero Modules", false);
@@ -198,22 +198,18 @@ double DriveSubsystem::getGyroYaw(bool raw) {
             if (raw) {
                 return m_gyro->GetYaw();
             } else {
-                double encoderTheta = fmod(m_theta, 2*PI);
-                encoderTheta = encoderTheta > PI ? -1 * (encoderTheta - PI) : encoderTheta;
-                return /*(m_gyro->GetYaw() + toDegrees(encoderTheta) - m_gyroOffset) * 0.5*/toDegrees(encoderTheta);
+                return (m_gyro->GetYaw() + /*toDegrees(encoderTheta) +*/ toDegrees(m_thetaOffset) - m_gyroOffset)/* * 0.5*/;
             }
+        } else {
+            double encoderTheta = Rotation2d::fromRadians(m_theta).getDegrees();;
+            encoderTheta = encoderTheta > 180 ? -1 * (360 - encoderTheta) : encoderTheta;
+            return encoderTheta;
         }
 	} catch (std::exception ex) {
 		CORELog::logError("Error initializing gyro: " + string(ex.what()));
-	    if (raw) {
-	    	if (m_theta > M_PI) {
-	    		m_theta -= M_PI;
-	    		m_theta = -m_theta;
-	    		return toDegrees(m_theta);
-	    	}
-	    } else {
-	        return toDegrees(m_theta - m_thetaOffset);
-	    }
+        double encoderTheta = Rotation2d::fromRadians(m_theta).getDegrees();;
+        encoderTheta = encoderTheta > 180 ? -1 * (360 - encoderTheta) : encoderTheta;
+        return encoderTheta;
 	}
    /* if (raw) {
         return m_gyro->GetYaw();
@@ -254,7 +250,13 @@ void DriveSubsystem::runTracker() {
 
     SmartDashboard::PutNumber("Robot X", m_x);
     SmartDashboard::PutNumber("Robot Y", m_y);
-    SmartDashboard::PutNumber("Robot Theta", m_theta);
+
+
+
+    double encoderTheta = Rotation2d::fromRadians(m_theta).getDegrees();;
+    encoderTheta = encoderTheta > 180 ? -1 * (360 - encoderTheta) : encoderTheta;
+
+    SmartDashboard::PutNumber("Robot Theta", encoderTheta);
 }
 
 void DriveSubsystem::preLoopTask() {
@@ -288,7 +290,6 @@ void DriveSubsystem::preLoopTask() {
             y = temp;
 
             double theta = command.dtheta;
-            CORELog::logInfo("Gyro radians: " + to_string(gyro_radians) + " Requested theta: " + to_string(theta));
             m_swerveDrive->inverseKinematics(x, y, theta);
         }
     }

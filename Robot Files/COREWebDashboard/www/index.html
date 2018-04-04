@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<head>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0px;
+            padding: 0px;
+            border: 0px;
+            overflow: hidden; /*  Disable scrollbars */
+            display: inline-block;
+            position: relative;
+        }
+
+        canvas.windowClass {
+            background-color: white;
+        }
+
+        div.windowDivClass {
+            overflow: auto;
+        }
+
+        div.toolBarClass {
+            background-color: black;
+        }
+
+        div.tabBar {
+            position: absolute;
+            height: 32px;
+            width: 100%;
+            bottom: 0;
+        }
+
+        .tabSelect {
+            height: 100%;
+            width: 25%;
+            font-size: 15px;
+            background-color: #008CBA;
+            color: #CCCCCC;
+            transition-duration: .15s;
+            border: none #005090;
+            float: left;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .tabSelect:hover {
+            border: 1px solid #005090;
+            color: white;
+            background-color: #0070C0;
+        }
+
+        .toolBarButton {
+            height: 50px;
+            width: 100%;
+            font-size: 15px;
+            background-color: #008CBA;
+            color: #CCCCCC;
+            transition-duration: .15s;
+            border: none #005090;
+            float: left;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .toolBarButton:hover {
+            border: 1px solid #005090;
+            color: white;
+            background-color: #0070C0;
+        }
+
+    </style>
+</head>
+<body onload="initialize()">
+
+<div class="windowDivClass" id="windowDiv">
+    <canvas class="windowClass" id="windowCanvas" width="0" height="0"></canvas>
+</div>
+
+<script src='math.js'></script>
+<script src='input.js'></script>
+<script src='spline.js'></script>
+<script src='3rdparty/FileSaver.js/FileSaver.js'></script>
+<script src='autonCreator.js'></script>
+<script src='main.js'></script>
+
+<!--<canvas id="fieldCanvas" width="0" height="0"></canvas>-->
+<div class="toolBarClass" id="toolBar">
+    <button class="toolBarButton" onclick=exportPath()>Export Path</button>
+    <button class="toolBarButton" onclick=sendPath()>Send Path</button>
+    <button class="toolBarButton" onclick=newRobot()>New Robot</button>
+    <button class="toolBarButton" onclick=removeRobot()>Remove Robot</button>
+    <button class="toolBarButton" onclick=nameRobot()>Name Robot</button>
+    <button class="toolBarButton" onclick=setSideStartingPos()>Side Starting Pos</button> 
+    <button class="toolBarButton" onclick=setCenterStartingPos()>Center Starting Pos</button>
+    <button class="toolBarButton" onclick=setScaleStartingPos()>Scale Starting Pos</button>
+    <button class="toolBarButton" id="connect-to-robot-button" onclick=connectToRobot()>Connect to Robot</button>
+
+</div>
+
+<div class="tabBar">
+    <button class="tabSelect" id="driver-dashboard-button" onclick="view = 'driver-dashboard';">Driver Dashboard</button>
+    <button class="tabSelect" id="debug-dashboard-button" onclick="view = 'debug-dashboard';">Debug Dashboard</button>
+    <button class="tabSelect" id="auton-config-button" onclick="view = 'auton-config';">Auton Config</button>
+    <button class="tabSelect" id="auton-creator-button" onclick="view = 'auton-creator';">Auton Creator</button>
+</div>
+
+</body>
+</html>
+<script>
+</script>

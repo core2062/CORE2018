@@ -123,9 +123,7 @@ void LiftSubsystem::postLoopTask() {
             }
             liftRequestedPosition = m_changePoint.Get() * m_ticksPerInch.Get();
             CORE2018::GetInstance()->chainBarSubsystem.SetChainBarRequestedAngle(-10);
-            CORELog::logInfo("Lift waiting for chain bar");
         }
-        CORELog::logInfo("Lift less than change point");
     }
 
     if (m_requestedSpeed < -0.01 || m_requestedSpeed > 0.1) {

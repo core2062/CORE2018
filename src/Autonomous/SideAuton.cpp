@@ -8,11 +8,11 @@ SideAuton::SideAuton() : COREAuton("Side Auton") {
 void SideAuton::addNodes() {
     m_moveToSwitch = new Node(14, new StateAction(WantedState::WANT_TO_SCORE_ON_SWITCH));
     m_dropCube = new Node(2, new ScorerAction(scorerAction::OPEN));
-    m_moveToScale = new Node(14);
+    m_moveToScale = new Node(9);
     m_raiseToScale = new Node(5, new StateAction(WantedState::WANT_TO_SCORE_ON_SCALE, WantedScaleScoreHeight::MID_SCALE));
     m_intakeCube = new Node(5, new StateAction(WantedState::WANT_TO_PICKUP_CUBE), new IntakeAction(intakeAction::WIDE_RANGE_INTAKE));
     m_driveForward = new Node(5);
-    m_waitingToBringLiftUp = new Node(3);
+    m_waitingToBringLiftUp = new Node(5);
 
     if(CORE2018::GetInstance()->gameDataParser.GetStartingPosition() == RIGHT_SIDE) {
         CORE2018::GetInstance()->driveSubsystem.resetTracker(Position2d(Translation2d(97, 19),
@@ -45,11 +45,13 @@ void SideAuton::addNodes() {
         case SCALE1: {
             addFirstNode(m_moveToScale);
             addFirstNode(m_waitingToBringLiftUp);
-            if(CORE2018::GetInstance()->gameDataParser.IsScaleRight() && CORE2018::GetInstance()->gameDataParser.GetStartingPosition() == RIGHT
-                    || CORE2018::GetInstance()->gameDataParser.IsScaleLeft() && CORE2018::GetInstance()->gameDataParser.GetStartingPosition() == LEFT) {
+            if(CORE2018::GetInstance()->gameDataParser.IsScaleRight() && CORE2018::GetInstance()->gameDataParser.GetStartingPosition() == RIGHT_SIDE
+               || CORE2018::GetInstance()->gameDataParser.IsScaleLeft() && CORE2018::GetInstance()->gameDataParser.GetStartingPosition() == LEFT_SIDE) {
                 m_waitingToBringLiftUp->addAction(new WaitAction(2));
+                CORELog::logInfo("2 sec delay");
             } else {
-                m_waitingToBringLiftUp->addAction(new WaitAction(6));
+                m_waitingToBringLiftUp->addAction(new WaitAction(5));
+                CORELog::logInfo("6 sec delay");
             }
             m_waitingToBringLiftUp->addNext(m_raiseToScale);
             driveAction = new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.GetWallToScalePath());
@@ -67,12 +69,13 @@ void SideAuton::addNodes() {
             m_dropCube->addNext(m_moveToCubeStack);
             m_moveToCubeStack->addNext(m_intakeCube);
             m_intakeCube->addNext(m_waitingToBringLiftUp);
-            if(CORE2018::GetInstance()->gameDataParser.IsScaleRight() && CORE2018::GetInstance()->gameDataParser.GetStartingPosition() == RIGHT
+            m_waitingToBringLiftUp->addAction(new WaitAction(1));
+            /*if(CORE2018::GetInstance()->gameDataParser.IsScaleRight() && CORE2018::GetInstance()->gameDataParser.GetStartingPosition() == RIGHT
                     || CORE2018::GetInstance()->gameDataParser.IsScaleLeft() && CORE2018::GetInstance()->gameDataParser.GetStartingPosition() == LEFT) {
                 m_waitingToBringLiftUp->addAction(new WaitAction(2));
             } else {
                 m_waitingToBringLiftUp->addAction(new WaitAction(6));
-            }
+            }*/
             driveAction = new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.GetScaleToCubePath());
             m_moveToScaleFromCube->addAction(driveAction);
             m_waitingToBringLiftUp->addNext(m_moveToScaleFromCube);
@@ -109,7 +112,7 @@ void SideAuton::addNodes() {
                     || CORE2018::GetInstance()->gameDataParser.IsScaleLeft() && CORE2018::GetInstance()->gameDataParser.GetStartingPosition() == LEFT) {
                 m_waitingToBringLiftUp->addAction(new WaitAction(2));
             } else {
-                m_waitingToBringLiftUp->addAction(new WaitAction(6));
+                m_waitingToBringLiftUp->addAction(new WaitAction(5));
             }
             driveAction = new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.GetCubeToScalePath());
             m_waitingToBringLiftUp->addNext(m_moveToScaleSecondTime);

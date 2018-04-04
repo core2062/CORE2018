@@ -14,6 +14,15 @@ void SuperStructure::robotInitTask() {
     m_scorerSubsystem = &CORE2018::GetInstance()->scorerSubsystem;
 }
 
+void SuperStructure::autonInitTask() {
+    m_grabCubeState = GrabCubeState::WAITING_FOR_CUBE;
+    m_cubeTimerStarted = false;
+    m_wantedState = WantedState::MANUAL;
+    m_systemState = SystemState::TRANSIT;
+    m_timeoutTimer.Reset();
+    m_timeoutTimer.Start();
+}
+
 void SuperStructure::teleopInitTask() {
     m_grabCubeState = GrabCubeState::WAITING_FOR_CUBE;
     m_cubeTimerStarted = false;
@@ -127,9 +136,6 @@ SuperStructure::SystemState SuperStructure::handleTransit() {
     }
 
     reachedTarget = reachedTarget || m_timeoutTimer.Get() > m_transitTransitionTimeout.Get();
-
-    CORELog::logInfo("Wanted State: " + to_string((int)m_wantedState) + " System State: " +
-                             to_string((int)m_systemState) + " Target Reached: " + to_string(reachedTarget));
 
     //State transition
     switch (m_wantedState) {

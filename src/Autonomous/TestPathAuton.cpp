@@ -1,5 +1,6 @@
 #include "TestPathAuton.h"
 #include "Robot.h"
+#include "WaypointFollower/COREPathConnectionHandler.h"
 
 TestPathAuton::TestPathAuton() : COREAuton("Test Path Auton") {
 
@@ -7,8 +8,8 @@ TestPathAuton::TestPathAuton() : COREAuton("Test Path Auton") {
 
 void TestPathAuton::addNodes() {
     Path path1;
-    if(PositionConnectionHandler::path.getRemainingLength() != 0) {
-        path1 = PositionConnectionHandler::path;
+    if(COREPathConnectionHandler::path.getRemainingLength() != 0) {
+        path1 = COREPathConnectionHandler::path;
     } else {
         CORELog::logError("Valid path not recived from dashboard!");
         path1 = Path::fromFile("test.json", false);

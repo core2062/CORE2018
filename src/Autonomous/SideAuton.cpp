@@ -58,14 +58,66 @@ void SideAuton::addNodes() {
         }
             break;
         case SWITCH1SCALE1: {
-            addFirstNode(m_moveToScale);
-
-            driveAction = new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.GetWallToScalePath());
-            m_moveToScale->addAction(driveAction);
-            m_moveToScale->addNext(m_dropCube);
+            addFirstNode(m_moveToSwitch);
+            driveAction = new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.GetWallToSwitchPath());
+            m_moveToSwitch->addAction(driveAction);
+            m_moveToSwitch->addNext(m_dropCube);
+            driveAction = new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.GetSwitchToCubePath());
+            m_moveToCubeStack->addAction(driveAction);
+            m_dropCube->addNext(m_moveToCubeStack);
+            m_moveToCubeStack->addNext(m_intakeCube);
+            m_intakeCube->addNext(m_waitingToBringLiftUp);
+            if(CORE2018::GetInstance()->gameDataParser.IsScaleRight() && CORE2018::GetInstance()->gameDataParser.GetStartingPosition() == RIGHT
+                    || CORE2018::GetInstance()->gameDataParser.IsScaleLeft() && CORE2018::GetInstance()->gameDataParser.GetStartingPosition() == LEFT) {
+                m_waitingToBringLiftUp->addAction(new WaitAction(2));
+            } else {
+                m_waitingToBringLiftUp->addAction(new WaitAction(6));
+            }
+            driveAction = new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.GetScaleToCubePath());
+            m_moveToScaleFromCube->addAction(driveAction);
+            m_waitingToBringLiftUp->addNext(m_moveToScaleFromCube);
+            m_moveToScaleFromCube->addNext(m_dropCube);
+        }
+            break;
+        case SWITCH1SCALE2: {
+            addFirstNode(m_moveToSwitch);
+            driveAction = new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.GetWallToSwitchPath());
+            m_moveToSwitch->addAction(driveAction);
+            m_moveToSwitch->addNext(m_dropCube);
+            driveAction = new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.GetSwitchToCubePath());
+            m_moveToCubeStack->addAction(driveAction);
+            m_dropCube->addNext(m_moveToCubeStack);
+            m_moveToCubeStack->addNext(m_intakeCube);
+            m_intakeCube->addNext(m_waitingToBringLiftUp);
+            if(CORE2018::GetInstance()->gameDataParser.IsScaleRight() && CORE2018::GetInstance()->gameDataParser.GetStartingPosition() == RIGHT
+                    || CORE2018::GetInstance()->gameDataParser.IsScaleLeft() && CORE2018::GetInstance()->gameDataParser.GetStartingPosition() == LEFT) {
+                m_waitingToBringLiftUp->addAction(new WaitAction(2));
+            } else {
+                m_waitingToBringLiftUp->addAction(new WaitAction(6));
+            }
+            driveAction = new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.GetScaleToCubePath());
+            m_moveToScaleFromCube->addAction(driveAction);
+            m_waitingToBringLiftUp->addNext(m_moveToScaleFromCube);
+            m_moveToScaleFromCube->addNext(m_dropCube);
+            driveAction = new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.GetScaleToCubePath());
+            m_dropCube->addNext(m_moveToCubeStackSecondTime);
+            m_moveToCubeStackSecondTime->addNext(m_intakeCube);
+            driveAction = new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.GetScaleToCubePath());
+            m_moveToScaleSecondTime->addAction(driveAction);
+            m_intakeCube->addNext(m_waitingToBringLiftUp);
+            if(CORE2018::GetInstance()->gameDataParser.IsScaleRight() && CORE2018::GetInstance()->gameDataParser.GetStartingPosition() == RIGHT
+                    || CORE2018::GetInstance()->gameDataParser.IsScaleLeft() && CORE2018::GetInstance()->gameDataParser.GetStartingPosition() == LEFT) {
+                m_waitingToBringLiftUp->addAction(new WaitAction(2));
+            } else {
+                m_waitingToBringLiftUp->addAction(new WaitAction(6));
+            }
+            driveAction = new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.GetCubeToScalePath());
+            m_waitingToBringLiftUp->addNext(m_moveToScaleSecondTime);
+            m_moveToScaleSecondTime->addNext(m_dropCube);
 
         }
             break;
+        }
 //        case SWITCH1SCALE1:
 //            m_moveToSwitch->
 //                    addAction(new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.getWallToSwitchPath()));
@@ -77,5 +129,5 @@ void SideAuton::addNodes() {
 //            m_m
 //            break;
 	}
-}
+
 

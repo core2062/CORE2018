@@ -33,8 +33,12 @@ enum class sidePath {
     WALL_TO_OPPOSITE_SCALE,
     SWITCH_TO_SCALE,
     SWITCH_TO_OPPOSITE_SCALE,
+	SWITCH_TO_CUBE,
+	SWITCH_TO_OPPOSITE_CUBE,
 	SCALE_TO_CUBE,
-	SCALE_TO_OPPOSITE_CUBE
+	SCALE_TO_OPPOSITE_CUBE,
+	CUBE_TO_SCALE,
+	CUBE_TO_OPPOSITE_SCALE
 };
 
 enum class centerPath {
@@ -47,6 +51,11 @@ enum startingPosition {
     LEFT_SIDE,
     CENTER,
     RIGHT_SIDE,
+};
+
+enum cubePickUp {
+	RIGHT_CUBE_PICKUP,
+	LEFT_CUBE_PICKUP
 };
 
 class GameDataParser : public CORETask {
@@ -65,6 +74,8 @@ public:
     Path GetWallToSwitchPath();
     Path GetWallToScalePath();
 	Path GetScaleToCubePath();
+	Path GetSwitchToCubePath();
+	Path GetCubeToScalePath();
 
 private:
 	orientation m_parsedGameOrientation;

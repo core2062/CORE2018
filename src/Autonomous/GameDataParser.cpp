@@ -92,6 +92,47 @@ Path GameDataParser::LoadPath(centerPath pathName, bool flip) {
 	return Path::fromFile(fileName, flip);
 }
 
+Path GameDataParser::GetCubeToScalePath() {
+	Path path;
+	switch (GetStartingPosition()) {
+    case RIGHT_SIDE:
+        if(IsSwitchRight()) {
+            path = LoadPath(sidePath::CUBE_TO_SCALE, false);
+        } else {
+            path = LoadPath(sidePath::CUBE_TO_OPPOSITE_SCALE, false);
+        }
+        break;
+    case LEFT_SIDE:
+        if(IsSwitchLeft()) {
+            path = LoadPath(sidePath::CUBE_TO_SCALE, true);
+        } else {
+            path = LoadPath(sidePath::CUBE_TO_OPPOSITE_SCALE, true);
+        }
+        break;
+	}
+	return path;
+}
+Path GameDataParser::GetSwitchToCubePath() {
+	Path path;
+	switch (GetStartingPosition()) {
+    case RIGHT_SIDE:
+        if(IsSwitchRight()) {
+            path = LoadPath(sidePath::SWITCH_TO_CUBE, false);
+        } else {
+            path = LoadPath(sidePath::SWITCH_TO_OPPOSITE_CUBE, false);
+        }
+        break;
+    case LEFT_SIDE:
+        if(IsSwitchLeft()) {
+            path = LoadPath(sidePath::SWITCH_TO_CUBE, true);
+        } else {
+            path = LoadPath(sidePath::SWITCH_TO_OPPOSITE_CUBE, true);
+        }
+        break;
+	}
+	return path;
+}
+
 Path GameDataParser::GetWallToSwitchPath() {
 	Path path;
     switch (GetStartingPosition()) {

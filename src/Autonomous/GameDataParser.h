@@ -22,7 +22,8 @@ enum cubePlacement {
     SWITCH1,
     SCALE1,
     SWITCH1SCALE1,
-    SWITCH1SCALE2
+    SWITCH1SCALE2,
+	SAME_SIDE_OPTIMIZATION
 };
 
 enum class sidePath {

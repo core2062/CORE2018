@@ -120,6 +120,41 @@ void SideAuton::addNodes() {
 
         }
             break;
+        case SAME_SIDE_OPTIMIZATION:
+        	if ((CORE2018::GetInstance()->GetInstance()->gameDataParser.getGameOrientation() == LR &&
+        			 CORE2018::GetInstance()->GetInstance()->gameDataParser.GetStartingPosition() == RIGHT_SIDE) ||
+					(CORE2018::GetInstance()->GetInstance()->gameDataParser.getGameOrientation() == RL &&
+					 CORE2018::GetInstance()->GetInstance()->gameDataParser.GetStartingPosition() == LEFT_SIDE)) {
+                addFirstNode(m_moveToScale);
+                addFirstNode(m_waitingToBringLiftUp);
+                if(CORE2018::GetInstance()->gameDataParser.IsScaleRight() && CORE2018::GetInstance()->gameDataParser.GetStartingPosition() == RIGHT_SIDE
+                   || CORE2018::GetInstance()->gameDataParser.IsScaleLeft() && CORE2018::GetInstance()->gameDataParser.GetStartingPosition() == LEFT_SIDE) {
+                    m_waitingToBringLiftUp->addAction(new WaitAction(2));
+                    CORELog::logInfo("2 sec delay");
+                } else {
+                    m_waitingToBringLiftUp->addAction(new WaitAction(5));
+                    CORELog::logInfo("6 sec delay");
+                }
+                m_waitingToBringLiftUp->addNext(m_raiseToScale);
+                driveAction = new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.GetWallToScalePath());
+                m_moveToScale->addAction(driveAction);
+                m_moveToScale->addNext(m_dropCube);
+        	} else if ((CORE2018::GetInstance()->GetInstance()->gameDataParser.getGameOrientation() == RR &&
+        			CORE2018::GetInstance()->GetInstance()->gameDataParser.GetStartingPosition() == RIGHT_SIDE) ||
+					(CORE2018::GetInstance()->GetInstance()->gameDataParser.getGameOrientation() == LL &&
+					 CORE2018::GetInstance()->GetInstance()->gameDataParser.GetStartingPosition() == LEFT_SIDE)) {
+                addFirstNode(m_moveToSwitch);
+                driveAction = new DriveWaypointAction(CORE2018::GetInstance()->gameDataParser.GetWallToSwitchPath());
+                m_moveToSwitch->addAction(driveAction);
+                m_moveToSwitch->addNext(m_dropCube);
+        	} else {
+                addFirstNode(m_driveForward);
+                bool flip = CORE2018::GetInstance()->gameDataParser.GetStartingPosition() == LEFT_SIDE;
+                driveAction = new DriveWaypointAction(CORE2018::GetInstance()->
+                        gameDataParser.LoadPath(sidePath::DRIVE_FORWARD, flip));
+                m_driveForward->addAction(driveAction);
+                m_driveForward->addNext(m_dropCube);
+        	}
         }
 //        case SWITCH1SCALE1:
 //            m_moveToSwitch->
